@@ -1,0 +1,345 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 2278
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F1 16 Tf
+18.3999999999999986 TL
+0 g
+56.6929133858267775 785.1970866141732586 Td
+(Rakshak AI — Fraud Detection Report) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+56.6929133858267775 756.8506299212598378 Td
+(For submission alongside a National Cyber Crime Reporting Portal complaint) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+56.6929133858267775 722.8348818897637784 Td
+(Complaint Reference ID: RKSH-TEST-0001) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+56.6929133858267775 702.9923622047243725 Td
+(Incident Date and Time: 8/7/2026, 3:06:16 pm) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+56.6929133858267775 683.1498425196850803 Td
+(Crime Category: Financial Fraud \(Digital Arrest / Impersonation Scam\)) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+56.6929133858267775 663.3073228346456744 Td
+(AI Risk Verdict: HIGH_RISK \(95% confidence\)) Tj
+ET
+BT
+/F1 12 Tf
+13.7999999999999989 TL
+0 g
+56.6929133858267775 634.9608661417322537 Td
+(Incident Details \(transcript excerpt\):) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0 g
+56.6929133858267775 615.1183464566928478 Td
+(This is Officer Sharma from CBI. Transfer money immediately or a warrant will be issued.) Tj
+ET
+BT
+/F1 12 Tf
+13.7999999999999989 TL
+0 g
+56.6929133858267775 578.2679527559055259 Td
+(Matched Scam Patterns:) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0 g
+62.3622047244094517 558.42543307086612 Td
+(- Authority impersonation: "Officer Sharma from CBI") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0 g
+62.3622047244094517 541.4175590551180903 Td
+(- Urgency/threat escalation: "Transfer money immediately") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0 g
+62.3622047244094517 524.4096850393700606 Td
+(- Payment/OTP demand: "warrant will be issued") Tj
+ET
+BT
+/F1 12 Tf
+13.7999999999999989 TL
+0 g
+56.6929133858267775 490.3939370078739444 Td
+(Detected Red-Flag Terms:) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0 g
+62.3622047244094517 470.5514173228345953 Td
+(cbi) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0 g
+56.6929133858267775 442.2049606299212314 Td
+(Recommended next step: File this incident at cybercrime.gov.in or call the) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0 g
+56.6929133858267775 428.0317322834645211 Td
+(national cybercrime helpline 1930. Keep this document as supporting evidence.) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R ]
+/Count 1
+>>
+endobj
+5 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+6 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+/F3 7 0 R
+/F4 8 0 R
+/F5 9 0 R
+/F6 10 0 R
+/F7 11 0 R
+/F8 12 0 R
+/F9 13 0 R
+/F10 14 0 R
+/F11 15 0 R
+/F12 16 0 R
+/F13 17 0 R
+/F14 18 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+19 0 obj
+<<
+/Producer (jsPDF 4.2.1)
+/CreationDate (D:20260708150616+05'30')
+>>
+endobj
+20 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 21
+0000000000 65535 f 
+0000002482 00000 n 
+0000004299 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000002539 00000 n 
+0000002664 00000 n 
+0000002794 00000 n 
+0000002927 00000 n 
+0000003064 00000 n 
+0000003187 00000 n 
+0000003316 00000 n 
+0000003448 00000 n 
+0000003584 00000 n 
+0000003712 00000 n 
+0000003839 00000 n 
+0000003968 00000 n 
+0000004101 00000 n 
+0000004203 00000 n 
+0000004547 00000 n 
+0000004633 00000 n 
+trailer
+<<
+/Size 21
+/Root 20 0 R
+/Info 19 0 R
+/ID [ <4BE4E7ABFF036FC61E8D6AE8D24EFA74> <4BE4E7ABFF036FC61E8D6AE8D24EFA74> ]
+>>
+startxref
+4737
+%%EOF

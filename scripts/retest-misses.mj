@@ -1,0 +1,28 @@
+const API_BASE = "https://rakshak-ai-ten.vercel.app";
+
+const misses = [
+  "[Greetings], it is [Name] from [Company]. Traverse the vast landscapes of [Country]...",
+  "hello sir, i am from paytm there are offer in paytm upgrade your account so you can get benefits",
+  "Congratulations on your outstanding financial responsibility! You are eligible for a reward...",
+  "[Greetings], it is [Name] from [Company]. Dive into the wonders of [Country]...",
+  "Exclusive Pre-Order Access for [Product]! Limited Slots Available!",
+  "18 days to Euro2004 kickoff! you will be kept informed of all the latest news",
+  "Congratulations on your first successful investment! As you can see, our platform...",
+  "Thanks to your exceptional payment history and commendable credit standing...",
+];
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function run() {
+  for (const transcript of misses) {
+    const res = await fetch(`${API_BASE}/api/classify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transcript }),
+    });
+    const json = await res.json();
+    console.log(`${json.data.verdict} — "${transcript.slice(0, 50)}..."`);
+    await sleep(2000);
+  }
+}
+run();

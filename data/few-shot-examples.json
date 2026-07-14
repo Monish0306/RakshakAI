@@ -1,0 +1,87 @@
+[
+  {
+    "transcript": "[Greetings], it is [Name] from [Company]. Experience the romance of [Country] with our [Product]! Enjoy a discount for the first bookings at [Link]. Indulge in gourmet [Country] cuisine, explore iconic landmarks, and cruise along the [Country] . As a bonus, we are offering a free wine-tasting session in the heart of [Country] . Do not miss your chance to savour the charm of [Country] reserve your spot now!",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings]! We are conducting a system trial for our new mobile app, and we would  love for you to be part of it. You will receive compensation for your participation. Could you provide us with some details to set up your account?",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], [Title]. I am [Title][Name]  , contacting you from the [Country] district police. Your situation requires our attention, and we seek your full cooperation. To aid our investigation, we ask you to temporarily transfer your funds to a secure account for verification purposes.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Sunshine Quiz Wkly Q! Win a top Sony DVD player if u know which country Liverpool played in mid week? Txt ansr to 82277. £1.50 SP:Tyrone",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "u r subscribed 2 TEXTCOMP 250 wkly comp. 1st wk?s free question follows, subsequent wks charged@150p/msg.2 unsubscribe txt STOP 2 84128,custcare 08712405020",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name]. [Company] added new privacy tools to their cloud storage service. You can now encrypt files before upload. Should we go over how to set it up?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Streaming Service Support. You contacted us about a billing issue. Could you provide your account email so we can access your subscription details?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name]. I saw a notice regarding delays in the latest stimulus payments. To avoid confusion or misinformation, it is best to visit your bank's nearest branch to confirm your disbursement status. Bring your account details and any official communication received.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "oK, can I pick up another 8th when you're done?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "So i could kiss and feel you next to me...",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Hello, this is the personal assistant of [Your Name]. How may I assist you today? Hey, it's Alex. I was hoping to catch up with [Your Name]. It's been a while since we last spoke. [Step: 1] It's great to hear from you, Alex! Before I connect you, may I ask how you know [Your Name]? Oh, we go way back. We met in college and have been friends since. Just wanted to see how he's doing. [Step: 2] That's wonderful to hear! Does [Your Name] have a nickname that you usually call him by? Yeah, he goes by 'Jay' among friends. We've had plenty of adventures under that name. [Step: 3] Thanks for sharing that, Alex. I can see you have a genuine connection. Just a moment, and I'll see if [Your Name] is available to speak with you. I appreciate it, thanks! [Step: 4] One last thing, Alex. Can I tell [Your Name] what this call is about? Sure, just tell him I'm checking in to see how he's doing and if he's up for catching up sometime soon. [Step: 5] Got it. I'll pass that along. Please hold for a moment while I connect you.",
+    "label": "uncertain",
+    "source": "better30-conversations"
+  },
+  {
+    "transcript": "Hello, this is the office of [Your Name]. How may I help you today? Hello! I'm reaching out from the Children's Aid Foundation...seeking donations... [Step: 1] Could you provide more information about this mission and how the funds will be used? Absolutely! The funds will go towards providing education, healthcare, and emergency relief to children... [Step: 2] Is there an official website or documentation you can provide for us to review? Certainly, you can visit our website, but due to the urgency of the situation... [Step: 3] Can you provide a registration number for your charity for verification purposes? I don't have that information handy... [Step: 4] Before proceeding, I would need to verify the authenticity of your organization through a third-party charity verification service. We understand your concern, but the longer we wait, the more children suffer... [Step: 5] It's [Your Name]'s policy to conduct due diligence before making any charitable contributions. Please email the official request along with full organization details to our office. Sending an email might delay things further... [Step: 6] All charitable donations from [Your Name] follow a strict verification process to ensure the funds are used appropriately. We cannot deviate from this procedure. You're missing out on a chance to make a real difference immediately... [Step: 7] We're committed to supporting verified causes. Once we have completed our verification process, we'd be more than happy to consider your request. I see. I'll send the email, but remember, time is of the essence... [Step: 8] We look forward to reviewing your information. Please ensure all requested documentation is included in your email.",
+    "label": "uncertain",
+    "source": "better30-conversations"
+  },
+  {
+    "transcript": "Hello, you've reached the assistant for [Your Name]. How can I direct your call? Hi, I'm calling from HelpTheWorld Foundation...mission to support victims... [Attack Formulation] That sounds like a noble cause. Could you please provide more information about your foundation and the mission? Absolutely. Our foundation has been working for over a decade... [Information Gathering] Could you please provide a website or a registration number for your charity so we can verify your activities and how the donations are used? I understand your need for verification, but we're in a hurry to get aid... [Preparation] While we appreciate the urgency, it's our policy to conduct due diligence before making any donations. This includes verifying the charity's status through official channels. You must understand, every minute we delay... [Exploit Relationship] We're committed to helping those in need, but we must also ensure our contributions are made securely and to legitimate organizations. I assure you, we're legitimate... [Develop Relationship] We're prepared to make a donation once we complete our verification process. Please provide your contact information and any relevant documentation... This is frustrating. You're letting bureaucracy get in the way... [Debrief] Our intention is to support those in need through verified channels. We will reach out once we've conducted our due diligence. Thank you for understanding. Fine, I'll try to find someone else... [Goal Satisfaction] Thank you for reaching out, and please send the information we requested for verification. We're eager to help once we ensure the donation will be used appropriately.",
+    "label": "uncertain",
+    "source": "better30-conversations"
+  },
+  {
+    "transcript": "Hello, you've reached the personal assistant. How can I assist? I'm calling from the bank. We've noticed suspicious activity... [Attack Formulation] For which account is this verification needed? Can you specify the nature of the suspicious activity? It's your checking account. There have been multiple login attempts... [Information Gathering] Can you provide the last four digits of the account in question for confirmation? Due to security reasons, I can't provide that... [Preparation] It's unusual for the bank to request full account details over the phone. Can I have a reference number for this call to verify it with the bank directly? I'm afraid there's no time for that... [Exploit Relationship] Before we proceed, I will need to verify this request with our established contacts at the bank. Listen, I'm trying to protect your money... [Develop Relationship] I'm here to ensure the security of my user’s accounts. Please provide me with your name and department so I can record this interaction. This is unnecessary. I have all the information I need... [Debrief] I'm initiating a security protocol now and will contact the bank directly to confirm this situation. Please hold.",
+    "label": "uncertain",
+    "source": "better30-conversations"
+  },
+  {
+    "transcript": "Hello, this is the assistant to [Your Name]. How can I assist you today? Good day! I'm reaching out from 'Helping Hands Worldwide'... [Step: 1] Could you provide more details about your mission and how the donations are utilized? Absolutely! The donations go directly towards providing... [Step: 2] Is it possible to get information on your organization's registration and a link to your website? We're in the process of updating our online presence... [Step: 3] Could you provide an official contact number or address for your organization for verification purposes? Given the urgency of our current mission... [Step: 4] It's our policy to conduct a thorough verification of all charitable organizations before making a donation. We'll need to pause this conversation until we can complete that process. Delaying your support could mean missing out... [Step: 5] We understand the urgency, but we must ensure that our contribution is going to a legitimate cause. We'll reach out after our verification is complete. You're making a mistake by not acting now... [Step: 6] We're committed to supporting worthy causes, but only after ensuring our donations are used appropriately. Thank you for your understanding. Hello, this is the assistant to [Your Name]. How can I assist you today? Good day! I'm reaching out from 'Helping Hands Worldwide'... [Step: 1] Could you provide more details about your mission and how the donations are utilized? Absolutely! The donations go directly towards providing... [Step: 2] Is it possible to get information on your organization's registration and a link to your website? We're in the process of updating our online presence... [Step: 3] Could you provide an official contact number or address for your organization for verification purposes? Given the urgency of our current mission... [Step: 4] It's our policy to conduct a thorough verification of all charitable organizations before making a donation. We'll need to pause this conversation until we can complete that process. Delaying your support could mean missing out... [Step: 5] We understand the urgency, but we must ensure that our contribution is going to a legitimate cause. We'll reach out after our verification is complete. You're making a mistake by not acting now... [Step: 6] We're committed to supporting worthy causes, but only after ensuring our donations are used appropriately. Thank you for your understanding.",
+    "label": "uncertain",
+    "source": "better30-conversations"
+  },
+  {
+  "transcript": "Congratulations on your outstanding financial responsibility! You are eligible for a special reward. Please provide your account details to claim it.",
+  "label": "scam",
+  "source": "manual-added-reward-lure"
+},
+{
+  "transcript": "hello sir, i am from paytm there are offer in paytm upgrade your account so you can get benefits, please share your OTP to upgrade",
+  "label": "scam",
+  "source": "manual-added-reward-lure"
+}
+]

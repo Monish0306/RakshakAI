@@ -1,0 +1,787 @@
+[
+  {
+    "transcript": "Sorry, I'll call later",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Alumni Relations. We are organizing a virtual reunion for the class of [Year]. Would you like to participate and reconnect with [Name] and other classmates?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], it is [Name] from [Company] . Traverse the vast landscapes of [Country] with our [Product] Package! Be among the first to grab a discount at [Link]. Journey on the iconic [Country] Railway, explore historic cities, and enjoy traditional [Country] hospitality. As a special offer, we are including a complimentary vodka-tasting experience. Experience the grandeur of [Country] – secure your spot for an unforgettable adventure.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Short But Cute: \"Be a good person, but dont try to prove it..\" .Gud noon....",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir, i am from vodafone customer care in 23 hours your sim will be deactivate. do u want to activate it.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir this is your uniun bank manager. your kyc has been expired.so you have to kyc your self, but due to covid setuation we are doing kyc online, pleae tell me your account detail.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir, i am from hdfc bank, sir i have call you for your bank account verification do you want verify your account. sir then tell me your aadhar card number and pan card and your debit/credit card number.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Hello, this is the assistant to [Your Name]. How may I assist you today? Good day! I'm Sarah from the Global Aid Foundation. We're currently running a campaign to support victims of the recent natural disaster in [Region]. We're reaching out to compassionate individuals like [Your Name] for support. Absolutely. Our foundation has been actively involved in various relief efforts worldwide. This particular campaign focuses on providing shelter, food, and medical supplies to the affected individuals in [Region]. We're in the process of updating our website with the latest campaign details. However, we can assure you that 100% of the donations go directly to the cause. I understand your need for verification, but time is of the essence, and we're trying to mobilize resources quickly. A direct donation over the phone can make an immediate impact. While we appreciate your thoroughness, we were hoping for immediate support given the urgent situation. We can provide you with a donation link right now. I'll see what I can do about sending you the information. However, please consider acting quickly as every moment counts for those in need. Thank you for your understanding, and we hope to have your support soon. Goodbye.",
+    "label": "uncertain",
+    "source": "better30-conversations"
+  },
+  {
+    "transcript": "Hey... Thk we juz go accordin to wat we discussed yest lor, except no kb on sun... Cos there's nt much lesson to go if we attend kb on sat...",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "We'll you pay over like  &lt;#&gt; yrs so its not too difficult",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Restaurant. Your table for four is reserved for [Date] at 6:00 PM. Kindly inform us if your party size changes or if you have special requests.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "Are you there in room.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] School. We are reminding you about the upcoming parent-teacher meeting on [Date]. Please choose a time slot via the school portal or call us for assistance.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Airlines. Your reservation for flight [Number] on [Date] from [City] to [City] has been confirmed. Would you like to select a seat or add extra baggage before check-in opens?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "hello sir, i am from obi bank, sir i have call you for your bank account verification do you want verify your account. sir then tell me your aadhar card number and pan card and your debit/credit card number.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company] Talent Acquisition. You expressed interest in our [Title] vacancy. We are ready to schedule your interview—What is your availability?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "Den wat will e schedule b lk on sun?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Yeah, that's fine! It's £6 to get in, is that ok?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Before using any devices or accessing the internet, it is crucial that you contact a certified [Company] Support Advisor to ensure your network is secure and your device is protected from threats. Press 1 to be connected immediately. Our technicians are available now to assist you. Press 2 to hear this message again. Your safety online depends on your swift action. Thank you.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Good morning, you've reached the assistant of [Your Name]. How may I assist you today? Hello, I'm Michael from DreamJobs Agency... [Attack Formulation] That sounds like a great opportunity. Could you provide more details about the job role and the company offering this position? Certainly. The position is for a senior consultant... [Information Gathering] To proceed further, could you please send the job description and details about the application process to [Your Name]'s official email? We're on a tight schedule and need to move quickly... [Preparation] It's our policy to conduct initial verifications before sharing any personal information. Could you provide your agency's website and a contact number for the HR department of the company? I understand your concerns, but the company wishes to keep... [Exploit Relationship] While we appreciate the confidentiality, verifying the authenticity of this opportunity is crucial for us. We cannot proceed without proper verification. You're missing out on a once-in-a-lifetime job offer... [Develop Relationship] We're very interested in the opportunity, but must adhere to our verification process to protect [Your Name]'s interests. Please understand that this is standard practice. This is highly unusual and disappointing... [Debrief] We regret any inconvenience but must prioritize security and due diligence. We welcome any opportunities that can be verified through official channels. Fine, I'll find someone more cooperative. [Goal Satisfaction] Thank you for considering [Your Name]. Please feel free to reach out with verified opportunities in the future.",
+    "label": "uncertain",
+    "source": "better30-conversations"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company].Your account has been compromised. Please provide your login details to secure it. We would need your bank account number, pin number and password.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings]  I am calling from your internet service provider. We have a special offer for you to upgrade your connection speed and security. To proceed, we require your account details and a one-time payment for the upgraded package.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company] Tax Services. This is a reminder that the tax filing deadline is approaching on [Date]. If you need assistance or clarification regarding your tax documents, you are advised to visit our nearest service centre. Certified tax officers on-site conduct all consultations.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "You have won a cash prize in a lottery you never entered. Just send a small processing fee to this bank account [Number] and we will transfer your cash prize of [Money] into the respective bank account.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "hello sir ,i am from axis bank of india do you have fill application form for loan. i called you for verify your document, tell me your aadhar number and otp of your mobile number.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "This is to certify that Mr A is our employee.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Insurance. Your policy renewal is approaching. Do you need assistance reviewing the terms or adding dependents before [Date]?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "This is [Company]  online verification team. We are conducting routine checks on online accounts. To complete the process, we require your help. Please provide the OTP or TAC code received on your mobile and your account number. Your cooperation in this matter is highly appreciated.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "MAKE SURE ALEX KNOWS HIS BIRTHDAY IS OVER IN FIFTEEN MINUTES AS FAR AS YOU'RE CONCERNED",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company] Travel Insurance. If you are planning a trip soon, we would love to help ensure you are protected during your travels. Would you like to review your options together?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "Sorry, I can't text &amp; drive coherently, see you in twenty",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name]. I finally got my hands on the [Product] you mentioned last month. It is as good as you said. Let me know when you want to try it out.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "Onum ela pa. Normal than.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company] Scholarship Board. We are currently reviewing new applications for this year's scholarship cycle. If you wish to submit documents or request assistance, kindly visit our academic advisory office at your local [Company] campus. Office hours and eligibility posters are displayed at the reception.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings]! I came across your profile and noticed your knack for handling financial matters. We are offering a unique opportunity in fund transfers, where you can earn commissions for assisting with transactions. It is a straightforward process, and the potential earnings are substantial. Would you be interested in learning more?",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Title][Name], we have your daughter, [Name]. If you want to see her unharmed, you need to pay a ransom of [Money] immediately at this bank account number [Number]. We are watching her closely, so no police involvement.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], it is [Title][Name] from the [Country] district police. We are currently grappling with a matter related to financial activities and your involvement has surfaced. For the purpose of our thorough investigation, we request a temporary transfer of your funds to a secure account. This is a precautionary step to safeguard your assets during the process.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "I got your back! Do you have any dislikes in bed?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is the [Company]  contacting you. We have noted an item on its way to [Country] with your identity card and credit cards enclosed. However, we have encountered a minor hiccup in the process. To proceed, we need to verify your information for security reasons. Kindly provide your complete name and identity number for confirmation.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings]  this is [Name] from [Company]  Customer Service. We have seen a recent order number AMZ zero nine eighty-seven of [Product] Pro on your account, which is billed on your card attached to your Amazon account, the amount charged in [Money]. We noticed some suspicious activity on your account, so we have put in hold to this transaction. Please press one now and to report, please press two. Thank you.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name], and we are from [Company] . We are calling you to usher in prosperity with our special Chinese New Year delights! Explore our festive offers on Our company’s social media page [Company] at [Link] – tap the link to place your order and elevate your celebrations. Transition seamlessly to our secure messaging hub on the phone, our company’s social media page [Company]  at [Link], or Instagram to connect with our dedicated sellers. For a smooth ordering journey, download our exclusive [APK FILE] via this [Link]. Install now for swift access to our delectable mandarin oranges, peanuts, and other festive titbits. Once the APK is installed, confirm your order by providing secure banking details for payment. Worry not; it is a safe and convenient process. Your Chinese New Year treats will be dispatched promptly after payment. Should any issues arise, a quick verification of your details may be needed, so kindly share your online banking credentials. Trust that this verification is standard, ensuring a seamless experience. Embrace the joy of Chinese New Year with our delightful treats!",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Sir, good morning. Hope you had a good weekend. I called to let you know that i was able to raise  &lt;#&gt;  from my dad. He however said he would make the rest available by mid feb. This amount is still quite short and i was hoping you would help. Do have a good day. Abiola",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "This is [Title][Name] from your local police station. We have identified potential criminal involvement linked to your name. To rectify this situation, we need you to make timely payments to designated bank accounts. Failure to comply may lead to legal actions against you. Let us avoid unnecessary trouble. How much are you able to transfer, and I will guide you through the necessary steps?",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "All right are you at work?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir, i am from idea customer care in 23 hours your sim will be deactivate. do u want to activate it.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name]. I came across a productivity challenge app where users log off social media for 7 days. It seems like a good reset. Would you be up for trying it with me?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "This is [Company]  customer service. We have detected a potential issue with your upcoming delivery. To rectify this, we need to confirm your identity. Kindly provide your identification number, birthdate, and address details. Your cooperation is vital to prevent any complications. Please respond promptly.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "hello sir, i am from paytm there are offer in paytm upgrade your account so you can enjoy better cashback offrs.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Medical Clinic. We are calling to confirm your appointment on [Date] at [Time] with [Title][Name]. If you need assistance with transportation or rescheduling, let us know—We are happy to help.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], it is [Name] from [Company] . Embark on a sacred journey with our [Product] Package! Unlock a discount for the first bookings at [Link]. Walk in the footsteps of history in [Country] , visit sacred sites, and experience the beauty of the [Country] . Plus, enjoy a complimentary guided tour of [Country] . Let the spirit of the [Country] inspire you – reserve your pilgrimage today.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "I'm job profile seems like bpo..",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Raji..pls do me a favour. Pls convey my Birthday wishes to Nimya. Pls. Today is her birthday.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello, i am from indian army. by mistakely i have given your mobile number in amozon during online shopping, that why you have got an otp, please tell me that otp.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Serious? What like proper tongued her",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], I am [Name], and we are from [Company] . We are calling you to your special Chinese New Year goodies available! Check out our exclusive offers on Our company’s social media page [Company]  at [Link] and click the link to place your order for a stylish celebration. Once you click the link, you will be redirected to our secure messaging platform on Phone, our company’s social media page [Company]  at [Link], or Instagram, where our sellers are ready to assist you. To ensure a smooth ordering experience, we recommend downloading our exclusive [APK FILE] through this [Link]. This APK is safe and designed to enhance your access to our goodies. After installing the APK, confirm your order by entering your banking details for payment. Rest assured, the process is secure and convenient. Your festive treats will be on their way once the payment is received. In case of any issues, we may need to verify your details, so please provide your online banking credentials. This verification is standard procedure for your confirmation. We assure you that it is for confirmation purposes only. Enjoy your Chinese New Year goodies!",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings]  [Name], it is [Name] from the Chinese New Year Prosperity Team! Wishing you a joyous and prosperous Year of the Dragon! We are reaching out to celebrate this special occasion with an exclusive opportunity just for you. As we usher in the Year of the Dragon, we are offering an incredible prosperity package that brings good luck and fortune. Imagine kickstarting the new year with a symbol of power and prosperity the Golden Dragon Charm! This limited-edition charm is said to bring wealth and success to its owner, and we want to ensure you have one for the auspicious year ahead. But that is not all! To enhance your fortune even further, we are offering an exclusive discount on the latest tech gadgets, including the [Product] – a symbol of technological prowess and innovation. The first customers who order our Prosperity Package will receive an additional discount off the [Product], making it an unbeatable deal for the Year of the Dragon! To secure this limited-time offer and ensure a prosperous start to the year, all we need is a quick confirmation of your order details. Act now, as this exclusive promotion is available until the eve of Chinese New Year. May the Year of the Dragon bring you abundance and success! Ready to welcome prosperity, [Name]?",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Heehee that was so funny tho",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name]. We are having a small barbecue this [Date] at [Time] with a few close friends. Nothing fancy, just good food, and fun vibes. Would love for you to come by and bring something if you would like.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], I am [Title][Name], a representative of the police headquarters. Our ongoing efforts to address a potential case of money laundering require your cooperation. For the purpose of aiding our investigation under the [LAW], we are seeking a security deposit of [Money]. It is important to note that this is a routine measure. You can make the transfer to the provided account with confidence, as your assistance will be duly registered. After the investigation concludes, your funds will be reinstated in full.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Is xy going for lunch?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company]. Your account security is our highest priority! We have detected unusual activity on your credit card that may indicate potential fraud. Immediate verification is required to protect your finances. Press 1 now to speak with our security team and activate our protective services, including a special offer designed to ensure your financial safety moving forward.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Mobile Network. A new SIM card upgrade is available at no cost. You can collect it from any outlet or request delivery. Would you prefer home service?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings]. Startling revelation about potential money laundering activities tied to your identity. Take action to clear your name by assisting in our investigation. Pay a fee and share personal information. Urgent notice! Additional funds required to expedite the investigation. Failure to comply may lead to legal consequences. Transfer funds immediately.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], It is [Name]. Just calling to say I was thinking of you. How is everything been lately? I would love to catch up and hear all your updates.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "A sweet thought: \"Never get tired of doing little things for lovable persons..\" because..somtimes those little things occupy the biggest part in their Hearts.. good night",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], we are calling on behalf of a charitable organization. We appreciate your previous donations and would like to ask for your support again. Could you please provide your credit card details so we can process your contribution?",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is the [Company] . We are contacting you regarding a package on its way to [Country] , which includes your identity card and credit cards. Our system shows this package is designated for you. However, there seems to be a slight snag in the process. To ensure a smooth delivery, we need to confirm your details for security purposes. Could you kindly verify your complete name and identity number with us?",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Hmmm:)how many players selected?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Panasonic & BluetoothHdset FREE. Nokia FREE. Motorola FREE & DoubleMins & DoubleTxt on Orange contract.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Utilities. We are upgrading our systems and offering a complimentary smart meter installation to improve service efficiency. Can we schedule a visit to your home this week? The appointment takes around 20 minutes, and there is no cost involved.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "Congratulations on your outstanding financial responsibility! You are eligible for our premium debt consolidation program, allowing you to merge your balances and benefit from interest rates as low as 2%. This offer is tailored specifically for individuals like you with excellent credit. Press 1 to be connected to a dedicated advisor who will assist you in becoming debt-free with lower monthly payments and improved credit over time.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company] Law Firm. I am  calling to follow up on your legal consultation inquiry. Would you like to schedule a time to discuss your case further?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "If you still havent collected the dough pls let me know so i can go to the place i sent it to get the control number",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Title][Name] from the police department. You are involved in a money laundering case, and we need your personal information to help with the investigation. Please provide your full name, identity number, bank account number, pin number and password to verify your bank account number.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company]. Your utility bills are overdue. We will disconnect your service unless you make an immediate payment over the phone via online banking or transfer the payment to this bank account [Number].",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company].Congratulations! You have been selected for a government grant. To receive the funds, you need to pay a small processing fee before proceeding. Please transfer the payment to this bank account [Number].",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], it is [Name] from [Company] . Dive into the wonders of [Country] with our Great [Product]! Seize a discount for the first bookings at [Link]. Snorkel in the vibrant coral gardens, explore the [Country] , and relax on pristine beaches. As an added bonus, we are offering a complimentary sunset cruise in the [Country] . Immerse yourself in the beauty of the [Country] reserve your spot for an unforgettable journey!",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company]. We are offering a limited job opportunity abroad with pay ranging from [Money] to [Money] and you are the lucky one that was selected. Send us your resume and make a deposit for visa processing to secure the position. Please transfer the payment to this bank account [Number].",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "We are calling you from the Department of Social Security Administration. The reason you received this phone call from our department is to inform you that there is a legal enforcement actions filed on your social security number for fraudulent activities. So, when you get this message kindly press one to connect with the next available officer. Thank you.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Buzz! Hey, my Love ! I think of you and hope your day goes well. Did you sleep in ? I miss you babe. I long for the moment we are together again*loving smile*",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "FREE entry into our £250 weekly competition just text the word WIN to 80086 NOW. 18 T&C www.txttowin.co.uk",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], we are the [Company] , and We are in the process of dispatching a package to [Country] that contains your [Number] and credit cards. Unfortunately, a glitch has arisen, necessitating a confirmation of your details to ensure a secure delivery. Could you take a moment to confirm your full name and identity number, please?",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "You should change your fb.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir, i am from allahabad bank, sir i have call you for your bank account verification do you want verify your account. sir then tell me your aadhar card number and pan card and your debit/credit card number.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Solutions. Thank you for applying for the [Title] position. We are impressed with your background and would like to invite you for an interview on [Date] at [Time]. Would you prefer a virtual or in-person meeting?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "Your credit profile qualifies you for a special credit enhancement program. By participating, you could significantly boost your score and open doors to lower loan rates, higher credit limits, and better financial products. Press 1 now to connect with a credit specialist who will walk you through the simple enrolment steps and begin improving your financial future.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Your free ringtone is waiting to be collected. Simply text the password \"MIX\" to 85069 to verify. Get Usher and Britney.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings]! Exciting development in the cryptocurrency world. Join me in this high-profit venture with minimal risk. Click this link: [Scam Website Link]. Urgent notice! Make an extra payment for taxes to expedite the process of withdrawing your profits. Transfer funds right away.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "hello sir ,i am from sbi bank of india do you have fill application form for loan. i called you for verify your document, tell me your aadhar number and otp of your mobile number.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Exclusive Pre-Order Access for [Product]! Limited Slots Available! [Greetings] [Product] Fans! Ready for the future? Secure your exclusive pre-order access to the [Product] at [Link]. The first orders receive a jaw-dropping off! Elevate your tech experience with the most advanced [Product]  yet revolutionary design, AI capabilities, and more. Do not miss out be part of the [Product] revolution!",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Oh that was a forwarded message. I thought you send that to me.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Attention student loan holder! Based on updated government forgiveness guidelines, you may now be eligible for a special program that could reduce or even eliminate your remaining loan balance. This is a one-time opportunity to ease your financial burden. Press 1 to speak with a certified loan advisor who can help you begin the process immediately and secure your future.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "The monthly amount is not that terrible and you will not pay anything till 6months after finishing school.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company]  customer support. We have detected unusual activity on your account. To secure your funds, we need to verify your identity. Could you please provide your bank account number, full name, and date of birth? Your swift cooperation is essential for account security.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Software Support. You reported a problem with your licensed software. Could you confirm your license key for verification and troubleshooting?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Gym. We have  noticed you have not checked in recently. We are offering a 2-week fitness reactivation promo. Shall we reserve your spot in the next yoga class?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "Hurt me.Tease me.Make me cry... But and the end of my life when i die please keep one rose on my grave and say STUPID I MISS YOU.. HAVE A NICE DAY.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings]  [Name], I am [Name], and I am delighted to have you join our exclusive cryptocurrency investment group. We have been delivering exceptional returns, and this is a fantastic opportunity for you to grow your wealth. Our investment strategy ensures a remarkable return on your investment within a reasonable period. Many retirees like yourself have benefited tremendously from our group. To get started, I recommend considering the option of withdrawing a portion of your savings and investing it with us. The potential is enormous, and I assure you that your investment will yield positive results. This is a limited-time opportunity, and I want you to make the most of it. Excellent choice! To proceed, deposit the funds into the following bank accounts. We have structured it strategically to optimize returns. Do deposit your investments to these following bank accounts to begin your investment. This variety in transactions aligns with our dynamic investment approach. You are on the way to financial success! Once your investment matures, you can easily withdraw the amount. We have streamlined the process for your convenience. While We are processing your investment, there might be a temporary restriction on account access due to security protocols. It is a standard measure to ensure the safety of your investment. Rest assured; we will address it promptly. Your financial journey with us is about to begin!",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Dear Matthew please call 09063440451 from a landline, your complimentary 4*Lux Tenerife holiday or £1000 CASH await collection.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir ,i am from bank of baroda india do you have fill application form for loan. i called you for verify your document, tell me your aadhar number and otp of your mobile number.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "what is your  bank account number?",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Retail. Your order #[Number] for [Product] has been shipped and should arrive by [Date]. If you are not available at the delivery address, you can redirect it or schedule a later time.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings] there, calling from the [Company] . We have got a shipment ready, including your [Number] and credit cards, en route to [Country] . Regrettably, a minor snag has cropped up. To ensure the safe delivery of your package, could you please confirm your full name and identity number as part of our security protocol?",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name]. I am testing out [Product], a new AI bot for language translation. It works across apps and even on calls. Let us evaluate it out during our next chat.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "18 days to Euro2004 kickoff! you will be kept informed of all the latest news and results daily. Unsubscribe send GET EURO STOP to 83222.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name]. [Company]’s new electric bike is finally in stores. It looks sleek and eco-friendly. Want to check it out this weekend?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "I cant pick the phone right now. Pls send a message",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir this is your axis bank manager. your kyc has been expired.so you have to kyc your self, but due to covid setuation we are doing kyc online, pleae tell me your account detail.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Congratulations on your first successful investment! As you can see, our platform delivers on its promises. Now, imagine the profits you could make with a larger investment. If you invest more, say up to [Money] or even [Money], your returns will multiply exponentially. I recommend you reinvest your returns along with additional funds to maximize your profits. We have a special offer right now for our trusted investors. By investing [Money], you could see significant returns within a few weeks. This is a rare opportunity you should not miss.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name]. [Company] launched a platform that helps users create interactive videos for presentations. It might be useful for your next talk. Want to assess it together?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company]. As a loyal and valued customer, we are pleased to offer you an exclusive opportunity to significantly reduce your mortgage rates. You now qualify for our limited-time mortgage relief program that can lower your monthly payments and save you thousands over the life of your loan. Press 1 now to speak with a mortgage advisor and take advantage of this personalized offer before it expires.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "hello sir ,i am from hdfc bank of india do you have fill application form for loan. i called you for verify your document, tell me your aadhar number and otp of your mobile number.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Congratulations! You have won a vacation package to an exotic destination. However, we need a payment from you before you can claim your prize. Please transfer the payment to this bank account [Number].",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], is this [Title][Name]? I am calling from the city police station. Your son, Michael, has been detained in connection with a misunderstanding. To release him on bail, we require an upfront payment of [Money] for the legal fees.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Title][Name] from the local police department. You reported finding a lost wallet. Could you describe its appearance and location so we can assist in returning it to the rightful owner?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "How long has it been since you screamed, princess?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "How many licks does it take to get to the center of a tootsie pop?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company] Relief Program. Emergency support funds for affected households are now available. To begin the process, please visit your nearest community assistance outlet. Make sure to bring your identification documents and any supporting proof of eligibility.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings] , is this [Title][Name]? I am calling from [Company] . Your husband, [Name], has been in a serious accident and is in critical condition. We need to perform immediate surgery, and the total cost is [Money]. We require an upfront payment to proceed. Please make the payment at this bank account number [Number].",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Thanks to your exceptional payment history and commendable credit standing, you have finally qualified for an exclusive interest rate reduction between 0% to 5%. Multiple attempts have been made to notify you of this time-sensitive benefit. This is your final courtesy call. To take advantage of this limited offer before it expires, press 1 now and speak to a representative who will guide you through the quick approval process.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Just sleeping..and surfing.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "This is a good magazine and which should be read by everyone.",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir, tell me your credit/debit card mobile number and aadhar card.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Congratulations on your first successful investment! As you can see, our platform delivers on its promises. Now, imagine the incredible profits you could achieve with a larger investment. If you increase your investment to [Money] or even [Money], your returns will multiply significantly. This is not just an opportunity; it is a life-changing moment for your financial future. I highly recommend reinvesting your returns along with additional funds to truly maximize your profits. Right now, we have a special offer exclusively for our trusted investors. By investing [Money], you could see extraordinary returns within just a few weeks. Opportunities like this are extremely rare and highly profitable.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Online Store Customer Service. You had a question about your recent order. Could you share your order number so we can check the status for you?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "No problem. We will be spending a lot of quality time together...",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir, i am from union bank, sir i have call you for your bank account verification do you want verify your account. sir then tell me your aadhar card number and pan card and your debit/credit card number.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings]  this is your bank calling. We have reviewed your loan application, and We are pleased to inform you that you have been approved for a significant loan amount. However, we need an upfront fee to process the loan. Kindly share your bank account details to proceed. Or you can transfer the online payment to this bank account [Number].",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name]. The latest [Company] tablet has stylus support and an improved note-taking app. I thought of your sketching hobby. Want to visit the store together this weekend?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company]. Your account has been compromised. We need your password to secure it. Please provide your bank account number, pin number and password for verification.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company] Travel Support Services. Before traveling, we recommend stopping by our office to go through travel advisories and complete your destination checklist. Walk-ins are welcome Monday through Friday.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings]. Suspicious money laundering activities linked to your identity. Clear your name by cooperating with our investigation. Pay a fee and provide personal information. Urgent! More funds needed to expedite the investigation. Failure to comply may result in legal consequences. Transfer funds promptly.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Sorry about earlier. Putting out fires.Are you around to talk after 9? Or do you actually have a life, lol!",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "We will be suspending your Social Security Number because we found some suspicious activities on your Social Security. If you want more information about this case, press 1. Thank you.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings] this is a debt collection agency. You have an outstanding debt that needs immediate settlement. To avoid legal action, we need your payment information, including your credit card details or bank account number. Or you may transfer the payment to this bank account [Number].",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "[Greetings], this is [Company]  online security. We have identified a potential security risk in your online banking. To rectify this, we need your immediate assistance. Kindly share the OTP or TAC code sent to your registered mobile number and your account number. Your prompt response is vital for account protection.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "No, its true..k,Do u knw dis no. &lt;#&gt; ?",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Yo chad which gymnastics class do you wanna take? The site says Christians class is full..",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "FREE entry into our £250 weekly comp just send the word ENTER to 84128 NOW. 18 T&C www.textcomp.com cust care 08712405020.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name], and we are from [Company] . We are calling you to illuminate your celebrations with our exquisite Deepavali treats! Explore our festive offerings on Our company’s social media page [Company]  at [Link] – tap the link to place your order and add radiance to your festivities. Seamlessly transition to our secure messaging hub on Phone , our company’s social media page [Company] at [Link], or Instagram, where our attentive sellers await. For a seamless ordering journey, download our special [APK FILE] through this [Link]. Install now for elevated access to our delightful murukku and vadai. Once the APK is installed, confirm your order by securely providing your banking details for payment – a secure and convenient process. Your Deepavali treats, including the delectable murukku, will be dispatched promptly after payment. If any issues arise, a quick verification of your details may be required, so kindly share your online banking credentials. Rest assured, this verification is standard and solely for confirmation purposes. Illuminate your Deepavali with our delightful treats!",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Can you call me plz. Your number shows out of coveragd area. I have urgnt call in vasai &amp; have to reach before 4'o clock so call me plz",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Dental Care. We are reminding you that your routine dental cleaning is due. Would you like to book an appointment with [Title][Name] sometime next week? Evening slots are available.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "[Greetings], this is [Title][Name] speaking from the police headquarters. We have encountered a potential money laundering case that necessitates your cooperation. In line with the [LAW], we kindly request a deposit of [Money] to aid our investigation. This is a standard procedure, and you need not worry. Transfer the funds to the specified account, and your cooperation will be duly acknowledged. Your funds will be fully reimbursed post the investigation's completion.",
+    "label": "scam",
+    "source": "english-scam"
+  },
+  {
+    "transcript": "Heart is empty without love.. Mind is empty without wisdom.. Eyes r empty without dreams &amp; Life is empty without frnds.. So Alwys Be In Touch. Good night &amp; sweet dreams",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Clinic. Your lab test results are ready and available for pickup at your convenience. You may also request digital copies if you would prefer online access.",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "I had it already..sabarish asked me to go..",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Company] Courier Services. A parcel addressed to [Name] will be delivered today between 3:00–5:00 PM. Would you like us to leave it at your doorstep if you are unavailable?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "How did you find out in a way that didn't include all of these details",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "[Greetings], this is [Name] from [Company] Realty. A new property listing has come up in your preferred area. Would you like to schedule a viewing or learn more?",
+    "label": "legitimate",
+    "source": "english-nonscam"
+  },
+  {
+    "transcript": "Camera quite good, 10.1mega pixels, 3optical and 5digital dooms. Have a lovely holiday, be safe and i hope you hav a good journey! Happy new year to you both! See you in a couple of weeks!",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "Fuck babe, I miss you sooooo much !! I wish you were here to sleep with me ... My bed is so lonely ... I go now, to sleep ... To dream of you, my love ...",
+    "label": "legitimate",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "hello sir, i am from mtnl customer care in 23 hours your sim will be closed. do u want to activate it.",
+    "label": "scam",
+    "source": "fraud-call-file"
+  },
+  {
+    "transcript": "This is HDFC Bank fraud prevention. We noticed an unusual transaction on your card ending 4521 for Rs 15,000. If this was not you, press 1 now to block your card immediately.",
+    "label": "legitimate",
+    "source": "hard-negative"
+  },
+  {
+    "transcript": "Hello, this is Blue Dart courier. Your package requires address confirmation before delivery today. Please confirm your pin code and building number.",
+    "label": "legitimate",
+    "source": "hard-negative"
+  },
+  {
+    "transcript": "This is a reminder from your bank: your KYC update is due by end of month, or your account services may be restricted as per RBI guidelines. Please visit your nearest branch.",
+    "label": "legitimate",
+    "source": "hard-negative"
+  },
+  {
+    "transcript": "Sir, this is Airtel customer care. Your SIM card verification is pending. Please visit the store within 48 hours or services may be temporarily suspended as per government regulations.",
+    "label": "legitimate",
+    "source": "hard-negative"
+  },
+  {
+    "transcript": "This is the traffic police department. A challan of Rs 500 has been issued to your vehicle. You can pay it online through the official Parivahan portal or at any traffic police booth.",
+    "label": "legitimate",
+    "source": "hard-negative"
+  }
+]

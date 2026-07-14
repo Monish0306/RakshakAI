@@ -1,0 +1,7 @@
+[
+  { "transcript": "This is HDFC Bank fraud prevention. We noticed an unusual transaction on your card ending 4521 for Rs 15,000. If this was not you, press 1 now to block your card immediately.", "label": "legitimate", "source": "hard-negative" },
+  { "transcript": "Hello, this is Blue Dart courier. Your package requires address confirmation before delivery today. Please confirm your pin code and building number.", "label": "legitimate", "source": "hard-negative" },
+  { "transcript": "This is a reminder from your bank: your KYC update is due by end of month, or your account services may be restricted as per RBI guidelines. Please visit your nearest branch.", "label": "legitimate", "source": "hard-negative" },
+  { "transcript": "Sir, this is Airtel customer care. Your SIM card verification is pending. Please visit the store within 48 hours or services may be temporarily suspended as per government regulations.", "label": "legitimate", "source": "hard-negative" },
+  { "transcript": "This is the traffic police department. A challan of Rs 500 has been issued to your vehicle. You can pay it online through the official Parivahan portal or at any traffic police booth.", "label": "legitimate", "source": "hard-negative" }
+]

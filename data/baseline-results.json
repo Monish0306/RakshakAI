@@ -1,0 +1,956 @@
+{
+  "computedAt": "2026-07-12T17:21:02.487Z",
+  "method": "naive keyword matching",
+  "totalCases": 157,
+  "precision": 0.9259259259259259,
+  "recall": 0.3246753246753247,
+  "f1": 0.48076923076923084,
+  "truePositives": 25,
+  "falsePositives": 2,
+  "falseNegatives": 52,
+  "trueNegatives": 78,
+  "results": [
+    {
+      "transcript": "Sorry, I'll call later",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Alumni Relations. We are organizing a virtual reu",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], it is [Name] from [Company] . Traverse the vast landscapes of [Coun",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Short But Cute: \"Be a good person, but dont try to prove it..\" .Gud noon....",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir, i am from vodafone customer care in 23 hours your sim will be deactiv",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "hello sir this is your uniun bank manager. your kyc has been expired.so you have",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "hello sir, i am from hdfc bank, sir i have call you for your bank account verifi",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Hello, this is the assistant to [Your Name]. How may I assist you today? Good da",
+      "label": "uncertain",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Hey... Thk we juz go accordin to wat we discussed yest lor, except no kb on sun.",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "We'll you pay over like  &lt;#&gt; yrs so its not too difficult",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Restaurant. Your table for four is reserved for [",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Are you there in room.",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] School. We are reminding you about the upcoming p",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Airlines. Your reservation for flight [Number] on",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir, i am from obi bank, sir i have call you for your bank account verific",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company] Talent Acquisition. You expressed int",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Den wat will e schedule b lk on sun?",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Yeah, that's fine! It's £6 to get in, is that ok?",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Before using any devices or accessing the internet, it is crucial that you conta",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Good morning, you've reached the assistant of [Your Name]. How may I assist you ",
+      "label": "uncertain",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company].Your account has been compromised. Pl",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings]  I am calling from your internet service provider. We have a special",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company] Tax Services. This is a reminder that",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "You have won a cash prize in a lottery you never entered. Just send a small proc",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir ,i am from axis bank of india do you have fill application form for lo",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "This is to certify that Mr A is our employee.",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Insurance. Your policy renewal is approaching. Do",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "This is [Company]  online verification team. We are conducting routine checks on",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "MAKE SURE ALEX KNOWS HIS BIRTHDAY IS OVER IN FIFTEEN MINUTES AS FAR AS YOU'RE CO",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company] Travel Insurance. If you are planning",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Sorry, I can't text &amp; drive coherently, see you in twenty",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name]. I finally got my hands on the [Product] you mention",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Onum ela pa. Normal than.",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company] Scholarship Board. We are currently r",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings]! I came across your profile and noticed your knack for handling fina",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Title][Name], we have your daughter, [Name]. If you want to see her unharmed, y",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], it is [Title][Name] from the [Country] district police. We are curr",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "I got your back! Do you have any dislikes in bed?",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is the [Company]  contacting you. We have noted an item on its",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings]  this is [Name] from [Company]  Customer Service. We have seen a rec",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name], and we are from [Company] . We are calling you to u",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Sir, good morning. Hope you had a good weekend. I called to let you know that i ",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "This is [Title][Name] from your local police station. We have identified potenti",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "All right are you at work?",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir, i am from idea customer care in 23 hours your sim will be deactivate.",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name]. I came across a productivity challenge app where us",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "This is [Company]  customer service. We have detected a potential issue with you",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "hello sir, i am from paytm there are offer in paytm upgrade your account so you ",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Medical Clinic. We are calling to confirm your ap",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], it is [Name] from [Company] . Embark on a sacred journey with our [",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "I'm job profile seems like bpo..",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Raji..pls do me a favour. Pls convey my Birthday wishes to Nimya. Pls. Today is ",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello, i am from indian army. by mistakely i have given your mobile number in am",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Serious? What like proper tongued her",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], I am [Name], and we are from [Company] . We are calling you to your",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings]  [Name], it is [Name] from the Chinese New Year Prosperity Team! Wis",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Heehee that was so funny tho",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name]. We are having a small barbecue this [Date] at [Time",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], I am [Title][Name], a representative of the police headquarters. Ou",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Is xy going for lunch?",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company]. Your account security is our highest",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Mobile Network. A new SIM card upgrade is availab",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings]. Startling revelation about potential money laundering activities ti",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], It is [Name]. Just calling to say I was thinking of you. How is eve",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "A sweet thought: \"Never get tired of doing little things for lovable persons..\" ",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], we are calling on behalf of a charitable organization. We appreciat",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is the [Company] . We are contacting you regarding a package o",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Hmmm:)how many players selected?",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Panasonic & BluetoothHdset FREE. Nokia FREE. Motorola FREE & DoubleMins & Double",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Utilities. We are upgrading our systems and offer",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Congratulations on your outstanding financial responsibility! You are eligible f",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company] Law Firm. I am  calling to follow up ",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "If you still havent collected the dough pls let me know so i can go to the place",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Title][Name] from the police department. You are involved ",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company]. Your utility bills are overdue. We w",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company].Congratulations! You have been select",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], it is [Name] from [Company] . Dive into the wonders of [Country] wi",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company]. We are offering a limited job opport",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "We are calling you from the Department of Social Security Administration. The re",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Buzz! Hey, my Love ! I think of you and hope your day goes well. Did you sleep i",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "FREE entry into our £250 weekly competition just text the word WIN to 80086 NOW.",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], we are the [Company] , and We are in the process of dispatching a p",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "You should change your fb.",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir, i am from allahabad bank, sir i have call you for your bank account v",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Solutions. Thank you for applying for the [Title]",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Your credit profile qualifies you for a special credit enhancement program. By p",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Your free ringtone is waiting to be collected. Simply text the password \"MIX\" to",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings]! Exciting development in the cryptocurrency world. Join me in this h",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir ,i am from sbi bank of india do you have fill application form for loa",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Exclusive Pre-Order Access for [Product]! Limited Slots Available! [Greetings] [",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Oh that was a forwarded message. I thought you send that to me.",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Attention student loan holder! Based on updated government forgiveness guideline",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "The monthly amount is not that terrible and you will not pay anything till 6mont",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company]  customer support. We have detected unusual activ",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Software Support. You reported a problem with you",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Gym. We have  noticed you have not checked in rec",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Hurt me.Tease me.Make me cry... But and the end of my life when i die please kee",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings]  [Name], I am [Name], and I am delighted to have you join our exclus",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Dear Matthew please call 09063440451 from a landline, your complimentary 4*Lux T",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "hello sir ,i am from bank of baroda india do you have fill application form for ",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "what is your  bank account number?",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Retail. Your order #[Number] for [Product] has be",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings] there, calling from the [Company] . We have got a shipment ready, in",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name]. I am testing out [Product], a new AI bot for langua",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "18 days to Euro2004 kickoff! you will be kept informed of all the latest news an",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name]. [Company]’s new electric bike is finally in stores.",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "I cant pick the phone right now. Pls send a message",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir this is your axis bank manager. your kyc has been expired.so you have ",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Congratulations on your first successful investment! As you can see, our platfor",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name]. [Company] launched a platform that helps users crea",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company]. As a loyal and valued customer, we a",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "hello sir ,i am from hdfc bank of india do you have fill application form for lo",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Congratulations! You have won a vacation package to an exotic destination. Howev",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], is this [Title][Name]? I am calling from the city police station. Y",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Title][Name] from the local police department. You reporte",
+      "label": "legitimate",
+      "verdict": "HIGH_RISK",
+      "isCorrect": false
+    },
+    {
+      "transcript": "How long has it been since you screamed, princess?",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "How many licks does it take to get to the center of a tootsie pop?",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company] Relief Program. Emergency support fun",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings] , is this [Title][Name]? I am calling from [Company] . Your husband,",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Thanks to your exceptional payment history and commendable credit standing, you ",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Just sleeping..and surfing.",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "This is a good magazine and which should be read by everyone.",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir, tell me your credit/debit card mobile number and aadhar card.",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Congratulations on your first successful investment! As you can see, our platfor",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Online Store Customer Service. You had a question",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "No problem. We will be spending a lot of quality time together...",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir, i am from union bank, sir i have call you for your bank account verif",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings]  this is your bank calling. We have reviewed your loan application, ",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name]. The latest [Company] tablet has stylus support and ",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company]. Your account has been compromised. W",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company] Travel Support Services. Before trave",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings]. Suspicious money laundering activities linked to your identity. Cle",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Sorry about earlier. Putting out fires.Are you around to talk after 9? Or do you",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "We will be suspending your Social Security Number because we found some suspicio",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings] this is a debt collection agency. You have an outstanding debt that ",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Company]  online security. We have identified a potential ",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "No, its true..k,Do u knw dis no. &lt;#&gt; ?",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Yo chad which gymnastics class do you wanna take? The site says Christians class",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "FREE entry into our £250 weekly comp just send the word ENTER to 84128 NOW. 18 T",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "[Greetings], this is [Name], and we are from [Company] . We are calling you to i",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "Can you call me plz. Your number shows out of coveragd area. I have urgnt call i",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Dental Care. We are reminding you that your routi",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Title][Name] speaking from the police headquarters. We hav",
+      "label": "scam",
+      "verdict": "HIGH_RISK",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Heart is empty without love.. Mind is empty without wisdom.. Eyes r empty withou",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Clinic. Your lab test results are ready and avail",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "I had it already..sabarish asked me to go..",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Company] Courier Services. A parcel addressed to [Name] wi",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "How did you find out in a way that didn't include all of these details",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "[Greetings], this is [Name] from [Company] Realty. A new property listing has co",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Camera quite good, 10.1mega pixels, 3optical and 5digital dooms. Have a lovely h",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Fuck babe, I miss you sooooo much !! I wish you were here to sleep with me ... M",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "hello sir, i am from mtnl customer care in 23 hours your sim will be closed. do ",
+      "label": "scam",
+      "verdict": "SAFE",
+      "isCorrect": false
+    },
+    {
+      "transcript": "This is HDFC Bank fraud prevention. We noticed an unusual transaction on your ca",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Hello, this is Blue Dart courier. Your package requires address confirmation bef",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "This is a reminder from your bank: your KYC update is due by end of month, or yo",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "Sir, this is Airtel customer care. Your SIM card verification is pending. Please",
+      "label": "legitimate",
+      "verdict": "SAFE",
+      "isCorrect": true
+    },
+    {
+      "transcript": "This is the traffic police department. A challan of Rs 500 has been issued to yo",
+      "label": "legitimate",
+      "verdict": "HIGH_RISK",
+      "isCorrect": false
+    }
+  ]
+}
