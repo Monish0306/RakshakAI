@@ -61,7 +61,7 @@ export function generateReportPDF(session: ReportSession): jsPDF {
   doc.text("Matched Scam Patterns:", 20, y); y += 7;
   doc.setFontSize(9);
   session.matches.forEach((m) => {
-    doc.text(`- [${m.severity}, risk ${m.riskScore}] ${CATEGORY_NAMES[m.category] || "Category " + m.category}`, 22, y); y += 5;
+    doc.text(`- [${m.severity}, risk ${m.riskScore}] ${CATEGORY_NAMES[m.category] || "Category " + m.category}`, 22, y);
     doc.text(`  Evidence: "${m.evidence}"`, 24, y); y += 5;
     doc.text(`  Reason: ${m.reason}`, 24, y); y += 7;
   });
