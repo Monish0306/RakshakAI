@@ -1,7 +1,12 @@
-import { pipeline, cos_sim } from "@xenova/transformers";
+import { pipeline, cos_sim, env } from "@xenova/transformers";
+
+// Force loading models from the Hugging Face CDN, never from a local /models/ path
+env.allowLocalModels = false;
+env.allowRemoteModels = true;
 
 let embedder = null;
 let referenceEmbeddings = null;
+
 
 const REFERENCE_SENTENCES = [
   "This is an officer from CBI, ED, or Customs calling about a case against you",
