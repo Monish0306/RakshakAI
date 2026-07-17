@@ -11,9 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
-dist
+
 .env
 .env.local
+.env*
+.vercel
 
 # Editor directories and files
 .vscode/*
@@ -25,14 +27,7 @@ dist
 *.njsproj
 *.sln
 *.sw?
+
 data/raw
 
-node_modules
-dist
-.env
-.env.local
-.vercel
-.env*
-
-serviceAccountKey.json
 serviceAccountKey.json
