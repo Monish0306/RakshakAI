@@ -186,8 +186,55 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
     }
   };
 
+  // Custom styles for premium animations (Float, Rotate, Glow)
+  const premiumStyles = `
+    @keyframes shield-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes map-glow {
+      0%, 100% { filter: drop-shadow(0 0 6px rgba(191, 219, 254, 0.4)) drop-shadow(0 0 12px rgba(191, 219, 254, 0.2)); opacity: 0.35; }
+      50% { filter: drop-shadow(0 0 18px rgba(191, 219, 254, 0.95)) drop-shadow(0 0 28px rgba(147, 197, 253, 0.6)); opacity: 0.65; }
+    }
+    @keyframes disc-spin-cw {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes disc-spin-ccw {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    .custom-shield-float {
+      animation: shield-float 4s ease-in-out infinite;
+    }
+    .custom-map-glow {
+      animation: map-glow 2.5s ease-in-out infinite;
+    }
+    .custom-disc-cw {
+      animation: disc-spin-cw 18s linear infinite;
+    }
+    .custom-disc-ccw {
+      animation: disc-spin-ccw 25s linear infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .custom-shield-float {
+        animation: none;
+      }
+      .custom-map-glow {
+        animation: none;
+        filter: drop-shadow(0 0 10px rgba(191, 219, 254, 0.65));
+        opacity: 0.5;
+      }
+      .custom-disc-cw, .custom-disc-ccw {
+        animation: none;
+      }
+    }
+  `;
+
   return (
     <div className="min-h-screen bg-[#F4F7FC] flex flex-col lg:flex-row">
+      <style>{premiumStyles}</style>
+      
       {/* Left Panel: Brand Showcase & Core Info */}
       <div className="w-full lg:w-3/5 bg-gradient-to-br from-[#F8FAFC] via-[#EDF2F7] to-[#E2E8F0] p-8 lg:p-16 flex flex-col justify-between relative overflow-hidden">
         {/* Header Logo */}
@@ -202,24 +249,36 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
         </div>
 
         {/* Central Visual Showcase: Floating Shield on Rotating Disc */}
-        <div className="my-12 lg:my-0 flex flex-col items-center justify-center flex-1 relative min-h-[350px]">
-          {/* Animated Glow Disc underneath */}
-          <div className="absolute w-[300px] h-[80px] lg:w-[400px] lg:h-[100px] bg-[#1E3A8A]/10 rounded-[100%] blur-xl animate-pulse"></div>
+        <div className="my-12 lg:my-0 flex flex-col items-center justify-center flex-1 relative min-h-[380px] [perspective:1000px]">
           
-          {/* Concentric rotating discs representing perspective */}
-          <div className="absolute w-[240px] h-[70px] lg:w-[320px] lg:h-[90px] border border-blue-500/20 rounded-[100%] animate-[spin_10s_linear_infinite] flex items-center justify-center">
-            <div className="w-[180px] h-[55px] border border-blue-600/30 border-dashed rounded-[100%]"></div>
+          {/* Concentric rotating discs representing perspective (z-index back) */}
+          <div className="absolute w-[300px] h-[300px] lg:w-[380px] lg:h-[380px] [transform:rotateX(72deg)_translateZ(-80px)] flex items-center justify-center pointer-events-none select-none z-0">
+            {/* Soft background blue glow */}
+            <div className="absolute w-4/5 h-4/5 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-2xl"></div>
+            
+            {/* Outer clock-wise ring */}
+            <div className="absolute inset-0 border border-blue-500/15 rounded-full custom-disc-cw flex items-center justify-center">
+              {/* Outer tick marks */}
+              <div className="w-full h-full border border-dashed border-blue-600/10 rounded-full scale-95"></div>
+            </div>
+            
+            {/* Inner counter-clock-wise scanning disc */}
+            <div className="absolute w-4/5 h-4/5 border border-[#1E3A8A]/10 border-double rounded-full custom-disc-ccw flex items-center justify-center">
+              <div className="w-3/4 h-3/4 border border-dashed border-blue-500/20 rounded-full"></div>
+            </div>
+            
+            {/* Small center focal ring */}
+            <div className="absolute w-1/3 h-1/3 border-2 border-blue-500/20 rounded-full blur-[1px]"></div>
           </div>
-          <div className="absolute w-[280px] h-[80px] lg:w-[360px] lg:h-[100px] border border-blue-600/10 rounded-[100%] animate-[spin_15s_linear_infinite_reverse]"></div>
 
-          {/* Floating Shield and India Map */}
-          <div className="relative z-10 animate-[bounce_4s_ease-in-out_infinite] flex flex-col items-center">
-            <div className="relative bg-gradient-to-b from-[#2B6CB0] to-[#1E3A8A] w-[200px] h-[240px] lg:w-[240px] lg:h-[288px] rounded-[30%/10%] shadow-2xl flex items-center justify-center border-4 border-white/90 overflow-hidden">
+          {/* Floating Shield and India Map (z-index front, hovering above the disc) */}
+          <div className="relative z-10 custom-shield-float flex flex-col items-center [transform-style:preserve-3d]">
+            <div className="relative bg-gradient-to-b from-[#2B6CB0] to-[#1E3A8A] w-[200px] h-[240px] lg:w-[240px] lg:h-[288px] rounded-[30%/10%] shadow-2xl flex items-center justify-center border-4 border-white/95 overflow-hidden [transform:translateZ(20px)]">
               {/* Glossy overlay */}
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/20"></div>
 
-              {/* Glowing Outline Map of India */}
-              <svg viewBox="0 0 1000 1000" className="absolute w-4/5 h-4/5 opacity-40 text-blue-200 fill-current drop-shadow-[0_0_12px_rgba(147,197,253,0.6)]">
+              {/* Glowing Outline Map of India (Pulsing Edge Silhouette) */}
+              <svg viewBox="0 0 1000 1000" className="absolute w-4/5 h-4/5 text-blue-200 fill-current custom-map-glow">
                 <path d="M 250 200 Q 320 130, 460 150 T 700 180 Q 820 220, 850 320 T 880 480 Q 830 560, 720 610 T 620 780 Q 560 880, 470 880 T 340 780 Q 260 690, 240 560 T 200 380 Q 220 260, 250 200 Z" />
               </svg>
 
