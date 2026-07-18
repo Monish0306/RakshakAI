@@ -71,6 +71,14 @@ export default async function handler(req, res) {
     return res.status(400).json({ success: false, error: "Invalid sessionData. Only HIGH_RISK allowed." });
   }
 
+  if (!sessionData.transcript) {
+    return res.status(400).json({ success: false, error: "Missing required field: sessionData.transcript" });
+  }
+  
+  if (sessionData.confidence === undefined || sessionData.confidence === null) {
+    return res.status(400).json({ success: false, error: "Missing required field: sessionData.confidence" });
+  }
+
   try {
     const db = getDb();
     const collectionRef = db.collection("citizenReports");

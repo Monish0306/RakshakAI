@@ -47,7 +47,8 @@ export function useClassifier() {
       if (finalResult.verdict === "HIGH_RISK" && localCheck.transcriptEmbedding) {
         try {
           console.log("[AUDIT] Running secure server-side campaign match");
-          const matchRes = await matchCampaign(localCheck.transcriptEmbedding, finalResult, "");
+          const sessionDataPayload = { ...finalResult, transcript };
+          const matchRes = await matchCampaign(localCheck.transcriptEmbedding, sessionDataPayload, "");
           if (matchRes.success && matchRes.data) {
             finalResult.matchCount = matchRes.data.matchCount;
             finalResult.campaignId = matchRes.data.campaignId;
