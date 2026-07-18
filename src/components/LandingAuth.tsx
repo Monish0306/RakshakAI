@@ -64,7 +64,6 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
     try {
       let email = loginIdentifier.trim();
       
-      // If identifier doesn't look like an email, assume username and lookup email via serverless lookup API
       if (!email.includes('@')) {
         const res = await fetch("/api/username-lookup", {
           method: "POST",
@@ -181,66 +180,66 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
   const premiumStyles = `
     @keyframes shield-breath {
       0%, 100% { 
-        filter: drop-shadow(0 4px 20px rgba(30, 58, 138, 0.15)) drop-shadow(0 0 12px rgba(59, 130, 246, 0.1));
-        transform: scale(1);
+        filter: drop-shadow(0 0 35px rgba(59, 130, 246, 0.45));
+        transform: translateY(0px);
       }
       50% { 
-        filter: drop-shadow(0 4px 30px rgba(30, 58, 138, 0.25)) drop-shadow(0 0 24px rgba(59, 130, 246, 0.25));
-        transform: scale(1.01);
+        filter: drop-shadow(0 0 50px rgba(59, 130, 246, 0.7));
+        transform: translateY(-2px);
       }
     }
     @keyframes map-float {
-      0%, 100% { transform: translateY(2px) scale(0.96); }
-      50% { transform: translateY(-10px) scale(0.98); }
+      0%, 100% { transform: translateY(0px) scale(0.96); }
+      50% { transform: translateY(-8px) scale(0.98); }
     }
     @keyframes holographic-pulse {
       0%, 100% {
-        filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8)) drop-shadow(0 0 16px rgba(59, 130, 246, 0.4));
+        filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.8)) drop-shadow(0 0 20px rgba(96, 165, 250, 0.4));
         opacity: 0.85;
       }
       50% {
-        filter: drop-shadow(0 0 18px rgba(59, 130, 246, 0.95)) drop-shadow(0 0 32px rgba(147, 197, 253, 0.8));
+        filter: drop-shadow(0 0 20px rgba(96, 165, 250, 1)) drop-shadow(0 0 35px rgba(147, 197, 253, 0.9));
         opacity: 1;
       }
     }
-    @keyframes rotate-clockwise-fast {
+    @keyframes rotate-clockwise {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
-    @keyframes rotate-clockwise-slow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    @keyframes rotate-counter-clockwise {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
     }
     @keyframes spark-rise {
-      0% { transform: translateY(60px) translateX(0px) scale(0); opacity: 0; }
-      50% { opacity: 0.8; }
-      100% { transform: translateY(-100px) translateX(var(--x-offset, 20px)) scale(1); opacity: 0; }
+      0% { transform: translateY(80px) translateX(0px) scale(0); opacity: 0; }
+      50% { opacity: 0.9; }
+      100% { transform: translateY(-120px) translateX(var(--x-offset, 25px)) scale(1.1); opacity: 0; }
     }
     @keyframes circuit-pulse {
-      0%, 100% { opacity: 0.25; stroke-width: 1px; }
-      50% { opacity: 0.65; stroke-width: 1.5px; }
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.4; }
     }
 
     .stationary-shield {
-      animation: shield-breath 5s ease-in-out infinite;
+      animation: shield-breath 6s ease-in-out infinite;
     }
     .holographic-map-container {
-      animation: map-float 3.5s ease-in-out infinite;
+      animation: map-float 4s ease-in-out infinite;
     }
     .holographic-map-glow {
-      animation: holographic-pulse 2.5s ease-in-out infinite;
+      animation: holographic-pulse 3s ease-in-out infinite;
     }
     .pedestal-ring-fast {
-      animation: rotate-clockwise-fast 12s linear infinite;
+      animation: rotate-clockwise 14s linear infinite;
     }
     .pedestal-ring-slow {
-      animation: rotate-clockwise-slow 20s linear infinite;
+      animation: rotate-counter-clockwise 22s linear infinite;
     }
     .spark-particle {
-      animation: spark-rise 5s ease-in-out infinite;
+      animation: spark-rise 4.8s ease-in-out infinite;
     }
     .circuit-path {
-      animation: circuit-pulse 4s ease-in-out infinite;
+      animation: circuit-pulse 5s ease-in-out infinite;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -258,24 +257,15 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
       <style>{premiumStyles}</style>
       
       {/* Left Panel: Brand Showcase & Core Info */}
-      <div className="w-full lg:w-3/5 bg-gradient-to-br from-[#F8FAFC] via-[#EDF2F7] to-[#E2E8F0] p-8 lg:p-16 flex flex-col justify-between relative overflow-hidden">
+      <div className="w-full lg:w-3/5 bg-gradient-to-br from-[#F5F8FA] via-[#EDF2F7] to-[#E2E8F0] p-8 lg:p-16 flex flex-col justify-between relative overflow-hidden">
         
-        {/* Animated Background Circuit Lines (Exact mock integration) */}
-        <div className="absolute inset-0 pointer-events-none select-none opacity-40 z-0">
+        {/* Animated Background Circuit Lines */}
+        <div className="absolute inset-0 pointer-events-none select-none opacity-50 z-0">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="#1E3A8A" strokeWidth="1" fill="none" opacity="0.15">
-              {/* Circuit Path Left */}
+            <g stroke="#1E3A8A" strokeWidth="1" fill="none" opacity="0.08">
               <path className="circuit-path" d="M 50 150 L 150 150 L 200 200 L 200 350 L 150 400 L 50 400" />
-              <circle cx="50" cy="150" r="3" fill="#1E3A8A" />
-              <circle cx="50" cy="400" r="3" fill="#1E3A8A" />
-              
-              {/* Circuit Path Right */}
-              <path className="circuit-path" style={{ animationDelay: '1.5s' }} d="M 600 100 L 500 100 L 450 150 L 450 300 L 480 330 L 600 330" />
-              <circle cx="600" cy="100" r="3" fill="#1E3A8A" />
-              <circle cx="600" cy="330" r="3" fill="#1E3A8A" />
-              
-              {/* Circuit Center Connectors */}
-              <path className="circuit-path" style={{ animationDelay: '0.8s' }} d="M 120 500 L 250 500 L 300 550 L 350 550" />
+              <path className="circuit-path" style={{ animationDelay: '2s' }} d="M 600 100 L 500 100 L 450 150 L 450 300 L 480 330 L 600 330" />
+              <path className="circuit-path" style={{ animationDelay: '1s' }} d="M 120 500 L 250 500 L 300 550" />
             </g>
           </svg>
         </div>
@@ -291,64 +281,62 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
           </div>
         </div>
 
-        {/* Central Visual Showcase: Stationary Shield with Floating Holographic Map & Rotating Cylindrical Pedestal */}
-        <div className="my-12 lg:my-0 flex flex-col items-center justify-center flex-1 relative min-h-[420px] [perspective:1200px] z-10">
+        {/* Central Visual Showcase: Stationary Shield with Floating Holographic Map & Pedestal */}
+        <div className="my-12 lg:my-0 flex flex-col items-center justify-center flex-1 relative min-h-[460px] [perspective:1200px] z-10">
           
           {/* Floating sparks and blue particles */}
           <div className="absolute inset-0 pointer-events-none z-20">
-            <div className="absolute spark-particle bg-blue-400 rounded-full w-1 h-1 blur-[0.5px]" style={{ left: '35%', bottom: '25%', '--x-offset': '25px', animationDelay: '0s', animationDuration: '4.5s' } as any}></div>
-            <div className="absolute spark-particle bg-blue-300 rounded-full w-1.5 h-1.5 blur-[1px]" style={{ left: '42%', bottom: '22%', '--x-offset': '-30px', animationDelay: '1.2s', animationDuration: '5.5s' } as any}></div>
-            <div className="absolute spark-particle bg-blue-500 rounded-full w-1 h-1" style={{ left: '55%', bottom: '28%', '--x-offset': '15px', animationDelay: '2.5s', animationDuration: '3.8s' } as any}></div>
-            <div className="absolute spark-particle bg-blue-300 rounded-full w-2 h-2 blur-[1px]" style={{ left: '62%', bottom: '24%', '--x-offset': '-20px', animationDelay: '0.7s', animationDuration: '6s' } as any}></div>
+            <div className="absolute spark-particle bg-cyan-400 rounded-full w-1 h-1 blur-[0.5px]" style={{ left: '38%', bottom: '26%', '--x-offset': '20px', animationDelay: '0s', animationDuration: '4.2s' } as any}></div>
+            <div className="absolute spark-particle bg-blue-300 rounded-full w-1.5 h-1.5 blur-[1px]" style={{ left: '45%', bottom: '20%', '--x-offset': '-25px', animationDelay: '1s', animationDuration: '5.2s' } as any}></div>
+            <div className="absolute spark-particle bg-cyan-300 rounded-full w-1 h-1" style={{ left: '53%', bottom: '28%', '--x-offset': '18px', animationDelay: '2.2s', animationDuration: '3.6s' } as any}></div>
+            <div className="absolute spark-particle bg-blue-400 rounded-full w-1.5 h-1.5 blur-[1px]" style={{ left: '60%', bottom: '22%', '--x-offset': '-15px', animationDelay: '0.5s', animationDuration: '5.8s' } as any}></div>
           </div>
 
-          {/* 3D Holographic Pedestal / Disc System (z-index back, aligned with the bottom of the shield) */}
-          <div className="absolute w-[320px] h-[160px] lg:w-[400px] lg:h-[200px] [transform:rotateX(68deg)_translateY(220px)_translateZ(-40px)] flex items-center justify-center pointer-events-none select-none z-0">
+          {/* 3D Holographic Pedestal / Disc System (Exact Cylinder replica matching image) */}
+          <div className="absolute w-[340px] h-[180px] lg:w-[420px] lg:h-[220px] [transform:rotateX(66deg)_translateY(240px)_translateZ(-30px)] flex flex-col items-center justify-center pointer-events-none select-none z-0">
             
-            {/* Volumetric Blue Glow Core */}
-            <div className="absolute w-[220px] h-[220px] bg-gradient-to-t from-blue-600/25 to-blue-400/5 rounded-full blur-2xl"></div>
-
-            {/* Glowing base plate segment (Outer Ring - rotates slightly faster) */}
-            <div className="absolute inset-0 border-4 border-double border-blue-500/35 rounded-full pedestal-ring-fast shadow-[0_0_25px_rgba(59,130,246,0.3)]"></div>
-            
-            {/* Inner Concentric Ring with energy marks (Rotates slightly slower) */}
-            <div className="absolute w-4/5 h-4/5 border-2 border-dashed border-blue-400/30 rounded-full pedestal-ring-slow"></div>
-            
-            {/* Solid core platform ring with light emission */}
-            <div className="absolute w-3/5 h-3/5 border border-blue-300/40 rounded-full bg-gradient-to-b from-blue-500/10 to-transparent shadow-[inset_0_0_20px_rgba(59,130,246,0.25)] flex items-center justify-center">
-              {/* Core focal beam point */}
-              <div className="w-1/2 h-1/2 border border-blue-300/60 rounded-full bg-blue-500/5 blur-[2px]"></div>
+            {/* Top Plate Concentric Neon Rings */}
+            <div className="absolute w-full h-full border-[6px] border-blue-500/40 rounded-full pedestal-ring-fast shadow-[0_0_35px_rgba(59,130,246,0.45)] flex items-center justify-center">
+              <div className="w-[85%] h-[85%] border-2 border-dashed border-cyan-400/50 rounded-full"></div>
+              <div className="w-[70%] h-[70%] border border-blue-400/30 rounded-full pedestal-ring-slow"></div>
             </div>
-            
-            {/* Outer soft light wave reflections */}
-            <div className="absolute w-[120%] h-[120%] border border-blue-500/5 rounded-full animate-pulse"></div>
+
+            {/* Cylinder Sides - Vertical neon columns/slits replicating image */}
+            <div className="absolute w-[98%] h-[40px] bg-gradient-to-b from-blue-600/35 via-blue-900/10 to-transparent border-b-2 border-blue-500/40 rounded-full [transform:translateY(22px)_translateZ(-15px)] flex items-center justify-around overflow-hidden">
+              <div className="w-1.5 h-[80%] bg-cyan-400/80 shadow-[0_0_8px_rgba(34,211,238,0.8)] rounded-full"></div>
+              <div className="w-1.5 h-[80%] bg-blue-500/70 shadow-[0_0_8px_rgba(59,130,246,0.8)] rounded-full"></div>
+              <div className="w-1.5 h-[80%] bg-cyan-400/80 shadow-[0_0_8px_rgba(34,211,238,0.8)] rounded-full"></div>
+              <div className="w-1.5 h-[80%] bg-blue-500/70 shadow-[0_0_8px_rgba(59,130,246,0.8)] rounded-full"></div>
+              <div className="w-1.5 h-[80%] bg-cyan-400/80 shadow-[0_0_8px_rgba(34,211,238,0.8)] rounded-full"></div>
+              <div className="w-1.5 h-[80%] bg-blue-500/70 shadow-[0_0_8px_rgba(59,130,246,0.8)] rounded-full"></div>
+            </div>
+
+            {/* Ground Light Beam Wave */}
+            <div className="absolute w-[110%] h-[110%] bg-gradient-to-t from-blue-500/5 to-transparent rounded-full blur-2xl"></div>
           </div>
 
-          {/* Stationary Shield (z-index middle, stays in place with breathing glow) */}
+          {/* Stationary Shield (Exact metallic border matching image) */}
           <div className="relative z-10 stationary-shield flex flex-col items-center [transform-style:preserve-3d]">
-            <div className="relative bg-gradient-to-b from-[#1E3A8A]/95 via-[#1E293B]/98 to-[#0F172A] w-[220px] h-[260px] lg:w-[260px] lg:h-[310px] rounded-[30%/10%] shadow-2xl flex items-center justify-center border-[5px] border-blue-900/60 overflow-hidden">
+            <div className="relative bg-gradient-to-b from-[#111C3A] via-[#090F24] to-[#040714] w-[230px] h-[270px] lg:w-[270px] lg:h-[320px] rounded-[30%/10%] shadow-[0_0_50px_rgba(30,58,138,0.5)] flex items-center justify-center border-[6px] border-blue-900/90 overflow-hidden">
               
-              {/* Glossy / metallic reflection pattern overlay */}
+              {/* Glossy / metallic reflection pattern */}
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none"></div>
-              
-              {/* Deep blue inner glow grid */}
-              <div className="absolute inset-2 bg-[linear-gradient(rgba(30,58,138,0.15)_1px,_transparent_1px),_linear-gradient(90deg,_rgba(30,58,138,0.15)_1px,_transparent_1px)] bg-[size:16px_16px] rounded-[28%/8%]"></div>
 
-              {/* Holographic India Map Container (Floats gently inside the shield) */}
+              {/* Holographic India Map Container (Floats inside shield) */}
               <div className="absolute inset-0 flex items-center justify-center holographic-map-container z-10 pointer-events-none">
                 
-                {/* Glowing Outline Map of India (Electric Blue Glowing Outline) */}
-                <svg viewBox="0 0 1000 1000" className="w-[85%] h-[85%] text-blue-400 fill-blue-500/10 holographic-map-glow">
+                {/* Glowing Outline Map of India */}
+                <svg viewBox="0 0 1000 1000" className="w-[85%] h-[85%] text-blue-400 fill-blue-500/15 holographic-map-glow">
                   {/* Outer Glowing Path */}
                   <path 
-                    stroke="#60A5FA" 
-                    strokeWidth="8"
+                    stroke="#38BDF8" 
+                    strokeWidth="9"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     d="M 250 200 Q 320 130, 460 150 T 700 180 Q 820 220, 850 320 T 880 480 Q 830 560, 720 610 T 620 780 Q 560 880, 470 880 T 340 780 Q 260 690, 240 560 T 200 380 Q 220 260, 250 200 Z" 
                   />
-                  {/* Interconnected Holographic Network / Constellation Grid inside the map */}
-                  <g stroke="#93C5FD" strokeWidth="2" opacity="0.45" fill="none">
+                  {/* Constellation Grid */}
+                  <g stroke="#7DD3FC" strokeWidth="2" opacity="0.65" fill="none">
                     <line x1="350" y1="280" x2="450" y2="240" />
                     <line x1="450" y1="240" x2="520" y2="300" />
                     <line x1="520" y1="300" x2="430" y2="400" />
@@ -361,20 +349,20 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                     <line x1="500" y1="520" x2="620" y2="420" />
                     
                     {/* Node points */}
-                    <circle cx="350" cy="280" r="4" fill="#60A5FA" />
-                    <circle cx="450" cy="240" r="4" fill="#93C5FD" />
-                    <circle cx="520" cy="300" r="4" fill="#60A5FA" />
-                    <circle cx="620" cy="220" r="4" fill="#93C5FD" />
-                    <circle cx="710" cy="320" r="4" fill="#60A5FA" />
-                    <circle cx="620" cy="420" r="4" fill="#93C5FD" />
-                    <circle cx="430" cy="400" r="4" fill="#60A5FA" />
-                    <circle cx="500" cy="520" r="4" fill="#93C5FD" />
+                    <circle cx="350" cy="280" r="4.5" fill="#38BDF8" />
+                    <circle cx="450" cy="240" r="4.5" fill="#7DD3FC" />
+                    <circle cx="520" cy="300" r="4.5" fill="#38BDF8" />
+                    <circle cx="620" cy="220" r="4.5" fill="#7DD3FC" />
+                    <circle cx="710" cy="320" r="4.5" fill="#38BDF8" />
+                    <circle cx="620" cy="420" r="4.5" fill="#7DD3FC" />
+                    <circle cx="430" cy="400" r="4.5" fill="#38BDF8" />
+                    <circle cx="500" cy="520" r="4.5" fill="#7DD3FC" />
                   </g>
                 </svg>
 
                 {/* Padlock Icon (Fixed in center of map and floats along with it) */}
-                <div className="absolute bg-[#1E3A8A]/90 backdrop-blur-md p-4 rounded-xl border border-blue-400/40 shadow-xl z-20">
-                  <Lock className="w-10 h-10 text-white drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
+                <div className="absolute bg-[#0F172A]/90 backdrop-blur-md p-4 rounded-xl border border-blue-400/40 shadow-2xl z-20">
+                  <Lock className="w-10 h-10 text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.95)]" />
                 </div>
 
               </div>
@@ -674,7 +662,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                     </div>
                     <div className="flex items-center space-x-1.5">
                       <span className={`p-0.5 rounded-full ${passSpecial ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
-                        <Check className="w-3 h-3" />
+                        <Check className="w-3.5 h-3.5" />
                       </span>
                       <span className={passSpecial ? 'text-green-700 font-semibold' : 'text-gray-500'}>{t["landing.ruleSpecial"]}</span>
                     </div>
