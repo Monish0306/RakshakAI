@@ -4,10 +4,11 @@ import CitizenShield from './components/CitizenShield.tsx';
 import Dashboard from './components/Dashboard.tsx';
 import HowItWorks from './components/HowItWorks.tsx';
 import About from './components/About.tsx';
+import CommandCenter from './components/CommandCenter.tsx';
 import { useClassifier } from './hooks/useClassifier.ts';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'about'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'about' | 'command'>('home');
   const [language, setLanguage] = useState('en');
   const [simpleView, setSimpleView] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
@@ -41,6 +42,7 @@ export default function App() {
         {activeTab === 'how' && <HowItWorks />}
         {activeTab === 'dashboard' && <Dashboard />}
         {activeTab === 'about' && <About />}
+        {activeTab === 'command' && <CommandCenter />}
       </main>
     </div>
   );

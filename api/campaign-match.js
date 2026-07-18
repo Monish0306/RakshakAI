@@ -97,7 +97,7 @@ export default async function handler(req, res) {
       const data = doc.data();
       if (data.transcriptEmbedding && Array.isArray(data.transcriptEmbedding)) {
         const similarity = cos_sim(transcriptEmbedding, data.transcriptEmbedding);
-        if (similarity >= 0.65) {
+        if (similarity >= 0.60) {
           matchCount++;
           // Track the oldest matched session to use as a deterministic Campaign ID
           // Since we ordered by timestamp desc, the last one we see that matches might not be the absolute oldest
@@ -123,7 +123,8 @@ export default async function handler(req, res) {
       redFlagsDetected: sessionData.redFlagsDetected,
       timestamp: new Date().toISOString(),
       transcriptEmbedding: transcriptEmbedding,
-      campaignId: campaignId // Associate it with the campaign
+      campaignId: campaignId, // Associate it with the campaign
+      ranOnDevice: false
     });
 
     return res.status(200).json({

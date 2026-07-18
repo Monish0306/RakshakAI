@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { classifyTranscript, getAdvisory, matchCampaign } from "../lib/api";
+import { classifyTranscript, getAdvisory, matchCampaign, recordTelemetry } from "../lib/api";
 import type { ClassificationResponse } from "../lib/api";
 // @ts-ignore: Implicit any for JS module without types
 import { checkOnDevice } from "../lib/onDeviceFilter";
@@ -21,6 +21,7 @@ export function useClassifier() {
 
       if (!localCheck.escalate) {
         console.log("[AUDIT] Resolving on-device, cloud API skipped");
+        recordTelemetry("on-device"); // Fire-and-forget telemetry counter
         // Resolved entirely on-device — never sent to any server
         const safeResult: ClassificationResponse["data"] = {
           verdict: "SAFE",
@@ -40,6 +41,7 @@ export function useClassifier() {
       }
 
       console.log("[AUDIT] Escalating to cloud API");
+      recordTelemetry("cloud"); // Fire-and-forget telemetry counter
       // Only escalates to the cloud when the on-device filter flags it as suspicious
       const classifyRes = await classifyTranscript(transcript);
       let finalResult = { ...classifyRes.data, ranOnDevice: false };

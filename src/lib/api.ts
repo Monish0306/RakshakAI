@@ -104,3 +104,94 @@ export async function matchCampaign(transcriptEmbedding: number[], sessionData: 
     throw err;
   }
 }
+
+export interface CampaignReport {
+  sessionId: string;
+  timestamp: string;
+  transcript: string;
+  verdict: string;
+  confidence: number;
+}
+
+export interface Campaign {
+  campaignId: string;
+  reportCount: number;
+  firstSeen: string;
+  lastSeen: string;
+  representativeTranscript: string;
+  dominantCategory: string;
+  priority: boolean;
+  reports: CampaignReport[];
+}
+
+export interface CampaignListResponse {
+  success: boolean;
+  data: Campaign[];
+  error: string | null;
+}
+
+export async function fetchCampaigns(): Promise<CampaignListResponse> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 15000); // 15s timeout
+  
+  try {
+    const res = await fetch(`${API_BASE}/api/campaign-list`, {
+      method: "GET",
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+}
+
+export interface PulseStats {
+  totalChecksToday: number;
+  onDeviceCount: number;
+  cloudCount: number;
+  activeCampaigns: number;
+  mostRecentHighRiskTime: string | null;
+}
+
+export interface PulseStatsResponse {
+  success: boolean;
+  data: PulseStats;
+  error: string | null;
+}
+
+export async function fetchPulseStats(): Promise<PulseStatsResponse> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 15000); // 15s timeout
+  
+  try {
+    const res = await fetch(`${API_BASE}/api/pulse-stats`, {
+      method: "GET",
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+}
+
+export async function recordTelemetry(outcome: "on-device" | "cloud"): Promise<void> {
+  try {
+    await fetch(`${API_BASE}/api/telemetry`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ outcome })
+    });
+  } catch (err) {
+    console.warn("Failed to record telemetry", err);
+  }
+}

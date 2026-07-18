@@ -3,7 +3,7 @@ import { cn } from '../lib/utils';
 
 interface HeaderProps {
   activeTab: string;
-  setActiveTab: (tab: 'home' | 'how' | 'dashboard' | 'about') => void;
+  setActiveTab: (tab: 'home' | 'how' | 'dashboard' | 'about' | 'command') => void;
   language: string;
   setLanguage: (lang: string) => void;
   simpleView: boolean;
@@ -26,6 +26,7 @@ export default function Header({
     { id: 'how', label: 'How It Works' },
     { id: 'dashboard', label: 'Trust & Transparency' },
     { id: 'about', label: 'About / Architecture' },
+    { id: 'command', label: 'Command Center 🔒' },
   ] as const;
 
   return (
