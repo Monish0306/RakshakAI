@@ -1,5 +1,6 @@
 import { Shield } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { TRANSLATIONS } from '../lib/translations';
 
 interface HeaderProps {
   activeTab: string;
@@ -21,12 +22,14 @@ export default function Header({
   modelLoaded
 }: HeaderProps) {
   
+  const t = TRANSLATIONS[language] || TRANSLATIONS.en;
+
   const navItems = [
-    { id: 'home', label: 'Live Check' },
-    { id: 'how', label: 'How It Works' },
-    { id: 'dashboard', label: 'Trust & Transparency' },
-    { id: 'about', label: 'About / Architecture' },
-    { id: 'command', label: 'Command Center 🔒' },
+    { id: 'home', label: t["header.liveCheck"] },
+    { id: 'how', label: t["header.howItWorks"] },
+    { id: 'dashboard', label: t["header.dashboard"] },
+    { id: 'about', label: t["header.about"] },
+    { id: 'command', label: t["header.command"] },
   ] as const;
 
   return (
@@ -36,7 +39,9 @@ export default function Header({
           {/* Left: Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setActiveTab('home')}>
             <Shield className="h-8 w-8 text-[#1E3A8A]" />
-            <span className="font-bold text-xl text-[#1E3A8A] tracking-tight">Rakshak AI</span>
+            <span className="font-bold text-xl text-[#1E3A8A] tracking-tight">
+              {t["header.logo"]}
+            </span>
           </div>
 
           {/* Center: Tabs */}
@@ -73,7 +78,9 @@ export default function Header({
                   modelLoaded ? "bg-green-600" : "bg-gray-500"
                 )}></span>
               </span>
-              <span>{modelLoaded ? 'Privacy filter active' : 'Loading privacy filter...'}</span>
+              <span>
+                {modelLoaded ? t["header.filterActive"] : t["header.filterLoading"]}
+              </span>
             </div>
 
             {/* Language Selector */}
@@ -86,6 +93,7 @@ export default function Header({
               <option value="hi">हिन्दी (Hindi)</option>
               <option value="ta">தமிழ் (Tamil)</option>
               <option value="kn">ಕನ್ನಡ (Kannada)</option>
+              <option value="te">తెలుగు (Telugu)</option>
             </select>
 
             {/* Grandparent Mode Toggle */}
@@ -100,7 +108,9 @@ export default function Header({
                 <div className={cn("block w-10 h-6 rounded-full transition-colors", simpleView ? "bg-[#1E3A8A]" : "bg-gray-300")}></div>
                 <div className={cn("dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform", simpleView ? "transform translate-x-4" : "")}></div>
               </div>
-              <span className="text-sm font-medium text-gray-700 hidden sm:block">Simple View</span>
+              <span className="text-sm font-medium text-gray-700 hidden sm:block">
+                {t["header.simpleView"]}
+              </span>
             </label>
             
           </div>

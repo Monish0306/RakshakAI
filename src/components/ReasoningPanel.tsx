@@ -2,21 +2,69 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ChevronUp, Quote } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { TRANSLATIONS } from '../lib/translations';
 
 interface ReasoningPanelProps {
   result: any;
   simpleView: boolean;
+  language: string;
 }
 
-const CATEGORY_LABELS: Record<number, string> = {
-  1: "Authority impersonation",
-  2: "Urgency/threat escalation",
-  3: "Isolation instructions",
-  4: "Payment/OTP demand",
-  5: "Fake portal/document reference",
-  6: "Video-hostage framing",
-  7: "Identity verification pretext",
-  8: "Reward/incentive lure"
+const getCategoryLabel = (catNum: number, lang: string) => {
+  const labels: Record<string, Record<number, string>> = {
+    en: {
+      1: "Authority impersonation",
+      2: "Urgency/threat escalation",
+      3: "Isolation instructions",
+      4: "Payment/OTP demand",
+      5: "Fake portal/document reference",
+      6: "Video-hostage framing",
+      7: "Identity verification pretext",
+      8: "Reward/incentive lure"
+    },
+    hi: {
+      1: "अधिकारी का स्वांग रचना",
+      2: "जल्दबाजी/खतरे को बढ़ाना",
+      3: "अलगाव के निर्देश",
+      4: "भुगतान/ओटीपी की मांग",
+      5: "फर्जी पोर्टल/दस्तावेज़ संदर्भ",
+      6: "वीडियो-बंधक बनाना",
+      7: "पहचान सत्यापन का बहाना",
+      8: "पुरस्कार/प्रलोभन का लालच"
+    },
+    ta: {
+      1: "அதிகாரியைப் போல நடித்தல்",
+      2: "அவசரம்/அச்சுறுத்தலை அதிகரித்தல்",
+      3: "தனிமைப்படுத்துவதற்கான அறிவுறுத்தல்கள்",
+      4: "பணம்/OTP கோருதல்",
+      5: "போலி போர்டல்/ஆவணக் குறிப்பு",
+      6: "வீடியோ-பிணை கைதி கட்டமைப்பு",
+      7: "அடையாள சரிபார்ப்பு சாக்கு",
+      8: "விருது/ஊக்கத்தொகை தூண்டில்"
+    },
+    kn: {
+      1: "ಅಧಿಕಾರಿಯಂತೆ ನಟಿಸುವುದು",
+      2: "ತುರ್ತು/ಬೆದರಿಕೆಯನ್ನು ಹೆಚ್ಚಿಸುವುದು",
+      3: "ಪ್ರತ್ಯೇಕವಾಗಿರಲು ಸೂಚನೆಗಳು",
+      4: "ಪಾವತಿ/OTP ಗಾಗಿ ಬೇಡಿಕೆ",
+      5: "ನಕಲಿ ಪೋರ್ಟಲ್/ದಾಖಲೆ ಉಲ್ಲೇಖ",
+      6: "ವಿಡಿಯೋ-ಬಂಧನ ರೂಪಿಸುವುದು",
+      7: "ಗುರುತು ಪರಿಶೀಲನೆಯ ನೆಪ",
+      8: "ಪ್ರಶಸ್ತಿ/ಪ್ರಲೋಭನೆಯ ಆಮಿಷ"
+    },
+    te: {
+      1: "అధికార ప్రతినిధిగా నటించడం",
+      2: "అత్యవసరం/బెదిరింపులను పెంచడం",
+      3: "ఐసోలేషన్ సూచనలు",
+      4: "చెల్లింపు/OTP డిమాండ్",
+      5: "నకిలీ పోర్టల్/డాక్యుమెంట్ ప్రస్తావన",
+      6: "వీడియో-హోస్టేజ్ ఫ్రేమింగ్",
+      7: "గుర్తింపు ధృవీకరణ సాకు",
+      8: "బహుమతి/ప్రోత్సాహక ఎర"
+    }
+  };
+  const langLabels = labels[lang] || labels.en;
+  return langLabels[catNum] || `Pattern ${catNum}`;
 };
 
 const getSeverityStyles = (severity: string) => {
@@ -29,11 +77,12 @@ const getSeverityStyles = (severity: string) => {
   }
 };
 
-export default function ReasoningPanel({ result, simpleView }: ReasoningPanelProps) {
+export default function ReasoningPanel({ result, simpleView, language }: ReasoningPanelProps) {
   const [isExpanded, setIsExpanded] = useState(!simpleView);
   
   if (!result) return null;
 
+  const t = TRANSLATIONS[language] || TRANSLATIONS.en;
   const matches = result.matches || [];
 
   if (simpleView && !isExpanded) {
@@ -43,7 +92,7 @@ export default function ReasoningPanel({ result, simpleView }: ReasoningPanelPro
           onClick={() => setIsExpanded(true)}
           className="text-[#1E3A8A] font-medium text-lg flex items-center justify-center w-full py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
         >
-          View detailed reasoning <ChevronDown className="ml-2 w-5 h-5" />
+          {t["reasoning.detailedAnalysis"]} <ChevronDown className="ml-2 w-5 h-5" />
         </button>
       </div>
     );
@@ -55,7 +104,7 @@ export default function ReasoningPanel({ result, simpleView }: ReasoningPanelPro
         className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer"
         onClick={() => simpleView && setIsExpanded(false)}
       >
-        <h3 className="font-semibold text-gray-900 text-lg">Detailed Analysis</h3>
+        <h3 className="font-semibold text-gray-900 text-lg">{t["reasoning.detailedAnalysis"]}</h3>
         {simpleView && <ChevronUp className="w-5 h-5 text-gray-500" />}
       </div>
       
@@ -65,7 +114,7 @@ export default function ReasoningPanel({ result, simpleView }: ReasoningPanelPro
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-4">
               <span className="text-green-600 text-xl">✓</span>
             </div>
-            <p className="text-gray-600 text-lg">No known scam patterns detected in this conversation.</p>
+            <p className="text-gray-600 text-lg">{t["reasoning.noScamPatterns"]}</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -79,7 +128,7 @@ export default function ReasoningPanel({ result, simpleView }: ReasoningPanelPro
               >
                 <div className="flex items-start justify-between mb-3">
                   <h4 className="font-semibold text-gray-900">
-                    {CATEGORY_LABELS[match.category] || `Pattern ${match.category}`}
+                    {getCategoryLabel(match.category, language)}
                   </h4>
                   <span className={cn("text-xs font-bold px-2.5 py-1 rounded-full border uppercase tracking-wide", getSeverityStyles(match.severity))}>
                     {match.severity || 'Medium'}
@@ -94,7 +143,7 @@ export default function ReasoningPanel({ result, simpleView }: ReasoningPanelPro
                 </div>
                 
                 <p className="text-sm text-gray-600 mt-3">
-                  <span className="font-semibold text-gray-700 mr-2">Why this matters:</span>
+                  <span className="font-semibold text-gray-700 mr-2">{t["reasoning.whyMatters"]}</span>
                   {match.reason}
                 </p>
               </motion.div>

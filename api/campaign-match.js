@@ -113,10 +113,14 @@ export default async function handler(req, res) {
       campaignId = `CAMPAIGN-${oldestMatchedSessionId.id.replace('RKSH-', '')}`;
     }
 
+    const sanitizedTranscript = (sessionData.transcript || "")
+      .trim()
+      .replace(/\r?\n\s*\r?\n/g, '\n');
+
     // Write the new session securely
     await collectionRef.add({
       sessionId: sessionId || `RKSH-${Date.now()}`,
-      transcript: sessionData.transcript,
+      transcript: sanitizedTranscript,
       verdict: sessionData.verdict,
       confidence: sessionData.confidence,
       matches: sessionData.matches,

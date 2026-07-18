@@ -6,6 +6,7 @@ import ReasoningPanel from './ReasoningPanel';
 import { generateReportPDF, generateSessionId } from '../lib/reportGenerator';
 import { cn } from '../lib/utils';
 import { motion } from 'framer-motion';
+import { TRANSLATIONS } from '../lib/translations';
 
 interface CitizenShieldProps {
   classifier: any;
@@ -21,6 +22,8 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
   const [coolingTimer, setCoolingTimer] = useState(0);
   const { loading, result, advisory, error, runClassification } = classifier;
   const [isSimulating, setIsSimulating] = useState(false);
+
+  const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   const handleCheck = () => {
     if (!transcript.trim()) return;
@@ -88,7 +91,7 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
               "w-full min-h-[160px] p-5 focus:outline-none resize-none placeholder-gray-400 bg-transparent text-gray-800",
               simpleView ? "text-2xl" : "text-lg"
             )}
-            placeholder="Paste a suspicious call transcript, or describe what happened..."
+            placeholder={t["shield.textareaPlaceholder"]}
             value={transcript}
             onChange={(e) => setTranscript(e.target.value)}
             disabled={loading || isSimulating}
@@ -101,7 +104,7 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
             className="text-[#1E3A8A] font-medium text-sm flex items-center hover:bg-blue-50 px-3 py-2 rounded-md transition-colors"
           >
             <PlayCircle className="w-5 h-5 mr-2" />
-            Live Simulated Call
+            {t["shield.liveSimulatedCall"]}
           </button>
           
           <button
@@ -116,9 +119,9 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
             )}
           >
             {loading ? (
-              <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Analyzing...</>
+              <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t["shield.analyzing"]}</>
             ) : (
-              'Check This Now'
+              t["shield.checkThisNow"]
             )}
           </button>
         </div>
@@ -126,7 +129,7 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg relative mt-4 shadow-sm" role="alert">
-          <strong className="font-bold mr-2">Error:</strong>
+          <strong className="font-bold mr-2">{t["shield.error"]}</strong>
           <span className="block sm:inline">{error}</span>
         </div>
       )}
@@ -134,9 +137,9 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
       {/* Results Section */}
       {result && (
         <div className="space-y-6">
-          <VerdictCard result={result} simpleView={simpleView} />
+          <VerdictCard result={result} simpleView={simpleView} language={language} />
           
-          {!simpleView && <ReasoningPanel result={result} simpleView={simpleView} />}
+          {!simpleView && <ReasoningPanel result={result} simpleView={simpleView} language={language} />}
 
           {/* Cooling Off Timer */}
           {result.verdict === 'HIGH_RISK' && coolingTimer > 0 && (
@@ -159,8 +162,8 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
                 </svg>
                 <span className="absolute text-xl font-bold text-[#1E3A8A]">{coolingTimer}</span>
               </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-2">Take a moment.</h4>
-              <p className="text-gray-600">Read the reasoning above before deciding what to do next. Do not panic.</p>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">{t["shield.takeMoment"]}</h4>
+              <p className="text-gray-600">{t["shield.takeMomentDesc"]}</p>
             </motion.div>
           )}
 
@@ -184,7 +187,7 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
                       result.verdict === 'SAFE' ? "text-green-900" : "text-blue-900",
                       simpleView ? "text-2xl" : "text-lg"
                     )}>
-                      Official Advisory
+                      {t["shield.officialAdvisory"]}
                     </h3>
                     <p className={cn(
                       "font-medium leading-relaxed",
@@ -203,23 +206,23 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
                   <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-3">
                     <PhoneCall className="w-6 h-6 text-red-600" />
                   </div>
-                  <h4 className="font-bold text-red-900 text-lg mb-1">National Cybercrime Helpline</h4>
-                  <p className="text-4xl font-extrabold text-red-700 my-2">1930</p>
-                  <p className="text-red-800 text-sm font-medium">Available 24/7. Call immediately if you shared banking details.</p>
+                  <h4 className="font-bold text-red-900 text-lg mb-1">{t["shield.helplineTitle"]}</h4>
+                  <p className="text-4xl font-extrabold text-red-700 my-2">{t["shield.helplineNumber"]}</p>
+                  <p className="text-red-800 text-sm font-medium">{t["shield.helplineDesc"]}</p>
                 </div>
               )}
 
               {/* Generate Report - Only for Risk/Uncertain */}
               {result.verdict !== 'SAFE' && (
                 <div className="bg-white p-6 rounded-xl border border-gray-200 flex flex-col justify-center shadow-sm">
-                  <h4 className="font-bold text-gray-900 text-lg mb-2">Legal Action</h4>
-                  <p className="text-gray-600 text-sm mb-4">Generate an official audit report to submit alongside your complaint on cybercrime.gov.in</p>
+                  <h4 className="font-bold text-gray-900 text-lg mb-2">{t["shield.legalAction"]}</h4>
+                  <p className="text-gray-600 text-sm mb-4">{t["shield.legalActionDesc"]}</p>
                   <button 
                     onClick={handleGenerateReport}
                     className="w-full flex items-center justify-center py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold rounded-lg transition-colors border border-gray-300 shadow-sm"
                   >
                     <Download className="w-5 h-5 mr-2" />
-                    Download PDF Report
+                    {t["shield.downloadPDF"]}
                   </button>
                 </div>
               )}

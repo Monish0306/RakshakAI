@@ -32,6 +32,17 @@ function getDb() {
   return getFirestore();
 }
 
+const CATEGORY_LABELS = {
+  1: "Authority Impersonation",
+  2: "Urgency/Threat Escalation",
+  3: "Isolation Instructions",
+  4: "Payment/OTP Demand",
+  5: "Fake Portal/Document Reference",
+  6: "Video-Hostage Framing",
+  7: "Identity Verification Pretext",
+  8: "Reward/Incentive Lure"
+};
+
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -97,7 +108,7 @@ export default async function handler(req, res) {
       reports.forEach(r => {
         if (Array.isArray(r.matches)) {
           r.matches.forEach(m => {
-            const cat = m.category || "Unknown Scam";
+            const cat = CATEGORY_LABELS[m.category] || m.category || "Unknown Scam";
             categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
           });
         }
@@ -108,7 +119,7 @@ export default async function handler(req, res) {
       Object.keys(categoryCounts).forEach(cat => {
         if (categoryCounts[cat] > maxCount) {
           maxCount = categoryCounts[cat];
-          dominantCategory = cat;
+          dominantCategory = String(cat);
         }
       });
 

@@ -2,6 +2,17 @@ import { useState, useEffect } from 'react';
 import { fetchCampaigns, type Campaign } from '../lib/api';
 import { Shield, Users, Calendar, ArrowRight, AlertTriangle, RefreshCw, Layers, Download } from 'lucide-react';
 
+const CATEGORY_LABELS: Record<string, string> = {
+  "1": "Authority Impersonation",
+  "2": "Urgency/Threat Escalation",
+  "3": "Isolation Instructions",
+  "4": "Payment/OTP Demand",
+  "5": "Fake Portal/Document Reference",
+  "6": "Video-Hostage Framing",
+  "7": "Identity Verification Pretext",
+  "8": "Reward/Incentive Lure"
+};
+
 export default function CommandCenter() {
   const [activeSubTab, setActiveSubTab] = useState<'queue' | 'evidence'>('queue');
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -18,8 +29,8 @@ export default function CommandCenter() {
       r.timestamp,
       r.verdict,
       `${r.confidence}%`,
-      campaign.dominantCategory,
-      `"${r.transcript.replace(/"/g, '""')}"`
+      CATEGORY_LABELS[campaign.dominantCategory] || campaign.dominantCategory,
+      `"${r.transcript.trim().replace(/\r?\n\s*\r?\n/g, '\n').replace(/"/g, '""')}"`
     ]);
     const csvContent = [
       headers.join(","),
@@ -171,7 +182,7 @@ export default function CommandCenter() {
 
                       {/* Scam Category */}
                       <h3 className="text-lg font-extrabold text-[#1E3A8A] mb-3">
-                        {c.dominantCategory}
+                        {CATEGORY_LABELS[c.dominantCategory] || c.dominantCategory}
                       </h3>
 
                       {/* Dates */}
