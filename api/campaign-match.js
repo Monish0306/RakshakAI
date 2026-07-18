@@ -97,7 +97,7 @@ export default async function handler(req, res) {
       const data = doc.data();
       if (data.transcriptEmbedding && Array.isArray(data.transcriptEmbedding)) {
         const similarity = cos_sim(transcriptEmbedding, data.transcriptEmbedding);
-        if (similarity >= 0.75) {
+        if (similarity >= 0.65) {
           matchCount++;
           // Track the oldest matched session to use as a deterministic Campaign ID
           // Since we ordered by timestamp desc, the last one we see that matches might not be the absolute oldest

@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 
 export function generateSessionId(): string {
   return `RKSH-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -187,7 +187,9 @@ export async function generateReportPDF(session: ReportSession): Promise<jsPDF> 
     // Donut label
     doc.setFontSize(8);
     doc.setTextColor(100, 100, 100);
-    doc.text("Severity", pieX - 6, pieY + radius + 5);
+    const labelText = "Severity";
+    const textWidth = doc.getTextWidth(labelText);
+    doc.text(labelText, pieX - (textWidth / 2), pieY + radius + 5);
     doc.setTextColor(50, 50, 50);
   }
 
