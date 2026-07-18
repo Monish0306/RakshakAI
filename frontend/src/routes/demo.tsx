@@ -15,7 +15,7 @@ const steps = [
   { to: "/citizen",                  title: "Citizen protection portal",       time: "0:12", desc: "Emergency banner, four analyzer tiles, recent checks, trust score." },
   { to: "/citizen/analyze/chat",     title: "Chat Analyzer · digital arrest",  time: "0:22", desc: "Load sample → animated pipeline → risk 96 → Scam DNA + explainability." },
   { to: "/citizen/cooling-off",      title: "Cooling-off timer",                time: "0:38", desc: "10 calm minutes with 3 concrete steps." },
-  { to: "/citizen/report",           title: "Guided NCRB report",               time: "0:44", desc: "One form → NCRB + your bank + TRAI, all at once." },
+  { to: "/citizen/report",           title: "Guided NCRP report",               time: "0:44", desc: "One form → NCRP + your bank + TRAI, all at once." },
   { to: "/command",                  title: "Command Centre dashboard",         time: "0:54", desc: "Live incidents, 14-day trend, category mix, hotspots." },
   { to: "/command/investigations",   title: "Investigation workspace",          time: "1:04", desc: "Master-detail with timeline, evidence, suspects, court-ready report." },
   { to: "/command/network",          title: "Fraud network graph",              time: "1:14", desc: "Op. Nightshade cluster · nodes, edges, cluster actions." },

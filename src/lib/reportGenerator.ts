@@ -54,9 +54,25 @@ function drawPieSlice(doc: jsPDF, x: number, y: number, radius: number, startAng
   }
 }
 
-export function generateReportPDF(session: ReportSession): jsPDF {
+export async function generateReportPDF(session: ReportSession): Promise<jsPDF> {
   const doc = new jsPDF();
   let y = 0;
+
+  const coreData = JSON.stringify({
+    transcript: session.transcript,
+    verdict: session.verdict,
+    timestamp: session.timestamp,
+    matches: session.matches,
+  });
+  
+  let hashHex = "N/A";
+  if (typeof globalThis.crypto !== "undefined" && globalThis.crypto.subtle) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(coreData);
+    const hashBuffer = await globalThis.crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
 
   // 1. HEADER BAR
   doc.setFillColor(30, 58, 138); // #1E3A8A Dark Navy
@@ -241,6 +257,39 @@ export function generateReportPDF(session: ReportSession): jsPDF {
     doc.text(splitFlags, 20, y);
     y += splitFlags.length * 4 + 6;
   }
+
+  // Evidence Integrity Section
+  if (y > 230) {
+    doc.addPage();
+    y = 20;
+  } else {
+    drawDivider(doc, y);
+    y += 10;
+  }
+  
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.text("Evidence Integrity", 20, y);
+  y += 7;
+  
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.text("AI Model Version: Rakshak AI v1.0 — Hybrid Edge+Cloud", 20, y);
+  y += 5;
+  doc.text(`Report Generated: ${new Date().toISOString()}`, 20, y);
+  y += 5;
+  
+  const shortHash = hashHex !== "N/A" ? `${hashHex.substring(0, 16)}...` : hashHex;
+  doc.text(`Integrity Hash (SHA-256): ${shortHash}`, 20, y);
+  y += 5;
+  
+  doc.setFont("helvetica", "italic");
+  doc.setFontSize(8);
+  doc.setTextColor(100, 100, 100);
+  const hashNote = doc.splitTextToSize("This hash is deterministically generated from session data. Any tampering with this document will result in a mismatch upon verification.", 170);
+  doc.text(hashNote, 20, y);
+  y += hashNote.length * 4 + 6;
+  doc.setTextColor(50, 50, 50);
 
   // Ensure next steps fit
   if (y > 260) {

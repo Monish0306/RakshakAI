@@ -11,7 +11,7 @@ export const Route = createFileRoute("/help")({
 
 const faq = [
   { q: "Is this a real government service?", a: "This site is a prototype for the AI for Digital Public Safety hackathon. In production it would be operated by MHA / I4C with participating agencies." },
-  { q: "Does my chat leave my phone?", a: "No. The citizen analyzers run on-device. Only if you file a report do you choose what to share with NCRB, your bank and TRAI." },
+  { q: "Does my chat leave my phone?", a: "No. The citizen analyzers run on-device. Only if you file a report do you choose what to share with NCRP, your bank and TRAI." },
   { q: "How accurate are the AI models?", a: "Every model card publishes accuracy, false-positive rate and last audit date. See the AI Transparency Centre for full disclosures." },
   { q: "I'm a bank / LEA — how do I onboard?", a: "In production, agencies onboard through the MHA I4C administrator with signed MoUs and hardware-issued credentials." },
   { q: "What if I don't speak English?", a: "The platform supports 12 Indian languages, switchable from the top bar." },

@@ -131,6 +131,16 @@ export default function VerdictCard({ result, simpleView }: VerdictCardProps) {
           ))}
         </div>
       )}
+
+      {result.matchCount && result.matchCount > 0 ? (
+        <div className="mt-4 bg-amber-100 border border-amber-300 text-amber-900 px-4 py-3 rounded-lg shadow-sm font-medium flex items-start">
+          <AlertTriangle className="w-5 h-5 mr-3 mt-0.5 text-amber-700 shrink-0" />
+          <div>
+            <strong className="block text-amber-950 font-bold mb-0.5">⚠️ This matches {result.campaignId}</strong>
+            <span className="text-sm">{result.matchCount} similar reports detected. This is part of an active coordinated scam campaign.</span>
+          </div>
+        </div>
+      ) : null}
     </motion.div>
   );
 }

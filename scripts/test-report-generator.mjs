@@ -26,9 +26,12 @@ const negativeCase = {
   timestamp: new Date().toISOString(),
 };
 
-[positiveCase, negativeCase].forEach((session) => {
-  const doc = generateReportPDF(session);
-  const filename = `Rakshak-Report-${session.sessionId}.pdf`;
-  fs.writeFileSync(`./${filename}`, Buffer.from(doc.output("arraybuffer")));
-  console.log(`Generated: ${filename}`);
-});
+async function run() {
+  for (const session of [positiveCase, negativeCase]) {
+    const doc = await generateReportPDF(session);
+    const filename = `Rakshak-Report-${session.sessionId}.pdf`;
+    fs.writeFileSync(`./${filename}`, Buffer.from(doc.output("arraybuffer")));
+    console.log(`Generated: ${filename}`);
+  }
+}
+run();

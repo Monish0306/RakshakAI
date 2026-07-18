@@ -58,7 +58,7 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
     }
   }, [coolingTimer]);
 
-  const handleGenerateReport = () => {
+  const handleGenerateReport = async () => {
     if (!result) return;
     
     const session = {
@@ -71,7 +71,7 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
       timestamp: new Date().toISOString()
     };
 
-    const doc = generateReportPDF(session);
+    const doc = await generateReportPDF(session);
     doc.save(`RakshakAI_Report_${session.sessionId}.pdf`);
   };
 

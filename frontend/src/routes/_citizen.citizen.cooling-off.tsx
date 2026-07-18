@@ -71,7 +71,7 @@ function CoolingOff() {
       <div className="gov-card p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
           <div className="font-display font-semibold">Feeling calmer?</div>
-          <div className="text-sm text-muted-foreground">If you'd already transferred money, report to NCRB now to freeze the funds.</div>
+          <div className="text-sm text-muted-foreground">If you'd already transferred money, report to NCRP now to freeze the funds.</div>
         </div>
         <div className="flex gap-2">
           <Button asChild variant="outline"><a href="tel:1930">Call 1930</a></Button>

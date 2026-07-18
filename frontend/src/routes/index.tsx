@@ -153,7 +153,7 @@ function SignalRow({ icon, label, val }: { icon: React.ReactNode; label: string;
 }
 
 function TrustStrip() {
-  const items = ["Ministry of Home Affairs", "Reserve Bank of India", "CERT-In", "I4C · NCRB", "NPCI", "TRAI", "CDAC"];
+  const items = ["Ministry of Home Affairs", "Reserve Bank of India", "CERT-In", "I4C · NCRP", "NPCI", "TRAI", "CDAC"];
   return (
     <div className="border-b bg-navy-soft/40">
       <div className="mx-auto max-w-[1400px] px-4 lg:px-6 py-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] font-mono uppercase tracking-widest text-navy/80">
@@ -180,7 +180,7 @@ function DualAudience() {
           points={[
             "Paste a suspicious chat, forward a voice note, or scan a currency note.",
             "AI runs on-device — nothing personal leaves your phone.",
-            "Guided reporting to NCRB · 1930 · your bank, in 12 Indian languages.",
+            "Guided reporting to NCRP · 1930 · your bank, in 12 Indian languages.",
           ]}
           cta={{ to: "/citizen", label: "Open Citizen Portal" }}
         />
@@ -377,7 +377,7 @@ function Architecture() {
     { name: "Signal ingestion", nodes: ["Citizen apps", "Bank APIs", "Telecom DLT", "Web crawlers", "Field devices"] },
     { name: "AI agent layer",    nodes: ["Scam Classifier", "Scam DNA", "Voice / Deepfake", "OCR", "FICN CV", "Graph Miner", "Geospatial"] },
     { name: "Intelligence fusion", nodes: ["Case correlation", "Cluster synthesis", "Threat scoring", "Explainability"] },
-    { name: "Action & response", nodes: ["Citizen alerts", "Bank auto-block", "MHA / NCRB tickets", "Court-ready evidence", "Field bulletins"] },
+    { name: "Action & response", nodes: ["Citizen alerts", "Bank auto-block", "MHA / NCRP tickets", "Court-ready evidence", "Field bulletins"] },
   ];
   return (
     <section className="border-t bg-background">

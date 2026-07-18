@@ -23,7 +23,7 @@ Public / citizen:
 /citizen/analyze/image  Screenshot & OCR Analyzer
 /citizen/analyze/currency  Counterfeit Currency Check
 /citizen/cooling-off    Cooling-Off Safety Timer
-/citizen/report         Guided NCRB Report Generator
+/citizen/report         Guided NCRP Report Generator
 /citizen/learn          Scam library + Grandparent Mode
 ```
 
@@ -56,7 +56,7 @@ Cross-cutting:
 
 ## Key screen details
 
-- **Landing:** split panel — "For Citizens" / "For Law Enforcement", live counter of scams blocked (mocked), MHA / RBI / NCRB / CERT-In trust strip, 3 pillar cards (Detect · Disrupt · Respond), architecture teaser, footer with Govt-of-India-style signature.
+- **Landing:** split panel — "For Citizens" / "For Law Enforcement", live counter of scams blocked (mocked), MHA / RBI / NCRP / CERT-In trust strip, 3 pillar cards (Detect · Disrupt · Respond), architecture teaser, footer with Govt-of-India-style signature.
 - **Citizen Protection Portal:** 4 large action tiles (Chat / Voice / Screenshot / Currency), Trust Meter widget, recent checks, cooling-off timer CTA, emergency 1930 helpline banner.
 - **Conversation Analyzer:** paste/upload chat → animated pipeline (Tokenize → Intent → Scam DNA → Verdict) → risk meter (0-100), Scam DNA chips (impersonation, urgency, payment demand), explainable-AI panel with highlighted evidence spans, "Why this verdict" accordion, actions (Block / Report / Save to Vault).
 - **Voice Analyzer:** waveform, spoof/AI-voice probability, speaker traits, transcript with flagged phrases.
@@ -103,6 +103,6 @@ TopBar (with tricolor strip + role switcher + lang + Grandparent Mode + dark mod
 
 ## Out of scope for v1 (called out honestly)
 
-Real auth / roles, real AI inference, real OCR/ASR, Cloud/DB, PDF signing, WhatsApp/IVR channels, real MHA/NCRB integration. All mocked with realistic fixtures; every mock is clearly labelled in `/transparency` and `/demo`.
+Real auth / roles, real AI inference, real OCR/ASR, Cloud/DB, PDF signing, WhatsApp/IVR channels, real MHA/NCRP integration. All mocked with realistic fixtures; every mock is clearly labelled in `/transparency` and `/demo`.
 
 Approve to start Phase 1.

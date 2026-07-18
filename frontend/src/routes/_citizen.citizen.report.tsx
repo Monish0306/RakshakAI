@@ -8,7 +8,7 @@ import { CheckCircle2, FileText, Send, Shield } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_citizen/citizen/report")({
-  head: () => ({ meta: [{ title: "Report to NCRB · Suraksha Bharat" }, { name: "description", content: "Guided cyber-crime reporting to NCRB, your bank and telecom regulator." }] }),
+  head: () => ({ meta: [{ title: "Report to NCRP · Suraksha Bharat" }, { name: "description", content: "Guided cyber-crime reporting to NCRP, your bank and telecom regulator." }] }),
   component: Report,
 });
 
@@ -23,11 +23,11 @@ function Report() {
       <div className="max-w-2xl mx-auto py-10">
         <div className="gov-card p-10 text-center">
           <div className="mx-auto h-12 w-12 rounded-full bg-success/15 text-success grid place-items-center"><CheckCircle2 className="h-6 w-6" /></div>
-          <h2 className="mt-4 font-display text-2xl font-semibold">Report filed · NCRB Ack #NCR-2025-8871204</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Your report has been forwarded to NCRB, HDFC Bank fraud team, and TRAI DLT. You'll receive updates on the number you provided.</p>
+          <h2 className="mt-4 font-display text-2xl font-semibold">Report filed · NCRP Ack #NCR-2025-8871204</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Your report has been forwarded to NCRP, HDFC Bank fraud team, and TRAI DLT. You'll receive updates on the number you provided.</p>
           <div className="mt-6 grid grid-cols-3 gap-3 text-left">
             {[
-              { name: "NCRB portal",     status: "Filed",   note: "Ack #NCR-2025-8871204" },
+              { name: "NCRP portal",     status: "Filed",   note: "Ack #NCR-2025-8871204" },
               { name: "Your bank",       status: "Notified", note: "Freeze request sent · 2m ago" },
               { name: "TRAI · DLT",      status: "Notified", note: "Header VM-SBIUPD flagged" },
             ].map(s => (
@@ -46,7 +46,7 @@ function Report() {
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
       <SectionHeader eyebrow="Citizen · Guided report" title="File once. We route it everywhere."
-        description="One form. Sends to NCRB, your bank, and the telecom regulator — with your evidence attached." />
+        description="One form. Sends to NCRP, your bank, and the telecom regulator — with your evidence attached." />
 
       <ol className="grid grid-cols-4 gap-2">
         {steps.map((s, idx) => (
@@ -85,7 +85,7 @@ function Report() {
           <div className="space-y-3">
             <div className="text-sm">Please confirm your report will be sent to:</div>
             <ul className="space-y-2 text-sm">
-              {["National Cyber Crime Reporting Portal (NCRB)", "Your bank's fraud response team", "TRAI · Do-Not-Disturb / DLT compliance"].map(x => (
+              {["National Cyber Crime Reporting Portal (NCRP)", "Your bank's fraud response team", "TRAI · Do-Not-Disturb / DLT compliance"].map(x => (
                 <li key={x} className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-navy" /> {x}</li>
               ))}
             </ul>

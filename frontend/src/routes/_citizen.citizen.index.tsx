@@ -97,7 +97,7 @@ function CitizenHome() {
           <div className="h-10 w-10 rounded bg-navy-soft text-navy grid place-items-center"><FileText className="h-5 w-5" /></div>
           <div className="flex-1">
             <div className="font-display font-semibold">Guided reporting</div>
-            <div className="text-sm text-muted-foreground">If you've been scammed, we'll walk you through reporting to NCRB, your bank and the telecom regulator in one flow — with your evidence attached.</div>
+            <div className="text-sm text-muted-foreground">If you've been scammed, we'll walk you through reporting to NCRP, your bank and the telecom regulator in one flow — with your evidence attached.</div>
           </div>
           <Button asChild variant="outline"><Link to="/citizen/report">Start report</Link></Button>
         </div>

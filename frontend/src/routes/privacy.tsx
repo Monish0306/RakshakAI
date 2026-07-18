@@ -35,7 +35,7 @@ function Privacy() {
               { name: "Your device",       leaves: "—", body: "AI runs locally. Text, audio, images never leave unless you tap Share." },
               { name: "Anonymised signal", leaves: "hash-only", body: "A one-way fingerprint helps flag similar scams for other citizens." },
               { name: "Intelligence layer", leaves: "aggregated", body: "Only cluster-level intel — never your identity — enters the layer." },
-              { name: "Consented reports", leaves: "when you file", body: "NCRB, bank and TRAI receive what you approved, and only that." },
+              { name: "Consented reports", leaves: "when you file", body: "NCRP, bank and TRAI receive what you approved, and only that." },
               { name: "Analytics",         leaves: "differentially private", body: "National dashboards see counts, never individuals." },
             ].map((c, i) => (
               <div key={c.name} className="border rounded p-3 bg-canvas relative">

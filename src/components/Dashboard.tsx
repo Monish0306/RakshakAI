@@ -16,13 +16,19 @@ export default function Dashboard() {
         const latency = await getAverageLatency();
         
         if (data) {
-          setMetrics({ ...data, avgLatencyMs: latency || data.avgLatencyMs });
+          setMetrics({ 
+            ...data, 
+            precision: typeof data.precision === 'number' && data.precision <= 1 ? +(data.precision * 100).toFixed(1) : data.precision,
+            recall: typeof data.recall === 'number' && data.recall <= 1 ? +(data.recall * 100).toFixed(1) : data.recall,
+            f1Score: typeof data.f1Score === 'number' && data.f1Score <= 1 ? +(data.f1Score * 100).toFixed(1) : data.f1Score,
+            avgLatencyMs: latency || data.avgLatencyMs 
+          });
         } else {
           // Fallback static data if Firebase is empty/inaccessible
           setMetrics({
             precision: 98.2,
             recall: 96.5,
-            f1: 97.3,
+            f1Score: 97.3,
             avgLatencyMs: 420
           });
         }
@@ -78,7 +84,7 @@ export default function Dashboard() {
         {[
           { label: 'Precision', value: `${metrics.precision}%`, icon: Target, desc: 'Calls flagged that were actually scams' },
           { label: 'Recall', value: `${metrics.recall}%`, icon: AlertTriangle, desc: 'Actual scams correctly caught' },
-          { label: 'F1-Score', value: `${metrics.f1}%`, icon: Activity, desc: 'Harmonic mean of precision & recall' },
+          { label: 'F1-Score', value: `${metrics.f1Score}%`, icon: Activity, desc: 'Harmonic mean of precision & recall' },
           { label: 'Avg Latency', value: `${metrics.avgLatencyMs}ms`, icon: Zap, desc: 'Time to verdict (Edge + Cloud)' },
         ].map((stat, idx) => (
           <motion.div 

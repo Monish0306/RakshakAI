@@ -53,5 +53,6 @@ export async function checkOnDevice(transcript) {
     escalate: maxSimilarity >= THRESHOLD,
     maxSimilarity,
     ranOnDevice: true,
+    transcriptEmbedding: Array.from(transcriptEmbedding),
   };
 }

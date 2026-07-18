@@ -14,7 +14,7 @@ const services = [
   { name: "AI Gateway · sd-arrest-v3",   uptime: 99.97, status: "op" as const },
   { name: "AI Gateway · cv-ficn-v2",     uptime: 99.94, status: "op" as const },
   { name: "AI Gateway · graph-mule-v1",  uptime: 99.62, status: "degraded" as const },
-  { name: "NCRB relay",                   uptime: 99.99, status: "op" as const },
+  { name: "NCRP relay",                   uptime: 99.99, status: "op" as const },
   { name: "Bank fraud desks (12 banks)",  uptime: 99.91, status: "op" as const },
   { name: "TRAI DLT connector",           uptime: 99.87, status: "op" as const },
 ];

@@ -23,7 +23,7 @@ const groups: NavGroup[] = [
     title: "Response",
     items: [
       { to: "/citizen/cooling-off", label: "Cooling-off timer", icon: <Timer className="h-4 w-4" /> },
-      { to: "/citizen/report",      label: "Report to NCRB",    icon: <FileText className="h-4 w-4" /> },
+      { to: "/citizen/report",      label: "Report to NCRP",    icon: <FileText className="h-4 w-4" /> },
       { to: "/citizen/learn",       label: "Scam library",      icon: <BookOpen className="h-4 w-4" /> },
     ],
   },

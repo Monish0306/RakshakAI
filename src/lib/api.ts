@@ -18,6 +18,8 @@ export interface ClassificationResponse {
     redFlagsDetected: string[];
     timeToVerdictMs: number;
     ranOnDevice?: boolean;
+    matchCount?: number;
+    campaignId?: string | null;
   };
   error: string | null;
 }
@@ -59,6 +61,37 @@ export async function getAdvisory(verdict: string, lang: string = "en"): Promise
   
   try {
     const res = await fetch(`${API_BASE}/api/advisory?verdict=${verdict}&lang=${lang}`, {
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+}
+
+export interface CampaignMatchResponse {
+  success: boolean;
+  data: {
+    matchCount: number;
+    campaignId: string | null;
+  };
+  error: string | null;
+}
+
+export async function matchCampaign(transcriptEmbedding: number[], sessionData: any, sessionId: string): Promise<CampaignMatchResponse> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 15000); // 15s timeout
+  
+  try {
+    const res = await fetch(`${API_BASE}/api/campaign-match`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transcriptEmbedding, sessionData, sessionId }),
       signal: controller.signal
     });
     clearTimeout(id);

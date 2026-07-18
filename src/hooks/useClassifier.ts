@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { classifyTranscript, getAdvisory } from "../lib/api";
+import { classifyTranscript, getAdvisory, matchCampaign } from "../lib/api";
 import type { ClassificationResponse } from "../lib/api";
 // @ts-ignore: Implicit any for JS module without types
 import { checkOnDevice } from "../lib/onDeviceFilter";
@@ -42,7 +42,22 @@ export function useClassifier() {
       console.log("[AUDIT] Escalating to cloud API");
       // Only escalates to the cloud when the on-device filter flags it as suspicious
       const classifyRes = await classifyTranscript(transcript);
-      setResult({ ...classifyRes.data, ranOnDevice: false });
+      let finalResult = { ...classifyRes.data, ranOnDevice: false };
+
+      if (finalResult.verdict === "HIGH_RISK" && localCheck.transcriptEmbedding) {
+        try {
+          console.log("[AUDIT] Running secure server-side campaign match");
+          const matchRes = await matchCampaign(localCheck.transcriptEmbedding, finalResult, "");
+          if (matchRes.success && matchRes.data) {
+            finalResult.matchCount = matchRes.data.matchCount;
+            finalResult.campaignId = matchRes.data.campaignId;
+          }
+        } catch (e) {
+          console.error("Campaign match failed:", e);
+        }
+      }
+
+      setResult(finalResult);
 
       const advisoryRes = await getAdvisory(classifyRes.data.verdict, lang);
       setAdvisory(advisoryRes.data.text);
