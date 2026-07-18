@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard.tsx';
 import HowItWorks from './components/HowItWorks.tsx';
 import About from './components/About.tsx';
 import CommandCenter from './components/CommandCenter.tsx';
+import LandingAuth from './components/LandingAuth.tsx';
 import { useClassifier } from './hooks/useClassifier.ts';
 
 export default function App() {
@@ -12,29 +13,59 @@ export default function App() {
   const [language, setLanguage] = useState('en');
   const [simpleView, setSimpleView] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [redirectMsg, setRedirectMsg] = useState<string | null>(null);
 
   const classifier = useClassifier();
 
   // The model loads lazily when first used, or we could trigger a pre-load here if needed.
-  // For now, we'll assume it's loaded when not loading. Actually, the prompt says "gray dot + Loading privacy filter... while loading, green dot + Privacy filter active once onDeviceFilter has loaded".
-  // Let's create a small effect to simulate this or check it.
   useEffect(() => {
-    // In a real app we'd wait for checkOnDevice to initialize. For now we can fake the initial load time to show the UI state, since checkOnDevice loads on first call. 
-    // Wait, onDeviceFilter.js has getEmbedder() which we can't easily call directly from here without importing it.
     const timer = setTimeout(() => setModelLoaded(true), 2500);
     return () => clearTimeout(timer);
   }, []);
+
+  if (showLanding) {
+    return (
+      <LandingAuth
+        language={language}
+        onEnterApp={() => setShowLanding(false)}
+        onLoginSuccess={(loggedInUser) => {
+          setUser(loggedInUser);
+          setShowLanding(false);
+          setRedirectMsg(null);
+        }}
+        redirectMessage={redirectMsg}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-blue-200">
       <Header
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={(tab) => {
+          if (tab === 'command' && !user) {
+            setRedirectMsg("Sign in to access the Investigator Command Center");
+            setShowLanding(true);
+          } else {
+            setActiveTab(tab);
+          }
+        }}
         language={language}
         setLanguage={setLanguage}
         simpleView={simpleView}
         setSimpleView={setSimpleView}
         modelLoaded={modelLoaded}
+        user={user}
+        onLogout={() => {
+          setUser(null);
+          setShowLanding(true);
+        }}
+        onSignInClick={() => {
+          setRedirectMsg(null);
+          setShowLanding(true);
+        }}
       />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -10,6 +10,9 @@ interface HeaderProps {
   simpleView: boolean;
   setSimpleView: (val: boolean) => void;
   modelLoaded: boolean;
+  user: any;
+  onLogout: () => void;
+  onSignInClick: () => void;
 }
 
 export default function Header({ 
@@ -19,7 +22,10 @@ export default function Header({
   setLanguage, 
   simpleView, 
   setSimpleView,
-  modelLoaded
+  modelLoaded,
+  user,
+  onLogout,
+  onSignInClick
 }: HeaderProps) {
   
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
@@ -112,6 +118,30 @@ export default function Header({
                 {t["header.simpleView"]}
               </span>
             </label>
+
+            {/* Auth status and triggers */}
+            <div className="flex items-center space-x-3 border-l border-gray-200 pl-4 ml-2">
+              {user ? (
+                <>
+                  <span className="text-xs font-bold text-gray-700 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
+                    Hi, {user.username}
+                  </span>
+                  <button
+                    onClick={onLogout}
+                    className="text-xs font-bold text-[#1E3A8A] hover:underline bg-transparent border-none cursor-pointer"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={onSignInClick}
+                  className="text-xs font-bold text-[#1E3A8A] hover:underline bg-transparent border-none cursor-pointer"
+                >
+                  Sign In
+                </button>
+              )}
+            </div>
             
           </div>
         </div>
