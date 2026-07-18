@@ -64,11 +64,12 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ success: false, error: "Use POST" });
   }
-  const { transcript } = req.body;
+  const { transcript, language } = req.body;
   if (!transcript || typeof transcript !== "string" || transcript.trim().length === 0) {
     return res.status(400).json({ success: false, error: "Missing or invalid transcript" });
   }
 
+  const targetLang = language || "en";
   const fewShotBlock = buildFewShotBlock(fewShotExamples);
   const redFlags = detectRedFlags(transcript);
   const redFlagNote =
@@ -90,8 +91,17 @@ Transcript to analyze:
 "${transcript}"
 ${redFlagNote}
 
+CRITICAL LOCALIZATION REQUIREMENT:
+You MUST write the "explanation" string and the "reason" string for each matched category in the target language: "${targetLang}" (e.g. Hindi, Tamil, Kannada, Telugu, or English).
+- For Hindi (hi): Use Hindi language written in Devanagari script.
+- For Tamil (ta): Use Tamil language written in Tamil script.
+- For Kannada (kn): Use Kannada language written in Kannada script.
+- For Telugu (te): Use Telugu language written in Telugu script.
+- For English (en): Use English.
+Note: The "verdict" and "severity" field values MUST remain in English uppercase/titlecase (e.g. "SAFE", "HIGH_RISK", "Critical", etc.). The "evidence" field must be the exact quote matching the transcript.
+
 Respond ONLY with this exact JSON shape, no markdown, no extra text, no explanation outside the JSON:
-{"verdict": "SAFE" | "UNCERTAIN" | "HIGH_RISK", "confidence": <0-100>, "matches": [{"category": <number>, "evidence": "<exact short quote>", "reason": "<why this indicates the category>", "severity": "Low" | "Medium" | "High" | "Critical"}], "explanation": "<short overall reason>"}`;
+{"verdict": "SAFE" | "UNCERTAIN" | "HIGH_RISK", "confidence": <0-100>, "matches": [{"category": <number>, "evidence": "<exact short quote>", "reason": "<why this indicates the category, written in the target language>", "severity": "Low" | "Medium" | "High" | "Critical"}], "explanation": "<short overall reason, written in the target language>"}`;
 
   const startTime = Date.now();
 

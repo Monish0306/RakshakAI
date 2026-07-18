@@ -3,6 +3,7 @@ import { classifyTranscript, getAdvisory, matchCampaign, recordTelemetry } from 
 import type { ClassificationResponse } from "../lib/api";
 // @ts-ignore: Implicit any for JS module without types
 import { checkOnDevice } from "../lib/onDeviceFilter";
+import { TRANSLATIONS } from "../lib/translations";
 
 export function useClassifier() {
   const [loading, setLoading] = useState(false);
@@ -16,6 +17,8 @@ export function useClassifier() {
     setResult(null);
     setAdvisory(null);
 
+    const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+
     try {
       const localCheck = await checkOnDevice(transcript);
 
@@ -27,8 +30,7 @@ export function useClassifier() {
           verdict: "SAFE",
           confidence: 90,
           matches: [],
-          explanation:
-            "This does not resemble known scam patterns. Checked entirely on your device — no data was sent to any server.",
+          explanation: t["shield.safeExplanation"],
           ranOnDevice: true,
           timeToVerdictMs: 0,
           redFlagsDetected: []
@@ -43,7 +45,7 @@ export function useClassifier() {
       console.log("[AUDIT] Escalating to cloud API");
       recordTelemetry("cloud"); // Fire-and-forget telemetry counter
       // Only escalates to the cloud when the on-device filter flags it as suspicious
-      const classifyRes = await classifyTranscript(transcript);
+      const classifyRes = await classifyTranscript(transcript, lang);
       let finalResult = { ...classifyRes.data, ranOnDevice: false };
 
       if (finalResult.verdict === "HIGH_RISK" && localCheck.transcriptEmbedding) {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchCampaigns, type Campaign } from '../lib/api';
 import { Shield, Users, Calendar, ArrowRight, AlertTriangle, RefreshCw, Layers, Download } from 'lucide-react';
+import { TRANSLATIONS } from '../lib/translations';
 
 const CATEGORY_LABELS: Record<string, string> = {
   "1": "Authority Impersonation",
@@ -13,12 +14,67 @@ const CATEGORY_LABELS: Record<string, string> = {
   "8": "Reward/Incentive Lure"
 };
 
-export default function CommandCenter() {
+interface CommandCenterProps {
+  language: string;
+}
+
+export default function CommandCenter({ language }: CommandCenterProps) {
   const [activeSubTab, setActiveSubTab] = useState<'queue' | 'evidence'>('queue');
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [expandedCampaignId, setExpandedCampaignId] = useState<string | null>(null);
+
+  const t = TRANSLATIONS[language] || TRANSLATIONS.en;
+
+  const getCategoryLabel = (catNum: string | number) => {
+    const labels: Record<string, Record<string, string>> = {
+      en: CATEGORY_LABELS,
+      hi: {
+        "1": "अधिकारी का स्वांग रचना",
+        "2": "जल्दबाजी/खतरे को बढ़ाना",
+        "3": "अलगाव के निर्देश",
+        "4": "भुगतान/ओटीपी की मांग",
+        "5": "फर्जी पोर्टल/दस्तावेज़ संदर्भ",
+        "6": "वीडियो-बंधक बनाना",
+        "7": "पहचान सत्यापन का बहाना",
+        "8": "पुरस्कार/प्रलोभन का लालच"
+      },
+      ta: {
+        "1": "அதிகாரியைப் போல நடித்தல்",
+        "2": "அவசரம்/அச்சுறுத்தலை அதிகரித்தல்",
+        "3": "தனிமைப்படுத்துவதற்கான அறிவுறுத்தல்கள்",
+        "4": "பணம்/OTP கோருதல்",
+        "5": "போலி போர்டல்/ஆவணக் குறிப்பு",
+        "6": "வீடியோ-பிணை கைதி கட்டமைப்பு",
+        "7": "அடையாள சரிபார்ப்பு சாக்கு",
+        "8": "விருது/ஊக்கத்தொகை தூண்டில்"
+      },
+      kn: {
+        "1": "ಅಧಿಕಾರಿಯಂತೆ ನಟಿಸುವುದು",
+        "2": "ತುರ್ತು/ಬೆದರಿಕೆಯನ್ನು ಹೆಚ್ಚಿಸುವುದು",
+        "3": "ಪ್ರತ್ಯೇಕವಾಗಿರಲು ಸೂಚನೆಗಳು",
+        "4": "ಪಾವತಿ/OTP ಗಾಗಿ ಬೇಡಿಕೆ",
+        "5": "ನಕಲಿ ಪೋರ್ಟಲ್/ದಾಖಲೆ ಉಲ್ಲೇಖ",
+        "6": "ವಿಡಿಯೋ-ಬಂಧನ ರೂಪಿಸುವುದು",
+        "7": "ಗುರುತು ಪರಿಶೀಲನೆಯ ನೆಪ",
+        "8": "ಪ್ರಶಸ್ತಿ/ಪ್ರಲೋಭನೆಯ ಆಮಿಷ"
+      },
+      te: {
+        "1": "అధికార ప్రతినిధిగా నటించడం",
+        "2": "అత్యవసరం/బెదిరింపులను పెంచడం",
+        "3": "ఐసోలేషన్ సూచనలు",
+        "4": "చెల్లింపు/OTP డిమాండ్",
+        "5": "నకిలీ పోర్టల్/డాక్యుమెంట్ ప్రస్తావన",
+        "6": "వీడియో-హోస్టేజ్ ఫ్రేమింగ్",
+        "7": "గుర్తింపు ధృవీకరణ సాకు",
+        "8": "బహుమతి/ప్రోత్సాహక ఎర"
+      }
+    };
+    const langLabels = labels[language] || labels.en;
+    const catStr = String(catNum);
+    return langLabels[catStr] || `Pattern ${catStr}`;
+  };
 
   const exportCampaignToCSV = (e: React.MouseEvent, campaign: Campaign) => {
     e.stopPropagation();
@@ -29,7 +85,7 @@ export default function CommandCenter() {
       r.timestamp,
       r.verdict,
       `${r.confidence}%`,
-      CATEGORY_LABELS[campaign.dominantCategory] || campaign.dominantCategory,
+      getCategoryLabel(campaign.dominantCategory),
       `"${r.transcript.trim().replace(/\r?\n\s*\r?\n/g, '\n').replace(/"/g, '""')}"`
     ]);
     const csvContent = [
@@ -78,11 +134,11 @@ export default function CommandCenter() {
         <div>
           <div className="text-xs font-mono uppercase tracking-widest text-gray-500 mb-1.5 flex items-center">
             <span className="h-2 w-2 rounded-full bg-[#1E3A8A] mr-2"></span>
-            Investigator Workspace
+            {t["command.eyebrow"]}
           </div>
-          <h1 className="text-3xl font-extrabold text-[#1E3A8A]">National Command Center</h1>
+          <h1 className="text-3xl font-extrabold text-[#1E3A8A]">{t["command.title"]}</h1>
           <p className="text-sm text-gray-600 mt-1 max-w-2xl">
-            Real-time scam campaign tracking and decentralized evidence verification suite.
+            {t["command.subtitle"]}
           </p>
         </div>
 
@@ -97,7 +153,7 @@ export default function CommandCenter() {
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>Campaign Queue</span>
+            <span>{t["command.tabQueue"]}</span>
           </button>
           <button
             onClick={() => setActiveSubTab('evidence')}
@@ -108,7 +164,7 @@ export default function CommandCenter() {
             }`}
           >
             <Shield className="w-4 h-4" />
-            <span>Evidence Verification</span>
+            <span>{t["command.tabEvidence"]}</span>
           </button>
         </div>
       </div>
@@ -116,21 +172,21 @@ export default function CommandCenter() {
       {activeSubTab === 'queue' && (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-gray-900">Coordinated Scam Genomes</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t["command.feedTitle"]}</h2>
             <button
               onClick={loadCampaigns}
               disabled={loading}
               className="flex items-center space-x-2 bg-white border border-gray-200 hover:border-[#1E3A8A] text-gray-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow-sm hover:shadow transition-all disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-              <span>Refresh Feed</span>
+              <span>{t["command.feedRefresh"]}</span>
             </button>
           </div>
 
           {loading && (
             <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-gray-200 shadow-sm">
               <RefreshCw className="w-8 h-8 text-[#1E3A8A] animate-spin mb-4" />
-              <p className="text-gray-600 text-sm font-medium">Re-clustering crime registries...</p>
+              <p className="text-gray-600 text-sm font-medium">{t["command.feedLoading"]}</p>
             </div>
           )}
 
@@ -143,9 +199,9 @@ export default function CommandCenter() {
           {!loading && !error && campaigns.length === 0 && (
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-12 text-center">
               <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-gray-900 mb-1">No Coordinated Campaigns Detected</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">{t["command.feedEmpty"]}</h3>
               <p className="text-gray-500 text-sm max-w-sm mx-auto">
-                No clusters found with 2 or more matching reports. Independent reports remain quarantined.
+                {t["command.feedEmptyDesc"]}
               </p>
             </div>
           )}
@@ -170,19 +226,19 @@ export default function CommandCenter() {
                           {c.priority && (
                             <span className="bg-red-600 text-white text-[10px] uppercase tracking-wider px-2 py-1 rounded font-bold flex items-center">
                               <span className="w-1.5 h-1.5 rounded-full bg-white mr-1.5 animate-ping"></span>
-                              Priority Investigation
+                              {t["command.priorityInvestigation"]}
                             </span>
                           )}
                           <span className="bg-red-50 text-red-700 text-xs px-2.5 py-1 rounded-full font-bold border border-red-200 flex items-center space-x-1.5">
                             <AlertTriangle className="w-3.5 h-3.5" />
-                            <span>{c.reportCount} Reports</span>
+                            <span>{c.reportCount} {t["command.reportsCount"]}</span>
                           </span>
                         </div>
                       </div>
 
                       {/* Scam Category */}
                       <h3 className="text-lg font-extrabold text-[#1E3A8A] mb-3">
-                        {CATEGORY_LABELS[c.dominantCategory] || c.dominantCategory}
+                        {getCategoryLabel(c.dominantCategory)}
                       </h3>
 
                       {/* Dates */}
@@ -190,13 +246,13 @@ export default function CommandCenter() {
                         <div className="flex items-center space-x-1.5">
                           <Calendar className="w-3.5 h-3.5 text-gray-400" />
                           <span>
-                            First: <strong className="text-gray-900">{new Date(c.firstSeen).toLocaleDateString()}</strong>
+                            {t["command.first"]} <strong className="text-gray-900">{new Date(c.firstSeen).toLocaleDateString()}</strong>
                           </span>
                         </div>
                         <div className="flex items-center space-x-1.5">
                           <Calendar className="w-3.5 h-3.5 text-gray-400" />
                           <span>
-                            Last: <strong className="text-gray-900">{new Date(c.lastSeen).toLocaleDateString()}</strong>
+                            {t["command.last"]} <strong className="text-gray-900">{new Date(c.lastSeen).toLocaleDateString()}</strong>
                           </span>
                         </div>
                       </div>
@@ -204,7 +260,7 @@ export default function CommandCenter() {
                       {/* Excerpt */}
                       <div className="text-sm text-gray-700 bg-gray-50 p-3.5 rounded-xl border border-gray-100 font-medium">
                         <div className="text-[10px] font-mono text-gray-400 uppercase tracking-widest mb-1.5">
-                          Genome Transcript Excerpt
+                          {t["command.genomeExcerpt"]}
                         </div>
                         <p className={`italic ${isExpanded ? '' : 'line-clamp-2'}`}>
                           "{c.representativeTranscript}"
@@ -218,10 +274,10 @@ export default function CommandCenter() {
                         className="flex items-center space-x-1.5 text-gray-500 hover:text-[#1E3A8A] bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200 transition-colors"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        <span>Export Case</span>
+                        <span>{t["command.exportCase"]}</span>
                       </button>
                       <div className="flex items-center">
-                        <span>{isExpanded ? "Click to collapse" : "Click to view full transcript"}</span>
+                        <span>{isExpanded ? t["command.collapse"] : t["command.expand"]}</span>
                         <ArrowRight className="w-3.5 h-3.5 ml-1.5 animate-pulse" />
                       </div>
                     </div>
@@ -235,9 +291,9 @@ export default function CommandCenter() {
 
       {activeSubTab === 'evidence' && (
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Evidence Verification Tool</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{t["command.verificationTitle"]}</h2>
           <p className="text-sm text-gray-600 mb-6">
-            Input the integrity parameters from a citizen's PDF report to verify chain-of-custody validity.
+            {t["command.verificationSubtitle"]}
           </p>
           <div className="border border-dashed border-gray-200 rounded-xl p-8 text-center text-gray-500 font-medium">
             Form UI implementation in progress...

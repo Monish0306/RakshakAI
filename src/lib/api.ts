@@ -33,7 +33,7 @@ export interface AdvisoryResponse {
   error: string | null;
 }
 
-export async function classifyTranscript(transcript: string): Promise<ClassificationResponse> {
+export async function classifyTranscript(transcript: string, language: string): Promise<ClassificationResponse> {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), 15000); // 15s timeout
   
@@ -41,7 +41,7 @@ export async function classifyTranscript(transcript: string): Promise<Classifica
     const res = await fetch(`${API_BASE}/api/classify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ transcript }),
+      body: JSON.stringify({ transcript, language }),
       signal: controller.signal
     });
     clearTimeout(id);

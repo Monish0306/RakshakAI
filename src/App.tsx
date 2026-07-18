@@ -39,10 +39,10 @@ export default function App() {
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'home' && <CitizenShield classifier={classifier} language={language} simpleView={simpleView} />}
-        {activeTab === 'how' && <HowItWorks />}
-        {activeTab === 'dashboard' && <Dashboard />}
-        {activeTab === 'about' && <About />}
-        {activeTab === 'command' && <CommandCenter />}
+        {activeTab === 'how' && <HowItWorks language={language} />}
+        {activeTab === 'dashboard' && <Dashboard language={language} />}
+        {activeTab === 'about' && <About language={language} />}
+        {activeTab === 'command' && <CommandCenter language={language} />}
       </main>
     </div>
   );

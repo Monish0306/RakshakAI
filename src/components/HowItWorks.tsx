@@ -1,35 +1,42 @@
 import { Shield, Brain, Lock, BellRing } from 'lucide-react';
+import { TRANSLATIONS } from '../lib/translations';
 
-export default function HowItWorks() {
+interface HowItWorksProps {
+  language: string;
+}
+
+export default function HowItWorks({ language }: HowItWorksProps) {
+  const t = TRANSLATIONS[language] || TRANSLATIONS.en;
+
   const steps = [
     {
       icon: Shield,
-      title: "1. Paste or Describe",
-      description: "If you receive a suspicious call, message, or video request demanding money or threatening legal action, paste the transcript or describe what happened into the Rakshak AI interface."
+      title: t["how.step1Title"],
+      description: t["how.step1Desc"]
     },
     {
       icon: Lock,
-      title: "2. Privacy-First Edge Check",
-      description: "Before sending any data to the cloud, our on-device AI scans the text against known scam signatures locally on your browser. If it's completely safe, your data never leaves your device."
+      title: t["how.step2Title"],
+      description: t["how.step2Desc"]
     },
     {
       icon: Brain,
-      title: "3. Advanced Reasoning",
-      description: "If the interaction matches scam patterns, it is securely evaluated by an advanced Large Language Model trained specifically on the 8-point digital arrest taxonomy to determine the exact threat vector."
+      title: t["how.step3Title"],
+      description: t["how.step3Desc"]
     },
     {
       icon: BellRing,
-      title: "4. Verdict & Next Steps",
-      description: "You receive an instant, explainable verdict (SAFE, UNCERTAIN, or HIGH RISK) in your preferred language, along with a printable cybercrime report and helpline information."
+      title: t["how.step4Title"],
+      description: t["how.step4Desc"]
     }
   ];
 
   return (
     <div className="max-w-4xl mx-auto space-y-12 pb-12">
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">How Rakshak AI Protects You</h1>
+        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{t["how.title"]}</h1>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          A proactive intelligence tool designed to break the psychological grip of digital arrest scams and financial fraud before money changes hands.
+          {t["how.subtitle"]}
         </p>
       </div>
 
@@ -54,9 +61,9 @@ export default function HowItWorks() {
 
       <div className="mt-12 bg-blue-50 border border-blue-200 rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
-          <h3 className="text-xl font-bold text-blue-900 mb-2">Designed for Public Safety</h3>
+          <h3 className="text-xl font-bold text-blue-900 mb-2">{t["how.footerTitle"]}</h3>
           <p className="text-blue-800 max-w-2xl">
-            Rakshak AI does not just tell you if something is a scam; it tells you exactly *why*, quoting the attacker's own words back to you to break the illusion of authority.
+            {t["how.footerDesc"]}
           </p>
         </div>
       </div>
