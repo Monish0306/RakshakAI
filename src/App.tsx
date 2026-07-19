@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from './lib/firebase';
 import Header from './components/Header.tsx';
 import CitizenShield from './components/CitizenShield.tsx';
 import Dashboard from './components/Dashboard.tsx';
@@ -14,8 +16,24 @@ export default function App() {
   const [simpleView, setSimpleView] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [userAuth, setUserAuth] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [redirectMsg, setRedirectMsg] = useState<string | null>(null);
+
+  const combinedUser = userAuth ? { ...userAuth, ...userProfile } : null;
+
+  useEffect(() => {
+    if (userAuth?.uid) {
+      const unsub = onSnapshot(doc(db, "users", userAuth.uid), (docSnap) => {
+        if (docSnap.exists()) {
+          setUserProfile(docSnap.data());
+        }
+      });
+      return () => unsub();
+    } else {
+      setUserProfile(null);
+    }
+  }, [userAuth?.uid]);
 
   const classifier = useClassifier();
 
@@ -31,7 +49,7 @@ export default function App() {
         language={language}
         onEnterApp={() => setShowLanding(false)}
         onLoginSuccess={(loggedInUser) => {
-          setUser(loggedInUser);
+          setUserAuth(loggedInUser);
           setShowLanding(false);
           setRedirectMsg(null);
         }}
@@ -45,7 +63,7 @@ export default function App() {
       <Header
         activeTab={activeTab}
         setActiveTab={(tab) => {
-          if (tab === 'command' && !user) {
+          if (tab === 'command' && !combinedUser) {
             setRedirectMsg("Sign in to access the Investigator Command Center");
             setShowLanding(true);
           } else {
@@ -57,9 +75,9 @@ export default function App() {
         simpleView={simpleView}
         setSimpleView={setSimpleView}
         modelLoaded={modelLoaded}
-        user={user}
+        user={combinedUser}
         onLogout={() => {
-          setUser(null);
+          setUserAuth(null);
           setShowLanding(true);
         }}
         onSignInClick={() => {
@@ -69,7 +87,7 @@ export default function App() {
       />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'home' && <CitizenShield classifier={classifier} language={language} simpleView={simpleView} />}
+        {activeTab === 'home' && <CitizenShield classifier={classifier} language={language} simpleView={simpleView} user={combinedUser} />}
         {activeTab === 'how' && <HowItWorks language={language} />}
         {activeTab === 'dashboard' && <Dashboard language={language} />}
         {activeTab === 'about' && <About language={language} />}

@@ -12,27 +12,53 @@ interface CitizenShieldProps {
   classifier: any;
   language: string;
   simpleView: boolean;
+  user?: any;
 }
 
 const SAMPLE_SCAM_TRANSCRIPT = 
   "Hello, this is Inspector Sharma from the CBI. We have intercepted a package in your name containing illegal passports. You are under digital arrest and must remain on this video call. Do not disconnect or a warrant will be issued immediately. For verification of your innocence, transfer a refundable deposit of Rs. 50,000 to the RBI secure account.";
 
-export default function CitizenShield({ classifier, language, simpleView }: CitizenShieldProps) {
+export default function CitizenShield({ classifier, language, simpleView, user }: CitizenShieldProps) {
   const [transcript, setTranscript] = useState('');
   const [coolingTimer, setCoolingTimer] = useState(0);
   const { loading, result, advisory, error, runClassification } = classifier;
   const [isSimulating, setIsSimulating] = useState(false);
+  const [moneySent, setMoneySent] = useState<boolean | null>(null);
+  const [evidenceChecked, setEvidenceChecked] = useState<Record<string, boolean>>({
+    screenshot: false,
+    phone: false,
+    time: false,
+    transaction: false,
+    notDeleted: false,
+    notTold: false
+  });
+  const [alertGuardianPrompt, setAlertGuardianPrompt] = useState<'pending' | 'yes' | 'no'>('pending');
+
+  const resetState = () => {
+    setMoneySent(null);
+    setAlertGuardianPrompt('pending');
+    setEvidenceChecked({
+      screenshot: false,
+      phone: false,
+      time: false,
+      transaction: false,
+      notDeleted: false,
+      notTold: false
+    });
+  };
 
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   const handleCheck = () => {
     if (!transcript.trim()) return;
+    resetState();
     runClassification(transcript, language);
   };
 
   const handleSimulate = async () => {
     setIsSimulating(true);
     setTranscript('');
+    resetState();
     let currentText = '';
     const words = SAMPLE_SCAM_TRANSCRIPT.split(' ');
     
@@ -71,7 +97,8 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
       confidence: result.confidence,
       matches: result.matches || [],
       redFlagsDetected: result.redFlagsDetected || [],
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      evidenceStatus: evidenceChecked
     };
 
     const doc = await generateReportPDF(session);
@@ -200,8 +227,51 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
                 </div>
               </div>
 
-              {/* Find Nearest Help - Only for Risk/Uncertain */}
-              {result.verdict !== 'SAFE' && (
+              {/* Golden Hour Assistant - High Risk Only */}
+              {result.verdict === 'HIGH_RISK' && (
+                <div className="col-span-1 md:col-span-2 mt-2">
+                  {moneySent === null ? (
+                    <div className="bg-orange-50 border border-orange-200 p-6 lg:p-8 rounded-xl shadow-sm text-center">
+                      <h3 className="text-xl lg:text-2xl font-bold text-orange-900 mb-6">{t["shield.goldenHourQuestion"]}</h3>
+                      <div className="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onClick={() => setMoneySent(true)} className="px-8 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors shadow-sm">{t["common.yes"]}</button>
+                        <button onClick={() => setMoneySent(false)} className="px-8 py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors shadow-sm">{t["common.no"]}</button>
+                      </div>
+                    </div>
+                  ) : moneySent === true ? (
+                    <div className="bg-red-50 border-2 border-red-500 p-6 lg:p-8 rounded-xl shadow-sm">
+                      <h3 className="text-2xl lg:text-3xl font-extrabold text-red-700 mb-3">{t["shield.goldenHourUrgentTitle"]}</h3>
+                      <p className="text-red-900 font-medium text-lg mb-6 leading-relaxed">{t["shield.goldenHourUrgentDesc"]}</p>
+                      
+                      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                        <a href="tel:1930" className="flex-1 bg-red-600 hover:bg-red-700 text-white text-center py-4 font-bold rounded-lg flex items-center justify-center gap-2 text-lg shadow-sm transition-colors">
+                          <PhoneCall className="w-5 h-5" /> {t["shield.call1930Now"]}
+                        </a>
+                        <a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer" className="flex-1 bg-red-800 hover:bg-red-900 text-white text-center py-4 font-bold rounded-lg text-lg shadow-sm transition-colors">
+                          {t["shield.fileComplaint"]}
+                        </a>
+                      </div>
+                      
+                      <div className="bg-white/80 p-5 rounded-lg border border-red-100">
+                        <ul className="space-y-3 text-red-900 font-semibold list-none">
+                          <li>{t["shield.urgentStep1"]}</li>
+                          <li>{t["shield.urgentStep2"]}</li>
+                          <li>{t["shield.urgentStep3"]}</li>
+                          <li>{t["shield.urgentStep4"]}</li>
+                        </ul>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-blue-50 border border-blue-200 p-6 lg:p-8 rounded-xl shadow-sm flex items-start gap-4">
+                      <Info className="w-8 h-8 text-blue-600 shrink-0 mt-0.5" />
+                      <p className="text-blue-900 font-medium text-lg lg:text-xl leading-relaxed">{t["shield.goldenHourCalmMessage"]}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Find Nearest Help - Only for Uncertain */}
+              {result.verdict === 'UNCERTAIN' && (
                 <div className="bg-red-50 p-6 rounded-xl border border-red-200 flex flex-col items-center justify-center text-center shadow-sm">
                   <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-3">
                     <PhoneCall className="w-6 h-6 text-red-600" />
@@ -212,8 +282,93 @@ export default function CitizenShield({ classifier, language, simpleView }: Citi
                 </div>
               )}
 
-              {/* Generate Report - Only for Risk/Uncertain */}
-              {result.verdict !== 'SAFE' && (
+              {/* Family Guardian Alert Prompt */}
+              {result.verdict === 'HIGH_RISK' && user?.guardianEnabled && user?.guardianMobile && (
+                <div className="col-span-1 md:col-span-2 mt-4">
+                  {alertGuardianPrompt === 'pending' ? (
+                    <div className="bg-indigo-50 border border-indigo-200 p-6 lg:p-8 rounded-xl shadow-sm text-center">
+                      <h3 className="text-xl lg:text-2xl font-bold text-indigo-900 mb-6">
+                        {t["shield.guardianAlertPrompt"] ? t["shield.guardianAlertPrompt"].replace("{name}", user.guardianName) : `Alert ${user.guardianName} about this?`}
+                      </h3>
+                      <div className="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onClick={() => setAlertGuardianPrompt('yes')} className="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors shadow-sm">{t["common.yes"]}</button>
+                        <button onClick={() => setAlertGuardianPrompt('no')} className="px-8 py-3.5 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors shadow-sm">{t["common.no"]}</button>
+                      </div>
+                    </div>
+                  ) : alertGuardianPrompt === 'yes' ? (
+                    <div className="bg-indigo-50 border-2 border-indigo-500 p-6 lg:p-8 rounded-xl shadow-sm animate-in slide-in-from-top-2 fade-in duration-200">
+                      <h3 className="text-xl lg:text-2xl font-bold text-indigo-900 mb-2">
+                        {t["shield.guardianAlertReady"] ? t["shield.guardianAlertReady"].replace("{name}", user.guardianName) : `Alert ${user.guardianName}`}
+                      </h3>
+                      <p className="text-indigo-800 text-sm lg:text-base mb-6 font-medium">
+                        {t["shield.guardianAlertDesc"] || "Tap the button below to send an emergency alert via SMS or WhatsApp. The message is pre-filled, but you must hit send."}
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <a 
+                          href={`sms:+91${user.guardianMobile}?body=${encodeURIComponent(t["shield.guardianAlertMessage"] || "URGENT: I'm dealing with a suspected scam call right now (possible digital arrest fraud). I have NOT sent any money. Please call me immediately if you can.")}`}
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-4 font-bold rounded-lg shadow-sm transition-colors text-lg"
+                        >
+                          Send via SMS
+                        </a>
+                        <a 
+                          href={`https://wa.me/91${user.guardianMobile}?text=${encodeURIComponent(t["shield.guardianAlertMessage"] || "URGENT: I'm dealing with a suspected scam call right now (possible digital arrest fraud). I have NOT sent any money. Please call me immediately if you can.")}`}
+                          target="_blank" rel="noreferrer"
+                          className="flex-1 bg-green-600 hover:bg-green-700 text-white text-center py-4 font-bold rounded-lg shadow-sm transition-colors text-lg"
+                        >
+                          Send via WhatsApp
+                        </a>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              )}
+
+              {/* Evidence Completeness & Generate Report - High Risk */}
+              {result.verdict === 'HIGH_RISK' && (
+                <div className="col-span-1 md:col-span-2 bg-white p-6 lg:p-8 rounded-xl border border-gray-200 shadow-sm mt-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="font-bold text-gray-900 text-lg lg:text-xl">{t["shield.evidenceTitle"]}</h4>
+                    <span className="text-sm font-semibold text-blue-700 bg-blue-100 px-3 py-1 rounded-full whitespace-nowrap">
+                      {Object.values(evidenceChecked).filter(Boolean).length} {t["shield.ofCompleted"]}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 text-sm mb-6">{t["shield.evidenceDesc"]}</p>
+                  
+                  <div className="space-y-4 mb-8">
+                    {['screenshot', 'phone', 'time', 'transaction', 'notDeleted', 'notTold'].map((key) => (
+                      <label key={key} className="flex items-start space-x-3 cursor-pointer group">
+                        <div className="relative flex items-center justify-center w-5 h-5 mt-0.5 border-2 rounded shrink-0 transition-colors border-gray-300 group-hover:border-[#1E3A8A]">
+                          <input 
+                            type="checkbox" 
+                            className="absolute opacity-0 w-full h-full cursor-pointer"
+                            checked={evidenceChecked[key]}
+                            onChange={(e) => setEvidenceChecked(prev => ({ ...prev, [key]: e.target.checked }))}
+                          />
+                          {evidenceChecked[key] && <div className="w-2.5 h-2.5 bg-[#1E3A8A] rounded-sm" />}
+                        </div>
+                        <span className="text-sm lg:text-base text-gray-700 select-none group-hover:text-gray-900 font-medium">
+                          {t[`shield.evidence_${key}`]}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="pt-6 border-t border-gray-100">
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">{t["shield.legalAction"]}</h4>
+                    <p className="text-gray-600 text-sm mb-4">{t["shield.legalActionDesc"]}</p>
+                    <button 
+                      onClick={handleGenerateReport}
+                      className="w-full flex items-center justify-center py-4 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition-colors shadow-sm text-lg"
+                    >
+                      <Download className="w-5 h-5 mr-2" />
+                      {t["shield.downloadPDF"]}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Generate Report - Only for Uncertain */}
+              {result.verdict === 'UNCERTAIN' && (
                 <div className="bg-white p-6 rounded-xl border border-gray-200 flex flex-col justify-center shadow-sm">
                   <h4 className="font-bold text-gray-900 text-lg mb-2">{t["shield.legalAction"]}</h4>
                   <p className="text-gray-600 text-sm mb-4">{t["shield.legalActionDesc"]}</p>

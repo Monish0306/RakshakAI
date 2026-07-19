@@ -1,6 +1,8 @@
-import { Shield } from 'lucide-react';
+import { useState } from 'react';
+import { Shield, Settings } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { TRANSLATIONS } from '../lib/translations';
+import SettingsModal from './SettingsModal';
 
 interface HeaderProps {
   activeTab: string;
@@ -27,7 +29,7 @@ export default function Header({
   onLogout,
   onSignInClick
 }: HeaderProps) {
-  
+  const [showSettings, setShowSettings] = useState(false);
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   const navItems = [
@@ -127,8 +129,15 @@ export default function Header({
                     Hi, {user.username}
                   </span>
                   <button
+                    onClick={() => setShowSettings(true)}
+                    className="text-gray-500 hover:text-gray-900 transition-colors"
+                    title="Settings"
+                  >
+                    <Settings className="w-5 h-5" />
+                  </button>
+                  <button
                     onClick={onLogout}
-                    className="text-xs font-bold text-[#1E3A8A] hover:underline bg-transparent border-none cursor-pointer"
+                    className="text-xs font-bold text-red-600 hover:underline bg-transparent border-none cursor-pointer"
                   >
                     Logout
                   </button>
@@ -146,6 +155,14 @@ export default function Header({
           </div>
         </div>
       </div>
+
+      {showSettings && user && (
+        <SettingsModal 
+          user={user} 
+          language={language} 
+          onClose={() => setShowSettings(false)} 
+        />
+      )}
     </header>
   );
 }

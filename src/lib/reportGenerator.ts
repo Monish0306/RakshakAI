@@ -20,6 +20,7 @@ export interface ReportSession {
   matches: Match[];
   redFlagsDetected: string[];
   timestamp: string;
+  evidenceStatus?: Record<string, boolean>;
 }
 
 const CATEGORY_NAMES: Record<number, string> = {
@@ -258,6 +259,40 @@ export async function generateReportPDF(session: ReportSession): Promise<jsPDF> 
     const splitFlags = doc.splitTextToSize(session.redFlagsDetected.join(", "), 170);
     doc.text(splitFlags, 20, y);
     y += splitFlags.length * 4 + 6;
+  }
+
+  // Evidence Checklist Status Section
+  if (session.evidenceStatus) {
+    if (y > 250) {
+      doc.addPage();
+      y = 20;
+    } else {
+      drawDivider(doc, y);
+      y += 10;
+    }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("Evidence Checklist Status", 20, y);
+    y += 7;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    
+    const evidenceKeys = [
+      { key: 'screenshot', text: "Screenshotted full conversation" },
+      { key: 'phone', text: "Saved caller's phone number" },
+      { key: 'time', text: "Noted exact time and date" },
+      { key: 'transaction', text: "Saved transaction ID / UTR number (if applicable)" },
+      { key: 'notDeleted', text: "Conversation not deleted" },
+      { key: 'notTold', text: "Caller not alerted about reporting" }
+    ];
+    
+    evidenceKeys.forEach(item => {
+      const status = session.evidenceStatus![item.key] ? "[X]" : "[ ]";
+      doc.text(`${status}  ${item.text}`, 20, y);
+      y += 5;
+    });
+    
+    y += 2;
   }
 
   // Evidence Integrity Section
