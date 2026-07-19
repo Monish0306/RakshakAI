@@ -85,8 +85,8 @@ export default function SettingsModal({ user, language, onClose }: SettingsModal
                   checked={enabled}
                   onChange={(e) => setEnabled(e.target.checked)}
                 />
-                <div className={\`block w-12 h-7 rounded-full transition-colors \${enabled ? "bg-[#1E3A8A]" : "bg-gray-300"}\`}></div>
-                <div className={\`absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform \${enabled ? "transform translate-x-5" : ""}\`}></div>
+                <div className={`block w-12 h-7 rounded-full transition-colors ${enabled ? "bg-[#1E3A8A]" : "bg-gray-300"}`}></div>
+                <div className={`absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform ${enabled ? "transform translate-x-5" : ""}`}></div>
               </div>
               <span className="ml-4 font-semibold text-gray-800">
                 {t["settings.enableGuardian"] || "Enable Guardian Alerts"}
