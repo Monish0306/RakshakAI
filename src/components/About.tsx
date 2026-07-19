@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { ArrowDown, Cpu, ShieldAlert, Brain, Calculator, FileText, Download, Target, Network, Map, Activity, Shield, Flame } from 'lucide-react';
+import { Cpu, Target, Network, Map, Activity, Shield, Flame } from 'lucide-react';
 import { fetchPulseStats, type PulseStats } from '../lib/api';
 import { TRANSLATIONS } from '../lib/translations';
+import SystemArchitecture from './SystemArchitecture';
 
 interface AboutProps {
   language: string;
@@ -24,48 +25,7 @@ export default function About({ language }: AboutProps) {
       .finally(() => setLoading(false));
   }, []);
 
-  const LOCALIZED_PIPELINE: Record<string, Array<{ name: string; desc: string }>> = {
-    en: [
-      { name: "On-Device Privacy Filter", desc: "Xenova/all-MiniLM-L6-v2 embedding cosine similarity check." },
-      { name: "Rule-Based Red Flags", desc: "Deterministic matching for known scam terminology." },
-      { name: "Cloud LLM Reasoning", desc: "Few-shot prompting over a structured 8-point scam taxonomy." },
-      { name: "Risk Scoring", desc: "Evidence-weighted severity aggregation." },
-      { name: "Plain-Language Explanation", desc: "Translating AI output into actionable citizen advisories." },
-      { name: "NCRP Report Generation", desc: "Audit-ready PDF generation for law enforcement." }
-    ],
-    hi: [
-      { name: "ऑन-डिवाइस प्राइवेसी फ़िल्टर", desc: "Xenova/all-MiniLM-L6-v2 एम्बेडिंग कोसाइन सिमिलैरिटी जांच।" },
-      { name: "नियम-आधारित रेड फ्लैग्स", desc: "जानी-मानी घोटाला शब्दावली के लिए निर्धारित मिलान।" },
-      { name: "क्लाउड एलएलएम रीजनिंग", desc: "एक संरचित 8-बिंदु घोटाला वर्गीकरण पर फ़्यू-शॉट प्रॉम्प्टिंग।" },
-      { name: "जोखिम स्कोरिंग", desc: "साक्ष्य-भारित गंभीरता एकत्रीकरण।" },
-      { name: "सरल भाषा में व्याख्या", desc: "एआई आउटपुट को नागरिकों के लिए उपयोगी सलाह में बदलना।" },
-      { name: "एनसीआरपी रिपोर्ट जनरेशन", desc: "कानून प्रवर्तन के लिए ऑडिट-तैयार पीडीएफ रिपोर्ट बनाना।" }
-    ],
-    ta: [
-      { name: "சாதனத்தின் தனியுரிமை வடிகட்டி", desc: "Xenova/all-MiniLM-L6-v2 உட்பொதிவு கோசைன் ஒத்தத்தன்மை சரிபார்ப்பு." },
-      { name: "விதி அடிப்படையிலான சிவப்பு எச்சரிக்கைகள்", desc: "அறியப்பட்ட மோசடி சொற்களுக்கான திட்டவட்டமான பொருத்தம்." },
-      { name: "கிளவுட் எல்எல்எம் பகுப்பாய்வு", desc: "8-புள்ளி மோசடி கட்டமைப்பின் கீழ் மேம்பட்ட மொழி மாதிரியின் பகுப்பாய்வு." },
-      { name: "ஆபத்து மதிப்பீடு", desc: "ஆதாரங்களின் அடிப்படையிலான தீவிரத்தன்மை மதிப்பீடு." },
-      { name: "எளிய மொழி விளக்கம்", desc: "AI முடிவுகளை குடிமக்களுக்கான எளிய ஆலோசனையாக மாற்றுதல்." },
-      { name: "NCRP அறிக்கை உருவாக்கம்", desc: "சட்ட அமலாக்கத்திற்கான தணிக்கைக்குத் தயாரான PDF உருவாக்கம்." }
-    ],
-    kn: [
-      { name: "ಸಾಧನದಲ್ಲೇ ಗೌಪ್ಯತೆ ಫಿಲ್ಟರ್", desc: "Xenova/all-MiniLM-L6-v2 ಎಂಬೆಡಿಂಗ್ ಕೊಸೈನ್ ಹೋಲಿಕೆ ತಪಾಸಣೆ." },
-      { name: "ನಿಯಮ ಆಧಾರಿತ ರೆಡ್ ಫ್ಲ್ಯಾಗ್ಸ್", desc: "ತಿಳಿದಿರುವ ವಂಚನೆ ಪದಗಳಿಗಾಗಿ ನಿಖರವಾದ ಹೊಂದಾಣಿಕೆ." },
-      { name: "ಕ್ಲೌಡ್ ಎಲ್‌ಎಲ್‌ಎಮ್ ವಿಶ್ಲೇಷಣೆ", desc: "8-ಅಂಶದ ವಂಚನೆ ವರ್ಗೀಕರಣದ ಅಡಿಯಲ್ಲಿ ಸುಧಾರಿತ ಭಾಷಾ ಮಾದರಿ ವಿಶ್ಲೇಷಣೆ." },
-      { name: "ಅಪಾಯದ ಅಂಕಗಳಿಕೆ", desc: "ಆಧಾರಗಳ ತೂಕದ ಆಧಾರದ ಮೇಲೆ ತೀವ್ರತೆಯ ಕ್ರೋಡೀಕರಣ." },
-      { name: "ಸರಳ ಭಾಷೆಯ ವಿವರಣೆ", desc: "AI ತೀರ್ಪನ್ನು ನಾಗರಿಕರಿಗೆ ತಿಳಿಯುವ ಸಲಹೆಗಳಾಗಿ ಪರಿವರ್ತಿಸುವುದು." },
-      { name: "NCRP ವರದಿ ಸೃಷ್ಟಿ", desc: "ಕಾನೂನು ಜಾರಿಗಾಗಿ ಸಿದ್ಧಪಡಿಸಿದ ಆಡಿಟ್ ವರದಿ PDF ಸೃಷ್ಟಿ." }
-    ],
-    te: [
-      { name: "డివైస్ గోప్యతా ఫిల్టర్", desc: "Xenova/all-MiniLM-L6-v2 ఎంబెడ్డింగ్ కొసైన్ సిమిలారిటీ తనిఖీ." },
-      { name: "నియమ ఆధారిత రెడ్ ఫ్లాగ్స్", desc: "తెలిసిన మోసపూరిత పదాల కోసం ఖచ్చితమైన సరిపోలిక." },
-      { name: "క్లౌడ్ ఎల్‌ఎల్‌ఎమ్ విశ్లేషణ", desc: "8-పాయింట్ మోసపూరిత వర్గీకరణ ఆధారంగా సుదీర్ఘ విశ్లేషణ." },
-      { name: "ప్రమాద తీవ్రత అంచనా", desc: "ఆధారాల బరువు ఆధారంగా ప్రమాద తీవ్రతను లెక్కించడం." },
-      { name: "సరళమైన భాషా వివరణ", desc: "AI అవుట్‌పుట్‌ను పౌరులకు ఉపయోగపడే సలహాలుగా మార్చడం." },
-      { name: "NCRP నివేదిక రూపకల్పన", desc: "పోలీసుల కోసం ఆడిట్-సిద్ధంగా ఉన్న PDF నివేదిక రూపకల్పన." }
-    ]
-  };
+
 
   const LOCALIZED_ROADMAP: Record<string, Array<{ name: string; desc: string }>> = {
     en: [
@@ -95,10 +55,8 @@ export default function About({ language }: AboutProps) {
     ]
   };
 
-  const pipe = LOCALIZED_PIPELINE[language] || LOCALIZED_PIPELINE.en;
   const road = LOCALIZED_ROADMAP[language] || LOCALIZED_ROADMAP.en;
 
-  const pipelineIcons = [Cpu, ShieldAlert, Brain, Calculator, FileText, Download];
   const roadmapIcons = [Target, Network, Map];
 
   // Helper to format date
@@ -187,30 +145,7 @@ export default function About({ language }: AboutProps) {
           </p>
         </div>
 
-        <div className="max-w-xl mx-auto">
-          {pipe.map((step, idx) => {
-            const Icon = pipelineIcons[idx] || Cpu;
-            return (
-              <div key={idx} className="flex flex-col items-center">
-                <div className="w-full bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex items-center space-x-4">
-                  <div className="w-10 h-10 bg-blue-50 text-[#1E3A8A] rounded-lg flex items-center justify-center shrink-0">
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900">{step.name}</h3>
-                    <p className="text-sm text-gray-600">{step.desc}</p>
-                  </div>
-                </div>
-                
-                {idx < pipe.length - 1 && (
-                  <div className="py-2 text-gray-300">
-                    <ArrowDown className="w-5 h-5" />
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        <SystemArchitecture />
       </section>
 
       {/* Roadmap Section */}
