@@ -108,8 +108,8 @@ export default function GuardianCenter({ user, language }: GuardianCenterProps) 
                   checked={enabled}
                   onChange={(e) => setEnabled(e.target.checked)}
                 />
-                <div className={\`block w-14 h-8 rounded-full transition-colors \${enabled ? "bg-indigo-600" : "bg-gray-300"}\`}></div>
-                <div className={\`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform shadow-sm \${enabled ? "transform translate-x-6" : ""}\`}></div>
+                <div className={`block w-14 h-8 rounded-full transition-colors ${enabled ? "bg-indigo-600" : "bg-gray-300"}`}></div>
+                <div className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform shadow-sm ${enabled ? "transform translate-x-6" : ""}`}></div>
               </div>
               <span className="ml-4 text-lg font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">
                 {t["settings.enableGuardian"] || "Enable Guardian Alerts"}
