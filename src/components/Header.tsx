@@ -1,12 +1,10 @@
-import { useState } from 'react';
-import { Shield, Settings } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { TRANSLATIONS } from '../lib/translations';
-import SettingsModal from './SettingsModal';
 
 interface HeaderProps {
   activeTab: string;
-  setActiveTab: (tab: 'home' | 'how' | 'dashboard' | 'about' | 'command') => void;
+  setActiveTab: (tab: 'home' | 'how' | 'dashboard' | 'about' | 'command' | 'guardian') => void;
   language: string;
   setLanguage: (lang: string) => void;
   simpleView: boolean;
@@ -29,15 +27,15 @@ export default function Header({
   onLogout,
   onSignInClick
 }: HeaderProps) {
-  const [showSettings, setShowSettings] = useState(false);
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   const navItems = [
-    { id: 'home', label: t["header.liveCheck"] },
-    { id: 'how', label: t["header.howItWorks"] },
-    { id: 'dashboard', label: t["header.dashboard"] },
-    { id: 'about', label: t["header.about"] },
-    { id: 'command', label: t["header.command"] },
+    { id: 'home', label: t["header.liveCheck"], tooltip: t["header.tooltip.home"] || "Simulate a live scam call to check safety." },
+    { id: 'how', label: t["header.howItWorks"], tooltip: t["header.tooltip.how"] || "Learn how Rakshak AI protects you." },
+    { id: 'dashboard', label: t["header.dashboard"], tooltip: t["header.tooltip.dashboard"] || "View statistics and fraud trends." },
+    { id: 'about', label: t["header.about"], tooltip: t["header.tooltip.about"] || "Learn more about our mission." },
+    { id: 'command', label: t["header.command"], tooltip: t["header.tooltip.command"] || "Access the investigator control panel." },
+    { id: 'guardian', label: t["header.guardian"] || "Family Guardian", tooltip: t["header.tooltip.guardian"] || "Manage trusted contacts for emergency alerts." },
   ] as const;
 
   return (
@@ -57,6 +55,7 @@ export default function Header({
             {navItems.map((item) => (
               <button
                 key={item.id}
+                title={item.tooltip}
                 onClick={() => setActiveTab(item.id)}
                 className={cn(
                   "px-4 py-2 rounded-md text-sm font-medium transition-colors",
@@ -129,13 +128,6 @@ export default function Header({
                     Hi, {user.username}
                   </span>
                   <button
-                    onClick={() => setShowSettings(true)}
-                    className="text-gray-500 hover:text-gray-900 transition-colors"
-                    title="Settings"
-                  >
-                    <Settings className="w-5 h-5" />
-                  </button>
-                  <button
                     onClick={onLogout}
                     className="text-xs font-bold text-red-600 hover:underline bg-transparent border-none cursor-pointer"
                   >
@@ -155,14 +147,6 @@ export default function Header({
           </div>
         </div>
       </div>
-
-      {showSettings && user && (
-        <SettingsModal 
-          user={user} 
-          language={language} 
-          onClose={() => setShowSettings(false)} 
-        />
-      )}
     </header>
   );
 }

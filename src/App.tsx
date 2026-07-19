@@ -8,10 +8,11 @@ import HowItWorks from './components/HowItWorks.tsx';
 import About from './components/About.tsx';
 import CommandCenter from './components/CommandCenter.tsx';
 import LandingAuth from './components/LandingAuth.tsx';
+import GuardianCenter from './components/GuardianCenter.tsx';
 import { useClassifier } from './hooks/useClassifier.ts';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'about' | 'command'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'about' | 'command' | 'guardian'>('home');
   const [language, setLanguage] = useState('en');
   const [simpleView, setSimpleView] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
@@ -63,8 +64,8 @@ export default function App() {
       <Header
         activeTab={activeTab}
         setActiveTab={(tab) => {
-          if (tab === 'command' && !combinedUser) {
-            setRedirectMsg("Sign in to access the Investigator Command Center");
+          if ((tab === 'command' || tab === 'guardian') && !combinedUser) {
+            setRedirectMsg(`Sign in to access the ${tab === 'command' ? 'Investigator Command Center' : 'Family Guardian Settings'}`);
             setShowLanding(true);
           } else {
             setActiveTab(tab);
@@ -92,6 +93,7 @@ export default function App() {
         {activeTab === 'dashboard' && <Dashboard language={language} />}
         {activeTab === 'about' && <About language={language} />}
         {activeTab === 'command' && <CommandCenter language={language} />}
+        {activeTab === 'guardian' && <GuardianCenter user={combinedUser} language={language} />}
       </main>
     </div>
   );
