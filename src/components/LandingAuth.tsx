@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Shield, Eye, EyeOff, Lock, User, Mail, Calendar, Check, ChevronRight } from 'lucide-react';
+import { Shield, Eye, EyeOff, Lock, User, Mail, Calendar, Check, ChevronRight, Moon, Sun } from 'lucide-react';
 import { TRANSLATIONS } from '../lib/translations';
 import { auth, db } from '../lib/firebase';
 import { 
@@ -10,6 +10,7 @@ import {
   doc, 
   writeBatch 
 } from 'firebase/firestore';
+import HeroShieldGraphic from './HeroShieldGraphic';
 
 interface LandingAuthProps {
   language: string;
@@ -24,6 +25,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
   const [rememberMe, setRememberMe] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   // Login Form states
   const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -179,86 +181,56 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
   };
 
   const premiumStyles = `
-    @keyframes shield-breath {
-      0%, 100% { 
-        filter: drop-shadow(0 4px 20px rgba(30, 58, 138, 0.15)) drop-shadow(0 0 12px rgba(59, 130, 246, 0.1));
-        transform: scale(1);
-      }
-      50% { 
-        filter: drop-shadow(0 4px 30px rgba(30, 58, 138, 0.25)) drop-shadow(0 0 24px rgba(59, 130, 246, 0.25));
-        transform: scale(1.01);
-      }
-    }
-    @keyframes map-float {
-      0%, 100% { transform: translateY(2px) scale(0.96); }
-      50% { transform: translateY(-10px) scale(0.98); }
-    }
-    @keyframes holographic-pulse {
-      0%, 100% {
-        filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8)) drop-shadow(0 0 16px rgba(59, 130, 246, 0.4));
-        opacity: 0.85;
-      }
-      50% {
-        filter: drop-shadow(0 0 18px rgba(59, 130, 246, 0.95)) drop-shadow(0 0 32px rgba(147, 197, 253, 0.8));
-        opacity: 1;
-      }
-    }
-    @keyframes rotate-clockwise-fast {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes rotate-clockwise-slow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes spark-rise {
-      0% { transform: translateY(60px) translateX(0px) scale(0); opacity: 0; }
-      50% { opacity: 0.8; }
-      100% { transform: translateY(-100px) translateX(var(--x-offset, 20px)) scale(1); opacity: 0; }
+    @keyframes gentle-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
     @keyframes circuit-pulse {
       0%, 100% { opacity: 0.25; stroke-width: 1px; }
       50% { opacity: 0.65; stroke-width: 1.5px; }
     }
+    @keyframes radar-sweep-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes radar-blip-flash {
+      0% { opacity: 0; filter: drop-shadow(0 0 0px transparent); }
+      1% { opacity: 1; filter: drop-shadow(0 0 8px rgba(56,189,248,1)); }
+      15% { opacity: 0.8; filter: drop-shadow(0 0 4px rgba(56,189,248,0.6)); }
+      60% { opacity: 0; filter: drop-shadow(0 0 0px transparent); }
+      100% { opacity: 0; }
+    }
 
-    .stationary-shield {
-      animation: shield-breath 5s ease-in-out infinite;
-    }
-    .holographic-map-container {
-      animation: map-float 3.5s ease-in-out infinite;
-    }
-    .holographic-map-glow {
-      animation: holographic-pulse 2.5s ease-in-out infinite;
-    }
-    .pedestal-ring-fast {
-      animation: rotate-clockwise-fast 12s linear infinite;
-    }
-    .pedestal-ring-slow {
-      animation: rotate-clockwise-slow 20s linear infinite;
-    }
-    .spark-particle {
-      animation: spark-rise 5s ease-in-out infinite;
+    .gentle-float {
+      animation: gentle-float 4s ease-in-out infinite;
     }
     .circuit-path {
       animation: circuit-pulse 4s ease-in-out infinite;
     }
+    
+    .radar-sweep {
+      animation: radar-sweep-spin 4s linear infinite;
+      transform-origin: center;
+    }
+    .radar-blip {
+      animation: radar-blip-flash 4s linear infinite;
+    }
 
     @media (prefers-reduced-motion: reduce) {
-      .stationary-shield, .holographic-map-container, .holographic-map-glow, .pedestal-ring-fast, .pedestal-ring-slow, .spark-particle, .circuit-path {
+      .gentle-float, .circuit-path, .radar-sweep, .radar-blip {
         animation: none !important;
       }
-      .holographic-map-glow {
-        filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.8));
-      }
+      .radar-blip { opacity: 0.4; }
     }
   `;
 
   return (
-    <div className="min-h-screen bg-[#F4F7FC] flex flex-col lg:flex-row">
-      <style>{premiumStyles}</style>
-      
-      {/* Left Panel: Brand Showcase & Core Info */}
-      <div className="w-full lg:w-3/5 bg-gradient-to-br from-[#F8FAFC] via-[#EDF2F7] to-[#E2E8F0] p-8 lg:p-16 flex flex-col justify-between relative overflow-hidden">
+    <div className={theme === 'dark' ? 'dark' : ''}>
+      <div className="min-h-screen bg-[#F4F7FC] dark:bg-slate-950 flex flex-col lg:flex-row text-gray-900 dark:text-gray-100 transition-colors duration-300">
+        <style>{premiumStyles}</style>
+        
+        {/* Left Panel: Brand Showcase & Core Info */}
+        <div className="w-full lg:w-3/5 bg-gradient-to-br from-[#F8FAFC] via-[#EDF2F7] to-[#E2E8F0] dark:from-[#0B2438] dark:via-[#071521] dark:to-[#030910] p-8 lg:p-16 flex flex-col justify-between relative overflow-hidden transition-colors duration-300">
         
         {/* Animated Background Circuit Lines (Exact mock integration) */}
         <div className="absolute inset-0 pointer-events-none select-none opacity-40 z-0">
@@ -281,157 +253,81 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
         </div>
 
         {/* Header Logo */}
-        <div className="flex items-center space-x-3 z-10">
-          <div className="bg-[#1E3A8A] p-2.5 rounded-xl shadow-md flex items-center justify-center">
-            <Shield className="h-7 w-7 text-white" />
-          </div>
+        <div className="flex items-center space-x-2 z-10">
+          <Shield className="h-8 w-8 text-[#1E3A8A] dark:text-blue-400" />
           <div>
-            <h1 className="font-bold text-2xl text-[#1E3A8A] tracking-tight">Rakshak AI</h1>
-            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Digital Safety Shield</p>
+            <h1 className="font-bold text-2xl text-[#1E3A8A] dark:text-white tracking-tight">Rakshak AI</h1>
+            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Digital Safety Shield</p>
           </div>
         </div>
 
-        {/* Central Visual Showcase: Stationary Shield with Floating Holographic Map & Rotating Cylindrical Pedestal */}
-        <div className="my-12 lg:my-0 flex flex-col items-center justify-center flex-1 relative min-h-[420px] [perspective:1200px] z-10">
-          
-          {/* Floating sparks and blue particles */}
-          <div className="absolute inset-0 pointer-events-none z-20">
-            <div className="absolute spark-particle bg-blue-400 rounded-full w-1 h-1 blur-[0.5px]" style={{ left: '35%', bottom: '25%', '--x-offset': '25px', animationDelay: '0s', animationDuration: '4.5s' } as any}></div>
-            <div className="absolute spark-particle bg-blue-300 rounded-full w-1.5 h-1.5 blur-[1px]" style={{ left: '42%', bottom: '22%', '--x-offset': '-30px', animationDelay: '1.2s', animationDuration: '5.5s' } as any}></div>
-            <div className="absolute spark-particle bg-blue-500 rounded-full w-1 h-1" style={{ left: '55%', bottom: '28%', '--x-offset': '15px', animationDelay: '2.5s', animationDuration: '3.8s' } as any}></div>
-            <div className="absolute spark-particle bg-blue-300 rounded-full w-2 h-2 blur-[1px]" style={{ left: '62%', bottom: '24%', '--x-offset': '-20px', animationDelay: '0.7s', animationDuration: '6s' } as any}></div>
-          </div>
-
-          {/* 3D Holographic Pedestal / Disc System (z-index back, aligned with the bottom of the shield) */}
-          <div className="absolute w-[320px] h-[160px] lg:w-[400px] lg:h-[200px] [transform:rotateX(68deg)_translateY(220px)_translateZ(-40px)] flex items-center justify-center pointer-events-none select-none z-0">
-            
-            {/* Volumetric Blue Glow Core */}
-            <div className="absolute w-[220px] h-[220px] bg-gradient-to-t from-blue-600/25 to-blue-400/5 rounded-full blur-2xl"></div>
-
-            {/* Glowing base plate segment (Outer Ring - rotates slightly faster) */}
-            <div className="absolute inset-0 border-4 border-double border-blue-500/35 rounded-full pedestal-ring-fast shadow-[0_0_25px_rgba(59,130,246,0.3)]"></div>
-            
-            {/* Inner Concentric Ring with energy marks (Rotates slightly slower) */}
-            <div className="absolute w-4/5 h-4/5 border-2 border-dashed border-blue-400/30 rounded-full pedestal-ring-slow"></div>
-            
-            {/* Solid core platform ring with light emission */}
-            <div className="absolute w-3/5 h-3/5 border border-blue-300/40 rounded-full bg-gradient-to-b from-blue-500/10 to-transparent shadow-[inset_0_0_20px_rgba(59,130,246,0.25)] flex items-center justify-center">
-              {/* Core focal beam point */}
-              <div className="w-1/2 h-1/2 border border-blue-300/60 rounded-full bg-blue-500/5 blur-[2px]"></div>
-            </div>
-            
-            {/* Outer soft light wave reflections */}
-            <div className="absolute w-[120%] h-[120%] border border-blue-500/5 rounded-full animate-pulse"></div>
-          </div>
-
-          {/* Stationary Shield (z-index middle, stays in place with breathing glow) */}
-          <div className="relative z-10 stationary-shield flex flex-col items-center [transform-style:preserve-3d]">
-            <div className="relative bg-gradient-to-b from-[#1E3A8A]/95 via-[#1E293B]/98 to-[#0F172A] w-[220px] h-[260px] lg:w-[260px] lg:h-[310px] rounded-[30%/10%] shadow-2xl flex items-center justify-center border-[5px] border-blue-900/60 overflow-hidden">
-              
-              {/* Glossy / metallic reflection pattern overlay */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none"></div>
-              
-              {/* Deep blue inner glow grid */}
-              <div className="absolute inset-2 bg-[linear-gradient(rgba(30,58,138,0.15)_1px,_transparent_1px),_linear-gradient(90deg,_rgba(30,58,138,0.15)_1px,_transparent_1px)] bg-[size:16px_16px] rounded-[28%/8%]"></div>
-
-              {/* Holographic India Map Container (Floats gently inside the shield) */}
-              <div className="absolute inset-0 flex items-center justify-center holographic-map-container z-10 pointer-events-none">
-                
-                {/* Glowing Outline Map of India (Electric Blue Glowing Outline) */}
-                <svg viewBox="0 0 1000 1000" className="w-[85%] h-[85%] text-blue-400 fill-blue-500/10 holographic-map-glow">
-                  {/* Outer Glowing Path */}
-                  <path 
-                    stroke="#60A5FA" 
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M 250 200 Q 320 130, 460 150 T 700 180 Q 820 220, 850 320 T 880 480 Q 830 560, 720 610 T 620 780 Q 560 880, 470 880 T 340 780 Q 260 690, 240 560 T 200 380 Q 220 260, 250 200 Z" 
-                  />
-                  {/* Interconnected Holographic Network / Constellation Grid inside the map */}
-                  <g stroke="#93C5FD" strokeWidth="2" opacity="0.45" fill="none">
-                    <line x1="350" y1="280" x2="450" y2="240" />
-                    <line x1="450" y1="240" x2="520" y2="300" />
-                    <line x1="520" y1="300" x2="430" y2="400" />
-                    <line x1="430" y1="400" x2="350" y2="280" />
-                    <line x1="450" y1="240" x2="620" y2="220" />
-                    <line x1="620" y1="220" x2="710" y2="320" />
-                    <line x1="710" y1="320" x2="620" y2="420" />
-                    <line x1="620" y1="420" x2="520" y2="300" />
-                    <line x1="430" y1="400" x2="500" y2="520" />
-                    <line x1="500" y1="520" x2="620" y2="420" />
-                    
-                    {/* Node points */}
-                    <circle cx="350" cy="280" r="4" fill="#60A5FA" />
-                    <circle cx="450" cy="240" r="4" fill="#93C5FD" />
-                    <circle cx="520" cy="300" r="4" fill="#60A5FA" />
-                    <circle cx="620" cy="220" r="4" fill="#93C5FD" />
-                    <circle cx="710" cy="320" r="4" fill="#60A5FA" />
-                    <circle cx="620" cy="420" r="4" fill="#93C5FD" />
-                    <circle cx="430" cy="400" r="4" fill="#60A5FA" />
-                    <circle cx="500" cy="520" r="4" fill="#93C5FD" />
-                  </g>
-                </svg>
-
-                {/* Padlock Icon (Fixed in center of map and floats along with it) */}
-                <div className="absolute bg-[#1E3A8A]/90 backdrop-blur-md p-4 rounded-xl border border-blue-400/40 shadow-xl z-20">
-                  <Lock className="w-10 h-10 text-white drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
-                </div>
-
-              </div>
-
-            </div>
-          </div>
+        {/* Hero Graphic — Centered in the left panel (HUD style) */}
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 z-[0] flex h-[min(800px,100vh)] w-[min(100%,800px)] -translate-x-1/2 -translate-y-1/2 items-center justify-center opacity-40 lg:opacity-80"
+          aria-hidden="true"
+        >
+          <HeroShieldGraphic theme={theme} className="relative w-full h-full" />
         </div>
 
         {/* Brand Value Pitch */}
-        <div className="space-y-6 z-10 max-w-lg">
+        <div className="relative z-10 flex-1 space-y-6 max-w-lg pt-8 lg:pt-16">
           <div className="space-y-2">
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-none">
+            <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight leading-none">
               Your Safety.<br />Our Mission.
             </h2>
-            <p className="text-lg font-bold text-[#1E3A8A]">{t["landing.subheading"]}</p>
+            <p className="text-lg font-bold text-[#1E3A8A] dark:text-blue-400">{t["landing.subheading"]}</p>
           </div>
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
             Rakshak AI uses on-device intelligence and advanced threat detection to protect you from digital arrest scams, fraud calls, and online threats in real-time.
           </p>
 
           {/* Quick Value Pillars */}
           <div className="space-y-3 pt-2">
             <div className="flex items-start space-x-3">
-              <div className="bg-[#1E3A8A]/10 p-1.5 rounded-lg text-[#1E3A8A]">
+              <div className="bg-[#1E3A8A]/10 dark:bg-blue-500/10 p-1.5 rounded-lg text-[#1E3A8A] dark:text-blue-400">
                 <Shield className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-gray-900">AI-Powered Protection</h4>
-                <p className="text-[11px] text-gray-500">Detects and prevents scams in real-time</p>
+                <h4 className="text-xs font-bold">AI-Powered Protection</h4>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400">Detects and prevents scams in real-time</p>
               </div>
             </div>
             <div className="flex items-start space-x-3">
-              <div className="bg-[#1E3A8A]/10 p-1.5 rounded-lg text-[#1E3A8A]">
+              <div className="bg-[#1E3A8A]/10 dark:bg-blue-500/10 p-1.5 rounded-lg text-[#1E3A8A] dark:text-blue-400">
                 <Lock className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-gray-900">Privacy by Design</h4>
-                <p className="text-[11px] text-gray-500">On-device processing ensures your data stays private</p>
+                <h4 className="text-xs font-bold">Privacy by Design</h4>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400">On-device processing ensures your data stays private</p>
               </div>
             </div>
           </div>
 
           {/* Safer Digital India Badge */}
-          <div className="bg-white/80 border border-gray-200/50 rounded-xl p-3.5 flex items-center space-x-3 max-w-sm shadow-sm backdrop-blur-sm mt-4">
+          <div className="bg-white/80 dark:bg-slate-800/80 border border-gray-200/50 dark:border-slate-700/50 rounded-xl p-3.5 flex items-center space-x-3 max-w-sm shadow-sm backdrop-blur-sm mt-4">
             <div className="flex flex-col">
-              <span className="text-[11px] font-bold text-gray-900">An initiative for a safer digital India</span>
-              <span className="text-[10px] text-gray-400 mt-0.5">Secure • Reliable • Responsible</span>
+              <span className="text-[11px] font-bold">An initiative for a safer digital India</span>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Secure • Reliable • Responsible</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Right Panel: Authentication Card */}
-      <div className="w-full lg:w-2/5 bg-white p-8 lg:p-12 flex flex-col justify-center items-center shadow-xl border-l border-gray-100">
-        <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100 shadow-md p-6 lg:p-8 space-y-6">
+      <div className="w-full lg:w-2/5 bg-white dark:bg-slate-900 p-8 lg:p-12 flex flex-col justify-center items-center shadow-xl border-l border-gray-100 dark:border-slate-800 relative transition-colors duration-300">
+        
+        {/* Theme Toggle Button */}
+        <button
+          onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
+          className="absolute top-6 right-6 p-2 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors flex items-center space-x-2 shadow-sm z-50"
+        >
+          {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+          <span className="text-xs font-semibold hidden sm:inline">{theme === 'light' ? 'Dark' : 'Light'}</span>
+        </button>
+
+        <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-md p-6 lg:p-8 space-y-6">
           {/* Custom Tabs */}
-          <div className="flex border-b border-gray-100">
+          <div className="flex border-b border-gray-100 dark:border-slate-800">
             <button
               onClick={() => {
                 setActiveTab('login');
@@ -439,8 +335,8 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
               }}
               className={`flex-1 pb-4 text-sm font-bold border-b-2 transition-all ${
                 activeTab === 'login' 
-                  ? 'border-[#1E3A8A] text-[#1E3A8A]' 
-                  : 'border-transparent text-gray-400 hover:text-gray-600'
+                  ? 'border-[#1E3A8A] dark:border-blue-500 text-[#1E3A8A] dark:text-blue-500' 
+                  : 'border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
               }`}
             >
               {t["landing.loginTab"]}
@@ -452,8 +348,8 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
               }}
               className={`flex-1 pb-4 text-sm font-bold border-b-2 transition-all ${
                 activeTab === 'signup' 
-                  ? 'border-[#1E3A8A] text-[#1E3A8A]' 
-                  : 'border-transparent text-gray-400 hover:text-gray-600'
+                  ? 'border-[#1E3A8A] dark:border-blue-500 text-[#1E3A8A] dark:text-blue-500' 
+                  : 'border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
               }`}
             >
               {t["landing.signupTab"]}
@@ -476,7 +372,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
               </div>
 
               <div className="space-y-3">
-                <label className="block text-xs font-bold text-gray-700">{t["landing.emailOrUser"]}</label>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">{t["landing.emailOrUser"]}</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                     <User className="w-4 h-4" />
@@ -485,7 +381,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                     type="text"
                     required
                     placeholder="Enter your email or username"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/25 focus:border-[#1E3A8A] text-sm text-gray-800 placeholder-gray-400 transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/25 dark:focus:ring-blue-500/50 focus:border-[#1E3A8A] dark:focus:border-blue-500 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 transition-all"
                     value={loginIdentifier}
                     onChange={(e) => setLoginIdentifier(e.target.value)}
                   />
@@ -494,8 +390,8 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-bold text-gray-700">{t["landing.password"]}</label>
-                  <a href="#" className="text-xs font-bold text-[#1E3A8A] hover:underline">{t["landing.forgot"]}</a>
+                  <label className="text-xs font-bold text-gray-700 dark:text-gray-300">{t["landing.password"]}</label>
+                  <a href="#" className="text-xs font-bold text-[#1E3A8A] dark:text-blue-400 hover:underline">{t["landing.forgot"]}</a>
                 </div>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
@@ -505,7 +401,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                     type={showPassword ? 'text' : 'password'}
                     required
                     placeholder="Enter your password"
-                    className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/25 focus:border-[#1E3A8A] text-sm text-gray-800 placeholder-gray-400 transition-all"
+                    className="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/25 dark:focus:ring-blue-500/50 focus:border-[#1E3A8A] dark:focus:border-blue-500 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 transition-all"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                   />
@@ -524,11 +420,11 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                 <input
                   type="checkbox"
                   id="remember"
-                  className="w-4 h-4 text-[#1E3A8A] border-gray-300 rounded focus:ring-[#1E3A8A]"
+                  className="w-4 h-4 text-[#1E3A8A] border-gray-300 dark:border-slate-600 rounded focus:ring-[#1E3A8A] dark:bg-slate-800"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                 />
-                <label htmlFor="remember" className="text-xs font-semibold text-gray-600 select-none cursor-pointer">
+                <label htmlFor="remember" className="text-xs font-semibold text-gray-600 dark:text-gray-300 select-none cursor-pointer">
                   {t["landing.remember"]}
                 </label>
               </div>
@@ -537,7 +433,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 text-sm disabled:opacity-50"
+                className="w-full bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 text-sm disabled:opacity-50"
               >
                 <span>{authLoading ? t["landing.loggingIn"] : t["landing.loginBtn"]}</span>
                 <ChevronRight className="w-4 h-4" />
@@ -563,7 +459,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                       type="text"
                       required
                       placeholder="Username"
-                      className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"
+                      className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-gray-100"
                       value={signupUsername}
                       onChange={(e) => setSignupUsername(e.target.value)}
                     />
@@ -581,7 +477,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                       type="email"
                       required
                       placeholder="Email ID"
-                      className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"
+                      className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-gray-100"
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                     />
@@ -599,7 +495,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                       type="tel"
                       required
                       placeholder="10-digit number"
-                      className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"
+                      className="w-full pl-11 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-gray-100"
                       value={signupMobile}
                       onChange={(e) => setSignupMobile(e.target.value)}
                     />
@@ -611,7 +507,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                   <label className="block text-xs font-bold text-gray-700">{t["landing.gender"]}</label>
                   <select
                     required
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"
+                    className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-gray-100"
                     value={signupGender}
                     onChange={(e) => setSignupGender(e.target.value)}
                   >
@@ -633,7 +529,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                     <input
                       type="date"
                       required
-                      className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700"
+                      className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm text-gray-700 dark:text-gray-100"
                       value={signupDob}
                       onChange={(e) => setSignupDob(e.target.value)}
                     />
@@ -647,48 +543,48 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
                     type="password"
                     required
                     placeholder="New Password"
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"
+                    className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-gray-100"
                     value={signupPassword}
                     onChange={(e) => setSignupPassword(e.target.value)}
                   />
                   
                   {/* Real-time Password Checklist UI */}
-                  <div className="p-3 bg-gray-50 border border-gray-200/50 rounded-xl space-y-1.5 mt-1 text-[11px]">
+                  <div className="p-3 bg-gray-50 dark:bg-slate-800 border border-gray-200/50 dark:border-slate-700/50 rounded-xl space-y-1.5 mt-1 text-[11px]">
                     <div className="flex items-center space-x-1.5">
-                      <span className={`p-0.5 rounded-full ${passLength ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
+                      <span className={`p-0.5 rounded-full ${passLength ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-slate-700 dark:text-gray-500'}`}>
                         <Check className="w-3 h-3" />
                       </span>
-                      <span className={passLength ? 'text-green-700 font-semibold' : 'text-gray-500'}>{t["landing.ruleLength"]}</span>
+                      <span className={passLength ? 'text-green-700 dark:text-green-400 font-semibold' : 'text-gray-500 dark:text-gray-400'}>{t["landing.ruleLength"]}</span>
                     </div>
                     <div className="flex items-center space-x-1.5">
-                      <span className={`p-0.5 rounded-full ${passLower ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
+                      <span className={`p-0.5 rounded-full ${passLower ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-slate-700 dark:text-gray-500'}`}>
                         <Check className="w-3 h-3" />
                       </span>
                       <span className={passLower ? 'text-green-700 font-semibold' : 'text-gray-500'}>{t["landing.ruleLower"]}</span>
                     </div>
                     <div className="flex items-center space-x-1.5">
-                      <span className={`p-0.5 rounded-full ${passUpper ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
+                      <span className={`p-0.5 rounded-full ${passUpper ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-slate-700 dark:text-gray-500'}`}>
                         <Check className="w-3 h-3" />
                       </span>
-                      <span className={passUpper ? 'text-green-700 font-semibold' : 'text-gray-500'}>{t["landing.ruleUpper"]}</span>
+                      <span className={passUpper ? 'text-green-700 dark:text-green-400 font-semibold' : 'text-gray-500 dark:text-gray-400'}>{t["landing.ruleUpper"]}</span>
                     </div>
                     <div className="flex items-center space-x-1.5">
-                      <span className={`p-0.5 rounded-full ${passSpecial ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
+                      <span className={`p-0.5 rounded-full ${passSpecial ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-slate-700 dark:text-gray-500'}`}>
                         <Check className="w-3 h-3" />
                       </span>
-                      <span className={passSpecial ? 'text-green-700 font-semibold' : 'text-gray-500'}>{t["landing.ruleSpecial"]}</span>
+                      <span className={passSpecial ? 'text-green-700 dark:text-green-400 font-semibold' : 'text-gray-500 dark:text-gray-400'}>{t["landing.ruleSpecial"]}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Confirm Password */}
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-gray-700">{t["landing.confirmPassword"]}</label>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">{t["landing.confirmPassword"]}</label>
                   <input
                     type="password"
                     required
                     placeholder="Confirm Password"
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"
+                    className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-gray-100"
                     value={signupConfirmPassword}
                     onChange={(e) => setSignupConfirmPassword(e.target.value)}
                   />
@@ -699,7 +595,7 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 text-sm disabled:opacity-50"
+                className="w-full bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 text-sm disabled:opacity-50"
               >
                 <span>{authLoading ? t["landing.signingUp"] : t["landing.signupBtn"]}</span>
                 <ChevronRight className="w-4 h-4" />
@@ -720,16 +616,17 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
         </div>
 
         {/* Enter App Unauthenticated CTA */}
-        <div className="mt-8 flex flex-col items-center space-y-3">
-          <span className="text-xs text-gray-400 font-medium">{t["landing.orCheckAnonymously"]}</span>
+        <div className="mt-8 flex flex-col items-center space-y-3 z-10">
+          <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">{t["landing.orCheckAnonymously"]}</span>
           <button
             onClick={onEnterApp}
-            className="px-6 py-2.5 border border-[#1E3A8A] text-[#1E3A8A] hover:bg-[#1E3A8A]/5 font-bold rounded-xl text-sm transition-all shadow-sm"
+            className="px-6 py-2.5 border border-[#1E3A8A] dark:border-blue-500 text-[#1E3A8A] dark:text-blue-400 hover:bg-[#1E3A8A]/5 dark:hover:bg-blue-500/10 font-bold rounded-xl text-sm transition-all shadow-sm"
           >
             {t["landing.checkCallNow"]}
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 }

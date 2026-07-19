@@ -1,0 +1,47 @@
+---
+description: Enforces the exact locked specification for the LandingAuth page and its hero graphic.
+globs: ["src/components/LandingAuth.tsx", "src/components/HeroShieldGraphic.tsx"]
+---
+
+# LandingAuth.tsx Locked Specification
+
+**CRITICAL INSTRUCTION**: This exact implementation is IMMUTABLE unless explicitly requested to change a specific, named element.
+
+Before touching `LandingAuth.tsx` or `HeroShieldGraphic.tsx` for ANY reason:
+1. State exactly which single element is being changed and why.
+2. Confirm every other element in this spec remains untouched.
+3. NEVER regenerate, redesign, or swap the hero graphic concept (shield/lock/hands/pedestal) — only adjust specific named details if explicitly asked.
+4. NEVER use a full-page screenshot as an image asset.
+
+## Hero Graphic Specification
+- **Navy blue shield** with soft white/light glow outline.
+- **Inside**: A white padlock icon centered, flanked by two curved abstract "shielding hands/wave" line shapes on either side (protective gesture motif).
+- **Base**: Sits above a tiered circular illuminated pedestal with concentric glowing rings and light rays.
+- **Animations**: Subtle animations (gentle float on the shield, slow rotation on the pedestal rings) that respect `prefers-reduced-motion`.
+
+## Left Column Structure
+1. Logo (shield icon + "Rakshak AI" + "Digital Safety Shield" subtitle)
+2. "Your Safety. Our Mission." headline
+3. "Together, we stop digital scams." subheadline
+4. Body paragraph
+5. 3 feature rows:
+   - AI-Powered Protection
+   - Privacy by Design
+   - Trusted by Citizens
+6. Government of India initiative badge
+7. Footer privacy strip
+
+## Right Column Structure (Auth Card)
+- White auth card
+- Login / Sign Up tabs
+- Welcome back heading
+- Email or Mobile Number field
+- Password field with show/hide toggle
+- Forgot Password link
+- Remember me checkbox
+- Login Securely button
+- Secure / Encrypted / Private trust line
+- "Check a Call Now" bypass button below the card
+- Top-right: Light mode toggle
+
+**DO NOT DEVIATE from this exact layout and visual design.**
