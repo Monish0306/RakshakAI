@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ShieldAlert, Save, Loader2, Info } from 'lucide-react';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { TRANSLATIONS } from '../lib/translations';
 
@@ -48,11 +48,11 @@ export default function GuardianCenter({ user, language }: GuardianCenterProps) 
     
     try {
       const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, {
+      await setDoc(userRef, {
         guardianEnabled: enabled,
         guardianName: enabled ? name.trim() : null,
         guardianMobile: enabled ? mobile.replace(/^\+91/, '').trim() : null,
-      });
+      }, { merge: true });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {

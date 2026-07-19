@@ -22,3 +22,12 @@ export async function getBaselineMetrics() {
   const snap = await getDoc(docRef);
   return snap.exists() ? snap.data() : null;
 }
+
+export async function getEvaluationHistory() {
+  const q = query(collection(db, "evaluationResults"), orderBy("computedAt", "asc"));
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return [];
+  return snapshot.docs
+    .map(d => d.data())
+    .filter(d => d.method !== 'naive keyword matching' && d.computedAt);
+}

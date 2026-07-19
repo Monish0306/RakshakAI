@@ -1,5 +1,6 @@
 import { Shield, Brain, Lock, BellRing } from 'lucide-react';
 import { TRANSLATIONS } from '../lib/translations';
+import WorkflowDiagram from './WorkflowDiagram';
 
 interface HowItWorksProps {
   language: string;
@@ -39,6 +40,8 @@ export default function HowItWorks({ language }: HowItWorksProps) {
           {t["how.subtitle"]}
         </p>
       </div>
+
+      <WorkflowDiagram />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
         {steps.map((step, idx) => (

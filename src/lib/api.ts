@@ -48,6 +48,10 @@ export async function classifyTranscript(transcript: string, language: string): 
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Failed to load: Server returned a non-JSON response.");
+    }
     return res.json();
   } catch (err) {
     clearTimeout(id);
@@ -66,6 +70,10 @@ export async function getAdvisory(verdict: string, lang: string = "en"): Promise
     clearTimeout(id);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Failed to load: Server returned a non-JSON response.");
     }
     return res.json();
   } catch (err) {
@@ -97,6 +105,10 @@ export async function matchCampaign(transcriptEmbedding: number[], sessionData: 
     clearTimeout(id);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Failed to load: Server returned a non-JSON response.");
     }
     return res.json();
   } catch (err) {
@@ -143,6 +155,10 @@ export async function fetchCampaigns(): Promise<CampaignListResponse> {
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Failed to load campaigns: API route is not resolving correctly (received non-JSON response).");
+    }
     return res.json();
   } catch (err) {
     clearTimeout(id);
@@ -176,6 +192,10 @@ export async function fetchPulseStats(): Promise<PulseStatsResponse> {
     clearTimeout(id);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Failed to load stats: Server returned a non-JSON response.");
     }
     return res.json();
   } catch (err) {
