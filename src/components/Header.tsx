@@ -4,7 +4,7 @@ import { TRANSLATIONS } from '../lib/translations';
 
 interface HeaderProps {
   activeTab: string;
-  setActiveTab: (tab: 'home' | 'how' | 'dashboard' | 'about' | 'command' | 'guardian') => void;
+  setActiveTab: (tab: 'home' | 'how' | 'dashboard' | 'impact' | 'about' | 'command' | 'guardian') => void;
   language: string;
   setLanguage: (lang: string) => void;
   simpleView: boolean;
@@ -33,6 +33,7 @@ export default function Header({
     { id: 'home', label: t["header.liveCheck"], tooltip: t["header.tooltip.home"] || "Simulate a live scam call to check safety." },
     { id: 'how', label: t["header.howItWorks"], tooltip: t["header.tooltip.how"] || "Learn how Rakshak AI protects you." },
     { id: 'dashboard', label: t["header.dashboard"], tooltip: t["header.tooltip.dashboard"] || "View statistics and fraud trends." },
+    { id: 'impact', label: t["header.businessImpact"], tooltip: t["header.tooltip.impact"] || "Explore Rakshak AI's business model and impact." },
     { id: 'about', label: t["header.about"], tooltip: t["header.tooltip.about"] || "Learn more about our mission." },
     { id: 'command', label: t["header.command"], tooltip: t["header.tooltip.command"] || "Access the investigator control panel." },
     { id: 'guardian', label: t["header.guardian"] || "Family Guardian", tooltip: t["header.tooltip.guardian"] || "Manage trusted contacts for emergency alerts." },

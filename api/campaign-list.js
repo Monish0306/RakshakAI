@@ -43,6 +43,16 @@ const CATEGORY_LABELS = {
   8: "Reward/Incentive Lure"
 };
 
+function toTimestampMs(timestamp) {
+  if (timestamp && typeof timestamp.toDate === "function") {
+    return timestamp.toDate().getTime();
+  }
+  if (timestamp && typeof timestamp.seconds === "number") {
+    return timestamp.seconds * 1000 + Math.floor((timestamp.nanoseconds || 0) / 1e6);
+  }
+  return new Date(timestamp).getTime();
+}
+
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -95,10 +105,13 @@ export default async function handler(req, res) {
       const reports = campaignsMap[campaignId];
       
       // Sort reports by timestamp to find first/last seen and oldest transcript
-      const sortedReports = [...reports].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+      const sortedReports = [...reports].sort((a, b) => toTimestampMs(a.timestamp) - toTimestampMs(b.timestamp));
       
       const firstSeen = sortedReports[0].timestamp;
       const lastSeen = sortedReports[sortedReports.length - 1].timestamp;
+      const detectionLeadTimeMs = sortedReports.length >= 2
+        ? Math.max(0, toTimestampMs(sortedReports[1].timestamp) - toTimestampMs(sortedReports[0].timestamp))
+        : 0;
       
       // Oldest transcript snippet
       const representativeTranscript = sortedReports[0].transcript || "";
@@ -128,6 +141,7 @@ export default async function handler(req, res) {
         reportCount: reports.length,
         firstSeen,
         lastSeen,
+        detectionLeadTimeMs,
         representativeTranscript,
         dominantCategory,
         priority: reports.length >= 3,

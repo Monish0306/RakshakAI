@@ -6,13 +6,14 @@ import CitizenShield from './components/CitizenShield.tsx';
 import Dashboard from './components/Dashboard.tsx';
 import HowItWorks from './components/HowItWorks.tsx';
 import About from './components/About.tsx';
+import BusinessImpact from './components/BusinessImpact.tsx';
 import CommandCenter from './components/CommandCenter.tsx';
 import LandingAuth from './components/LandingAuth.tsx';
 import GuardianCenter from './components/GuardianCenter.tsx';
 import { useClassifier } from './hooks/useClassifier.ts';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'about' | 'command' | 'guardian'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'impact' | 'about' | 'command' | 'guardian'>('home');
   const [language, setLanguage] = useState('en');
   const [simpleView, setSimpleView] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
@@ -91,6 +92,7 @@ export default function App() {
         {activeTab === 'home' && <CitizenShield classifier={classifier} language={language} simpleView={simpleView} user={combinedUser} />}
         {activeTab === 'how' && <HowItWorks language={language} />}
         {activeTab === 'dashboard' && <Dashboard language={language} />}
+        {activeTab === 'impact' && <BusinessImpact language={language} />}
         {activeTab === 'about' && <About language={language} />}
         {activeTab === 'command' && <CommandCenter language={language} />}
         {activeTab === 'guardian' && <GuardianCenter user={combinedUser} language={language} />}

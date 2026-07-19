@@ -130,6 +130,7 @@ export interface Campaign {
   reportCount: number;
   firstSeen: string;
   lastSeen: string;
+  detectionLeadTimeMs: number;
   representativeTranscript: string;
   dominantCategory: string;
   priority: boolean;

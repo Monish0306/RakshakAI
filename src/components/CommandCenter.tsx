@@ -27,6 +27,18 @@ export default function CommandCenter({ language }: CommandCenterProps) {
 
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
+  const formatDetectionLeadTime = (milliseconds: number) => {
+    const totalMinutes = Math.floor(milliseconds / 60000);
+    if (totalMinutes < 1) return t["command.lessThanMinute"];
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    const parts: string[] = [];
+    if (hours) parts.push(`${hours} ${t[hours === 1 ? "command.hour" : "command.hours"]}`);
+    if (minutes) parts.push(`${minutes} ${t[minutes === 1 ? "command.minute" : "command.minutes"]}`);
+    return parts.join(' ');
+  };
+
   const getCategoryLabel = (catNum: string | number) => {
     const labels: Record<string, Record<string, string>> = {
       en: CATEGORY_LABELS,
@@ -255,6 +267,11 @@ export default function CommandCenter({ language }: CommandCenterProps) {
                             {t["command.last"]} <strong className="text-gray-900">{new Date(c.lastSeen).toLocaleDateString()}</strong>
                           </span>
                         </div>
+                      </div>
+
+                      <div className="mb-4 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-[#1E3A8A]">
+                        <AlertTriangle className="w-3.5 h-3.5" />
+                        <span>{t["command.detectedAfterFirstReport"].replace('{time}', formatDetectionLeadTime(c.detectionLeadTimeMs))}</span>
                       </div>
 
                       {/* Excerpt */}
