@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Download, PhoneCall, Loader2, PlayCircle, Info } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Download, PhoneCall, Loader2, PlayCircle, Info, Mic, Square, ImageUp } from 'lucide-react';
+import { recognize } from 'tesseract.js';
 import VerdictCard from './VerdictCard';
 import ReasoningPanel from './ReasoningPanel';
 // @ts-ignore
@@ -18,11 +19,48 @@ interface CitizenShieldProps {
 const SAMPLE_SCAM_TRANSCRIPT = 
   "Hello, this is Inspector Sharma from the CBI. We have intercepted a package in your name containing illegal passports. You are under digital arrest and must remain on this video call. Do not disconnect or a warrant will be issued immediately. For verification of your innocence, transfer a refundable deposit of Rs. 50,000 to the RBI secure account.";
 
+interface SpeechRecognitionAlternative {
+  transcript: string;
+}
+
+interface SpeechRecognitionResultLike {
+  isFinal: boolean;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionEventLike extends Event {
+  resultIndex: number;
+  results: ArrayLike<SpeechRecognitionResultLike>;
+}
+
+interface SpeechRecognitionLike {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onend: (() => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
 export default function CitizenShield({ classifier, language, simpleView, user }: CitizenShieldProps) {
   const [transcript, setTranscript] = useState('');
   const [coolingTimer, setCoolingTimer] = useState(0);
   const { loading, result, advisory, error, runClassification } = classifier;
   const [isSimulating, setIsSimulating] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
+  const [speechError, setSpeechError] = useState<string | null>(null);
+  const [ocrError, setOcrError] = useState<string | null>(null);
+  const [interimSpeech, setInterimSpeech] = useState('');
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  const recordingBaseTranscriptRef = useRef('');
+  const finalSpeechResultsRef = useRef<Map<number, string>>(new Map());
   const [moneySent, setMoneySent] = useState<boolean | null>(null);
   const [evidenceChecked, setEvidenceChecked] = useState<Record<string, boolean>>({
     screenshot: false,
@@ -70,6 +108,103 @@ export default function CitizenShield({ classifier, language, simpleView, user }
     
     setIsSimulating(false);
     runClassification(SAMPLE_SCAM_TRANSCRIPT, language);
+  };
+
+  const getSpeechRecognition = (): SpeechRecognitionConstructor | null => {
+    if (typeof window === 'undefined' || !window.isSecureContext) return null;
+
+    const speechWindow = window as typeof window & {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+    return speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition || null;
+  };
+
+  const handleVoiceRecording = () => {
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      return;
+    }
+
+    const Recognition = getSpeechRecognition();
+    if (!Recognition) {
+      setSpeechError(t["shield.voiceUnsupported"]);
+      return;
+    }
+
+    setSpeechError(null);
+    setInterimSpeech('');
+    recordingBaseTranscriptRef.current = transcript;
+    finalSpeechResultsRef.current = new Map();
+    const recognition = new Recognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = language === 'hi' ? 'hi-IN' : language === 'ta' ? 'ta-IN' : language === 'kn' ? 'kn-IN' : language === 'te' ? 'te-IN' : 'en-IN';
+
+    recognition.onresult = (event) => {
+      const interimResults: string[] = [];
+
+      // Result indices are stable for one recognition session. Rebuild from those
+      // slots so an interim fragment becoming final replaces itself instead of appending.
+      for (let index = 0; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        if (result.isFinal) {
+          finalSpeechResultsRef.current.set(index, result[0].transcript.trim());
+        } else {
+          interimResults.push(result[0].transcript.trim());
+        }
+      }
+
+      setInterimSpeech(interimResults.filter(Boolean).join(' '));
+      const finalText = Array.from(finalSpeechResultsRef.current.entries())
+        .sort(([firstIndex], [secondIndex]) => firstIndex - secondIndex)
+        .map(([, text]) => text)
+        .filter(Boolean)
+        .join(' ');
+      if (finalText) {
+        const baseTranscript = recordingBaseTranscriptRef.current;
+        setTranscript(`${baseTranscript}${baseTranscript.trim() ? ' ' : ''}${finalText}`);
+      }
+    };
+    recognition.onend = () => {
+      setIsRecording(false);
+      setInterimSpeech('');
+      recognitionRef.current = null;
+    };
+    recognition.onerror = (event) => {
+      if (event.error !== 'aborted' && event.error !== 'no-speech') {
+        setSpeechError(t["shield.voiceUnavailable"]);
+      }
+    };
+
+    recognitionRef.current = recognition;
+    setIsRecording(true);
+    recognition.start();
+  };
+
+  useEffect(() => () => recognitionRef.current?.abort(), []);
+
+  const handleImageFile = async (file?: File) => {
+    if (!file || !file.type.startsWith('image/')) {
+      setOcrError(t["shield.ocrFailure"]);
+      return;
+    }
+
+    setOcrError(null);
+    setIsProcessingImage(true);
+    try {
+      const { data: { text } } = await recognize(file, 'eng');
+      if (!text.trim()) {
+        setOcrError(t["shield.ocrFailure"]);
+        return;
+      }
+      setTranscript(text.trim());
+    } catch {
+      setOcrError(t["shield.ocrFailure"]);
+    } finally {
+      setIsProcessingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = '';
+    }
   };
 
   useEffect(() => {
@@ -121,25 +256,55 @@ export default function CitizenShield({ classifier, language, simpleView, user }
             placeholder={t["shield.textareaPlaceholder"]}
             value={transcript}
             onChange={(e) => setTranscript(e.target.value)}
-            disabled={loading || isSimulating}
+            disabled={loading || isSimulating || isRecording || isProcessingImage}
           />
         </div>
         <div className="bg-gray-50 border-t border-gray-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <button
-            onClick={handleSimulate}
-            disabled={loading || isSimulating}
-            className="text-[#1E3A8A] font-medium text-sm flex items-center hover:bg-blue-50 px-3 py-2 rounded-md transition-colors"
-          >
-            <PlayCircle className="w-5 h-5 mr-2" />
-            {t["shield.liveSimulatedCall"]}
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleSimulate}
+              disabled={loading || isSimulating || isRecording || isProcessingImage}
+              className="text-[#1E3A8A] font-medium text-sm flex items-center hover:bg-blue-50 px-3 py-2 rounded-md transition-colors disabled:opacity-50"
+            >
+              <PlayCircle className="w-5 h-5 mr-2" />
+              {t["shield.liveSimulatedCall"]}
+            </button>
+            <button
+              onClick={handleVoiceRecording}
+              disabled={loading || isSimulating || isProcessingImage}
+              aria-pressed={isRecording}
+              className={cn(
+                "font-medium text-sm flex items-center px-3 py-2 rounded-md transition-colors disabled:opacity-50",
+                isRecording ? "bg-red-100 text-red-700 hover:bg-red-200" : "text-[#1E3A8A] hover:bg-blue-50"
+              )}
+            >
+              {isRecording ? <Square className="w-4 h-4 mr-2 fill-current" /> : <Mic className="w-5 h-5 mr-2" />}
+              <span className={isRecording ? "animate-pulse" : undefined}>{isRecording ? t["shield.stopRecording"] : t["shield.recordVoice"]}</span>
+            </button>
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(event) => handleImageFile(event.target.files?.[0])}
+            />
+            <button
+              type="button"
+              onClick={() => imageInputRef.current?.click()}
+              disabled={loading || isSimulating || isRecording || isProcessingImage}
+              className="text-[#1E3A8A] font-medium text-sm flex items-center hover:bg-blue-50 px-3 py-2 rounded-md transition-colors disabled:opacity-50"
+            >
+              {isProcessingImage ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <ImageUp className="w-5 h-5 mr-2" />}
+              {isProcessingImage ? t["shield.extractingText"] : t["shield.uploadScreenshot"]}
+            </button>
+          </div>
           
           <button
             onClick={handleCheck}
-            disabled={loading || isSimulating || !transcript.trim()}
+            disabled={loading || isSimulating || isRecording || isProcessingImage || !transcript.trim()}
             className={cn(
               "w-full sm:w-auto px-8 py-3 rounded-lg font-bold text-white transition-all shadow-sm flex items-center justify-center",
-              (loading || isSimulating || !transcript.trim()) 
+              (loading || isSimulating || isRecording || isProcessingImage || !transcript.trim())
                 ? "bg-gray-400 cursor-not-allowed" 
                 : "bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 hover:shadow-md",
               simpleView ? "text-xl py-4" : "text-base"
@@ -152,6 +317,34 @@ export default function CitizenShield({ classifier, language, simpleView, user }
             )}
           </button>
         </div>
+        {isRecording && (
+          <div className="px-5 pb-4 text-sm text-red-700 flex items-center gap-2" role="status">
+            <Mic className="w-4 h-4 animate-pulse" />
+            <span>{t["shield.listening"]}{interimSpeech ? `: ${interimSpeech}` : ''}</span>
+          </div>
+        )}
+        <div
+          className="mx-4 mb-4 rounded-lg border-2 border-dashed border-blue-100 bg-blue-50/40 px-4 py-3 text-center text-sm text-[#1E3A8A] transition-colors hover:border-blue-300"
+          onDragOver={(event) => event.preventDefault()}
+          onDrop={(event) => {
+            event.preventDefault();
+            if (!isProcessingImage && !loading && !isSimulating && !isRecording) {
+              handleImageFile(event.dataTransfer.files[0]);
+            }
+          }}
+        >
+          {isProcessingImage ? t["shield.extractingText"] : t["shield.dropScreenshot"]}
+        </div>
+        {speechError && (
+          <div className="mx-4 mb-4 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800" role="alert">
+            {speechError}
+          </div>
+        )}
+        {ocrError && (
+          <div className="mx-4 mb-4 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800" role="alert">
+            {ocrError}
+          </div>
+        )}
       </div>
 
       {error && (
