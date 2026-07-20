@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from './lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from './lib/firebase';
 import Sidebar from './components/Sidebar.tsx';
 import CitizenShield from './components/CitizenShield.tsx';
 import Dashboard from './components/Dashboard.tsx';
@@ -22,15 +23,31 @@ export default function App() {
   const [showLanding, setShowLanding] = useState(true);
   const [userAuth, setUserAuth] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [firebaseUser, setFirebaseUser] = useState<any>(null);
   const [redirectMsg, setRedirectMsg] = useState<string | null>(null);
 
   const combinedUser = userAuth ? { ...userAuth, ...userProfile } : null;
 
   useEffect(() => {
+    const unsubAuth = onAuthStateChanged(auth, async (user) => {
+      setFirebaseUser(user);
+      if (user) {
+        try {
+          const idTokenResult = await user.getIdTokenResult();
+          setIsAdmin(idTokenResult.claims.role === 'admin' || !!idTokenResult.claims.admin);
+        } catch (err) {
+          console.error("Error fetching token result", err);
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    });
+    return () => unsubAuth();
+  }, []);
+
+  useEffect(() => {
     if (userAuth?.uid) {
-      userAuth.getIdTokenResult().then((idTokenResult: any) => {
-        setIsAdmin(idTokenResult.claims.role === 'admin' || !!idTokenResult.claims.admin);
-      }).catch(console.error);
 
       const unsub = onSnapshot(doc(db, "users", userAuth.uid), (docSnap) => {
         if (docSnap.exists()) {
@@ -40,7 +57,6 @@ export default function App() {
       return () => unsub();
     } else {
       setUserProfile(null);
-      setIsAdmin(false);
     }
   }, [userAuth]);
 
@@ -56,11 +72,13 @@ export default function App() {
     return (
       <LandingAuth
         language={language}
-        onEnterApp={() => setShowLanding(false)}
         onLoginSuccess={(loggedInUser) => {
           setUserAuth(loggedInUser);
           setShowLanding(false);
           setRedirectMsg(null);
+          if (loggedInUser.isAdmin) {
+            setActiveTab('admin');
+          }
         }}
         redirectMessage={redirectMsg}
       />
@@ -105,7 +123,7 @@ export default function App() {
         {activeTab === 'about' && <About language={language} />}
         {activeTab === 'command' && <CommandCenter language={language} />}
         {activeTab === 'guardian' && <GuardianCenter user={combinedUser} language={language} />}
-        {activeTab === 'admin' && isAdmin && <AdminPortal user={userAuth} />}
+        {activeTab === 'admin' && isAdmin && <AdminPortal user={firebaseUser} />}
       </main>
       </div>
     </div>

@@ -7,8 +7,7 @@ import {
   Info, 
   ShieldAlert, 
   Users, 
-  Lock,
-  Settings
+  Lock
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -23,7 +22,7 @@ interface SidebarProps {
   setSimpleView: (val: boolean) => void;
   modelLoaded: boolean;
   user: any;
-  isAdmin: boolean;
+  isAdmin?: boolean;
   onLogout: () => void;
   onSignInClick: () => void;
 }
@@ -37,7 +36,6 @@ export default function Sidebar({
   setSimpleView,
   modelLoaded,
   user,
-  isAdmin,
   onLogout,
   onSignInClick
 }: SidebarProps) {
@@ -49,7 +47,6 @@ export default function Sidebar({
     icon: LucideIcon;
     tooltip: string;
     requiresAuth?: boolean;
-    adminOnly?: boolean;
   }
 
   const navItems: NavItem[] = [
@@ -60,7 +57,6 @@ export default function Sidebar({
     { id: 'about', label: t["header.about"], icon: Info, tooltip: t["header.tooltip.about"] || "Learn more about our mission." },
     { id: 'command', label: t["header.command"], icon: ShieldAlert, tooltip: t["header.tooltip.command"] || "Access the investigator control panel.", requiresAuth: true },
     { id: 'guardian', label: t["header.guardian"] || "Family Guardian", icon: Users, tooltip: t["header.tooltip.guardian"] || "Manage trusted contacts for emergency alerts.", requiresAuth: true },
-    { id: 'admin', label: 'Admin Portal', icon: Settings, tooltip: 'Secure admin configuration.', requiresAuth: true, adminOnly: true },
   ];
 
   return (
@@ -76,7 +72,6 @@ export default function Sidebar({
       {/* Center: Tabs */}
       <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-1">
         {navItems.map((item) => {
-          if (item.adminOnly && !isAdmin) return null;
           const Icon = item.icon;
           const isLocked = item.requiresAuth && !user;
           return (

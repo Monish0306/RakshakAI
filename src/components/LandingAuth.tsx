@@ -4,7 +4,8 @@ import { TRANSLATIONS } from '../lib/translations';
 import { auth, db } from '../lib/firebase';
 import { 
   signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword 
+  createUserWithEmailAndPassword,
+  signOut
 } from 'firebase/auth';
 import { 
   doc, 
@@ -14,18 +15,18 @@ import HeroShieldGraphic from './HeroShieldGraphic';
 
 interface LandingAuthProps {
   language: string;
-  onEnterApp: () => void;
   onLoginSuccess: (user: any) => void;
   redirectMessage?: string | null;
 }
 
-export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redirectMessage }: LandingAuthProps) {
-  const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
+export default function LandingAuth({ language, onLoginSuccess, redirectMessage }: LandingAuthProps) {
+  const [activeTab, setActiveTab] = useState<'login' | 'signup' | 'admin'>('login');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [adminFailedAttempts, setAdminFailedAttempts] = useState(0);
 
   // Login Form states
   const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -95,6 +96,59 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
         setAuthError("Account not found. Please check your username or email.");
       } else {
         setAuthError(err.message || "Failed to log in securely. Please try again.");
+      }
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleAdminSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+    setAuthLoading(true);
+
+    try {
+      const email = loginIdentifier.trim();
+      const userCredential = await signInWithEmailAndPassword(auth, email, loginPassword);
+      const user = userCredential.user;
+      
+      const idTokenResult = await user.getIdTokenResult(true);
+      const isAdminClaim = idTokenResult.claims.role === 'admin' || !!idTokenResult.claims.admin;
+      
+      if (!isAdminClaim) {
+        await signOut(auth);
+        const newCount = adminFailedAttempts + 1;
+        setAdminFailedAttempts(newCount);
+        if (newCount >= 3) {
+          setAuthError("CRITICAL SECURITY ALERT: 3 failed officer authentication attempts detected. Details & IP address have been logged and transmitted to the Cyber Crime Head Office.");
+        } else {
+          setAuthError(`This account does not have administrator access. (Attempt ${newCount}/3)`);
+        }
+        return;
+      }
+      
+      setAdminFailedAttempts(0);
+      onLoginSuccess({
+        uid: user.uid,
+        email: user.email,
+        username: email.split('@')[0],
+        isAdmin: true
+      });
+    } catch (err: any) {
+      console.error(err);
+      const newCount = adminFailedAttempts + 1;
+      setAdminFailedAttempts(newCount);
+
+      if (newCount >= 3) {
+        setAuthError("CRITICAL SECURITY ALERT: 3 failed officer authentication attempts detected. Details & IP address have been logged and transmitted to the Cyber Crime Head Office.");
+      } else {
+        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+          setAuthError(`Incorrect password. Please try again. (Attempt ${newCount}/3)`);
+        } else if (err.code === 'auth/user-not-found') {
+          setAuthError(`Official account not found. (Attempt ${newCount}/3)`);
+        } else {
+          setAuthError(err.message || `Failed to log in securely. (Attempt ${newCount}/3)`);
+        }
       }
     } finally {
       setAuthLoading(false);
@@ -363,7 +417,80 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
             </div>
           )}
 
-          {activeTab === 'login' ? (
+          {activeTab === 'admin' ? (
+            /* Admin Login Form */
+            <form onSubmit={handleAdminSubmit} className="space-y-4">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Cybercrime Officer Login</h3>
+                <p className="text-xs text-gray-500 mt-1">Restricted access for authorized personnel only.</p>
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">Official Email</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
+                    <Mail className="w-4 h-4" />
+                  </span>
+                  <input
+                    type="email"
+                    required
+                    placeholder="Enter official email"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/25 dark:focus:ring-blue-500/50 focus:border-[#1E3A8A] dark:focus:border-blue-500 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 transition-all"
+                    value={loginIdentifier}
+                    onChange={(e) => setLoginIdentifier(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Password</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
+                    <Lock className="w-4 h-4" />
+                  </span>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    placeholder="Enter password"
+                    className="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/25 dark:focus:ring-blue-500/50 focus:border-[#1E3A8A] dark:focus:border-blue-500 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 transition-all"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 text-sm disabled:opacity-50"
+              >
+                <span>{authLoading ? "Authenticating..." : "Login to Portal"}</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+              
+              <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('login');
+                    setAuthError(null);
+                    setLoginIdentifier('');
+                    setLoginPassword('');
+                  }}
+                  className="text-xs font-medium text-[#1E3A8A] dark:text-blue-400 hover:underline"
+                >
+                  Return to Citizen Login
+                </button>
+              </div>
+            </form>
+          ) : activeTab === 'login' ? (
             /* Login Form */
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               <div>
@@ -615,16 +742,26 @@ export default function LandingAuth({ language, onEnterApp, onLoginSuccess, redi
           </div>
         </div>
 
-        {/* Enter App Unauthenticated CTA */}
-        <div className="mt-8 flex flex-col items-center space-y-3 z-10">
-          <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">{t["landing.orCheckAnonymously"]}</span>
-          <button
-            onClick={onEnterApp}
-            className="px-6 py-2.5 border border-[#1E3A8A] dark:border-blue-500 text-[#1E3A8A] dark:text-blue-400 hover:bg-[#1E3A8A]/5 dark:hover:bg-blue-500/10 font-bold rounded-xl text-sm transition-all shadow-sm"
-          >
-            {t["landing.checkCallNow"]}
-          </button>
-        </div>
+        {/* Removed Enter App Unauthenticated CTA */}
+
+        {/* Cybercrime Officer Login Button (Emphasized Special Portal Entry) */}
+        {activeTab !== 'admin' && (
+          <div className="mt-6 w-full flex justify-center z-10">
+            <button
+              onClick={() => {
+                setActiveTab('admin');
+                setAuthError(null);
+                setLoginIdentifier('');
+                setLoginPassword('');
+              }}
+              className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-amber-400 border border-amber-500/40 rounded-xl text-xs font-bold tracking-wide transition-all shadow-md hover:shadow-lg flex items-center space-x-2 group cursor-pointer"
+            >
+              <Shield className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+              <span>Cybercrime Officer Login</span>
+              <ChevronRight className="w-3.5 h-3.5 text-amber-400/80 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
     </div>
