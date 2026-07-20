@@ -31,3 +31,4 @@ dist-ssr
 data/raw
 
 serviceAccountKey.json
+set-admin-claim.mjs

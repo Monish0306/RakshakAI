@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from './lib/firebase';
-import Header from './components/Header.tsx';
+import Sidebar from './components/Sidebar.tsx';
 import CitizenShield from './components/CitizenShield.tsx';
 import Dashboard from './components/Dashboard.tsx';
 import HowItWorks from './components/HowItWorks.tsx';
@@ -10,10 +10,12 @@ import BusinessImpact from './components/BusinessImpact.tsx';
 import CommandCenter from './components/CommandCenter.tsx';
 import LandingAuth from './components/LandingAuth.tsx';
 import GuardianCenter from './components/GuardianCenter.tsx';
+import AdminPortal from './components/AdminPortal.tsx';
 import { useClassifier } from './hooks/useClassifier.ts';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'impact' | 'about' | 'command' | 'guardian'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'impact' | 'about' | 'command' | 'guardian' | 'admin'>('home');
+  const [isAdmin, setIsAdmin] = useState(false);
   const [language, setLanguage] = useState('en');
   const [simpleView, setSimpleView] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
@@ -26,6 +28,10 @@ export default function App() {
 
   useEffect(() => {
     if (userAuth?.uid) {
+      userAuth.getIdTokenResult().then((idTokenResult: any) => {
+        setIsAdmin(idTokenResult.claims.role === 'admin' || !!idTokenResult.claims.admin);
+      }).catch(console.error);
+
       const unsub = onSnapshot(doc(db, "users", userAuth.uid), (docSnap) => {
         if (docSnap.exists()) {
           setUserProfile(docSnap.data());
@@ -34,8 +40,9 @@ export default function App() {
       return () => unsub();
     } else {
       setUserProfile(null);
+      setIsAdmin(false);
     }
-  }, [userAuth?.uid]);
+  }, [userAuth]);
 
   const classifier = useClassifier();
 
@@ -61,8 +68,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-blue-200">
-      <Header
+    <div className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-blue-200 flex">
+      <Sidebar
         activeTab={activeTab}
         setActiveTab={(tab) => {
           if ((tab === 'command' || tab === 'guardian') && !combinedUser) {
@@ -78,6 +85,7 @@ export default function App() {
         setSimpleView={setSimpleView}
         modelLoaded={modelLoaded}
         user={combinedUser}
+        isAdmin={isAdmin}
         onLogout={() => {
           setUserAuth(null);
           setShowLanding(true);
@@ -88,7 +96,8 @@ export default function App() {
         }}
       />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex-1 ml-[240px] transition-[margin] duration-300">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'home' && <CitizenShield classifier={classifier} language={language} simpleView={simpleView} user={combinedUser} />}
         {activeTab === 'how' && <HowItWorks language={language} />}
         {activeTab === 'dashboard' && <Dashboard language={language} />}
@@ -96,7 +105,9 @@ export default function App() {
         {activeTab === 'about' && <About language={language} />}
         {activeTab === 'command' && <CommandCenter language={language} />}
         {activeTab === 'guardian' && <GuardianCenter user={combinedUser} language={language} />}
+        {activeTab === 'admin' && isAdmin && <AdminPortal user={userAuth} />}
       </main>
+      </div>
     </div>
   );
 }

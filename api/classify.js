@@ -119,6 +119,13 @@ Respond ONLY with this exact JSON shape, no markdown, no extra text, no explanat
       }),
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`[HF_API_ERROR] Status: ${response.status} ${response.statusText}`);
+      console.error(`[HF_API_ERROR] Body: ${errorText}`);
+      throw new Error(`HF API HTTP ${response.status}: ${errorText}`);
+    }
+
     const timeToVerdictMs = Date.now() - startTime;
     const json = await response.json();
     const rawText = json.choices?.[0]?.message?.content?.trim() || "";
@@ -155,6 +162,7 @@ Respond ONLY with this exact JSON shape, no markdown, no extra text, no explanat
     });
   } catch (err) {
     const timeToVerdictMs = Date.now() - startTime;
+    console.error("[CLASSIFY_ERROR] Exception caught:", err);
     return res.status(200).json({
       success: true,
       data: { ...fallbackVerdict("hf_error"), debugMessage: err.message, timeToVerdictMs },
