@@ -19,7 +19,6 @@ import {
   Sun
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { getTheme, applyTheme } from '../../lib/theme';
 
 export type AdminTab = 
   | 'overview' 
@@ -40,6 +39,8 @@ interface AdminSidebarProps {
   onLogout: () => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
 export const ADMIN_NAV_ITEMS: { id: AdminTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
@@ -61,7 +62,9 @@ export default function AdminSidebar({
   user, 
   onLogout,
   isCollapsed,
-  onToggleCollapse
+  onToggleCollapse,
+  theme,
+  toggleTheme
 }: AdminSidebarProps) {
   return (
     <aside className={cn(
@@ -140,20 +143,15 @@ export default function AdminSidebar({
         )}
         <div className="flex items-center space-x-2 mb-2">
           <button
-            onClick={() => {
-              const next = getTheme() === 'light' ? 'dark' : 'light';
-              applyTheme(next);
-              const btn = document.getElementById('admin-sidebar-theme-text');
-              if (btn) btn.innerText = next === 'dark' ? 'Light' : 'Dark';
-            }}
+            onClick={toggleTheme}
             className={cn(
               "w-full flex items-center justify-center space-x-2 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700/60 rounded-md text-xs font-medium text-slate-300 hover:text-white transition-colors cursor-pointer",
               isCollapsed && "px-0"
             )}
             title="Toggle Theme (Dark / Light)"
           >
-            {getTheme() === 'dark' ? <Sun className="h-3.5 w-3.5 text-amber-400 shrink-0" /> : <Moon className="h-3.5 w-3.5 text-slate-400 shrink-0" />}
-            {!isCollapsed && <span id="admin-sidebar-theme-text">{getTheme() === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
+            {theme === 'dark' ? <Sun className="h-3.5 w-3.5 text-amber-400 shrink-0" /> : <Moon className="h-3.5 w-3.5 text-slate-400 shrink-0" />}
+            {!isCollapsed && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
           </button>
         </div>
 

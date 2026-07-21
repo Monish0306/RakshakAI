@@ -24,6 +24,7 @@ service cloud.firestore {
     match /citizenReports/{reportId} {
       allow read, write: if isAdmin();
       allow create: if request.auth != null;
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || resource.data.userEmail == request.auth.token.email);
     }
 
     match /{document=**} {

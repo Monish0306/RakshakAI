@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { 
-  Smartphone, ShieldAlert, Key, FileText, 
+  ShieldAlert, Key, FileText, 
   Server, Route, Activity, BarChart, 
   Database, Lock, 
   LayoutDashboard, CheckCircle, Flag, Download 
@@ -20,8 +20,8 @@ const textMap = {
   purple: 'text-purple-800'
 };
 
-const Layer = ({ title, color, children }: { title: string, color: 'blue' | 'amber' | 'green' | 'purple', children: React.ReactNode }) => (
-  <div className={`p-4 rounded-2xl border-2 flex flex-col space-y-3 shadow-sm ${colorMap[color]}`}>
+const Layer = ({ id, title, color, children }: { id?: string, title: string, color: 'blue' | 'amber' | 'green' | 'purple', children: React.ReactNode }) => (
+  <div id={id} className={`p-4 rounded-2xl border-2 flex flex-col space-y-3 shadow-sm ${colorMap[color]}`}>
     <h3 className={`text-xs font-black tracking-widest text-center uppercase ${textMap[color]} mb-1 opacity-80`}>{title}</h3>
     {children}
   </div>
@@ -42,15 +42,25 @@ const TechBadge = ({ text }: { text: string }) => (
 
 interface RenderedLine {
   id: string;
-  pathD: string;
-  animated: boolean;
-  isDeadEnd?: boolean;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
   midX: number;
   midY: number;
   label?: string;
   badge?: number;
-  startX: number;
-  startY: number;
+  isReturn?: boolean;
+}
+
+interface ConnectionItem {
+  id: string;
+  fromId: string;
+  toId?: string;
+  label?: string;
+  badge?: number;
+  pct?: number;
+  isReturn?: boolean;
 }
 
 export default function SystemArchitecture() {
@@ -87,104 +97,84 @@ export default function SystemArchitecture() {
         };
       };
 
-      const connections = [
-        { id: 'c1', fromId: 'l1-privacy', toId: 'l2-classify', label: 'if suspicious', badge: 1, animated: true },
-        { id: 'c2', fromId: 'l1-privacy', isDeadEnd: true, label: 'resolved on-device' },
-        { id: 'c3', fromId: 'l2-classify', toId: 'l3-reports', label: 'writes HIGH_RISK results', badge: 2, animated: true },
-        { id: 'c4', fromId: 'l3-reports', toId: 'l4-queue', label: 'powers', badge: 3, animated: true },
-        { id: 'c5', fromId: 'l2-match', toId: 'l3-reports', label: 'reads + writes for matching' },
-        { id: 'c6', fromId: 'l2-list', toId: 'l3-reports', label: 'reads for investigator queue' },
-        { id: 'c7', fromId: 'l1-auth', toId: 'l3-users', label: 'reads/writes profile' }
+      const connections: ConnectionItem[] = [
+        { id: 'c1', fromId: 'layer-col-1', toId: 'layer-col-2', label: 'CALLS /api/classify', pct: 0.35 },
+        { id: 'c2', fromId: 'layer-col-2', toId: 'layer-col-1', label: 'RETURNS ADVISORY', pct: 0.75, isReturn: true },
+        { id: 'c3', fromId: 'layer-col-2', toId: 'layer-col-3', label: 'LOGS THREAT TELEMETRY', pct: 0.5 },
+        { id: 'c4', fromId: 'layer-col-3', toId: 'layer-col-4', label: 'POWERS CAMPAIGN QUEUE', pct: 0.55 }
       ];
 
       const newLines: RenderedLine[] = [];
       let allValid = true;
 
-      // Determine orientation based on container width. LG breakpoint in tailwind is 1024px.
-      // But we can just use the relative positions of layer 1 and layer 2.
-      const l1 = getRect('l1-privacy');
-      const l2 = getRect('l2-classify');
+      const l1 = getRect('layer-col-1');
+      const l2 = getRect('layer-col-2');
       
-      if (!l1) {
+      if (!l1 || !l2) {
         setLines([]);
         setSvgReady(false);
         return;
       }
 
-      // If l2 exists, we can figure out horizontal vs vertical. If l1 is above l2, it's vertical.
-      const isHorizontal = l2 ? (Math.abs(l2.cx - l1.cx) > Math.abs(l2.cy - l1.cy)) : true;
+      const isHorizontal = Math.abs(l2.cx - l1.cx) > Math.abs(l2.cy - l1.cy);
 
       for (const conn of connections) {
         const from = getRect(conn.fromId);
-        if (!from) { allValid = false; break; }
+        const to = getRect(conn.toId!);
+        if (!from || !to) { allValid = false; break; }
 
-        let startX, startY, endX, endY, cp1X, cp1Y, cp2X, cp2Y;
+        let startX, startY, endX, endY;
+        const pct = conn.pct || 0.5;
 
-        if (conn.isDeadEnd) {
-          if (isHorizontal) {
-            startX = from.cx;
-            startY = from.cy + from.h / 2;
-            endX = startX;
-            endY = startY + 45;
-            cp1X = startX; cp1Y = startY + 15;
-            cp2X = endX; cp2Y = endY - 15;
-          } else {
-            startX = from.cx - from.w / 2;
-            startY = from.cy;
-            endX = startX - 45;
-            endY = startY;
-            cp1X = startX - 15; cp1Y = startY;
-            cp2X = endX + 15; cp2Y = endY;
-          }
+        if (isHorizontal) {
+          const movingRight = to.cx > from.cx;
+          
+          startX = movingRight ? (from.x + from.w) : from.x;
+          endX = movingRight ? to.x : (to.x + to.w);
+          
+          const topMargin = 45;
+          const bottomMargin = 30;
+          
+          const safeMinY = Math.max(from.y + topMargin, to.y + topMargin);
+          const safeMaxY = Math.min(from.y + from.h - bottomMargin, to.y + to.h - bottomMargin);
+          
+          let desiredY = from.y + from.h * pct;
+          if (desiredY < safeMinY) desiredY = safeMinY;
+          if (desiredY > safeMaxY) desiredY = safeMaxY;
+          
+          startY = endY = desiredY;
         } else {
-          const to = getRect(conn.toId!);
-          if (!to) { allValid = false; break; }
-
-          if (isHorizontal) {
-            const movingRight = to.cx > from.cx;
-            startX = from.cx + (movingRight ? from.w / 2 : -from.w / 2);
-            startY = from.cy;
-            endX = to.cx + (movingRight ? -to.w / 2 : to.w / 2);
-            endY = to.cy;
-            // Add a small offset to the end point so the marker arrow doesn't overlap the box border
-            const arrowOffset = 6; 
-            endX += movingRight ? -arrowOffset : arrowOffset;
-            
-            const dist = Math.abs(endX - startX) * 0.4;
-            cp1X = movingRight ? startX + dist : startX - dist;
-            cp1Y = startY;
-            cp2X = movingRight ? endX - dist : endX + dist;
-            cp2Y = endY;
-          } else {
-            const movingDown = to.cy > from.cy;
-            startX = from.cx;
-            startY = from.cy + (movingDown ? from.h / 2 : -from.h / 2);
-            endX = to.cx;
-            endY = to.cy + (movingDown ? -to.h / 2 : to.h / 2);
-            const arrowOffset = 6;
-            endY += movingDown ? -arrowOffset : arrowOffset;
-            
-            const dist = Math.abs(endY - startY) * 0.4;
-            cp1X = startX;
-            cp1Y = movingDown ? startY + dist : startY - dist;
-            cp2X = endX;
-            cp2Y = movingDown ? endY - dist : endY + dist;
-          }
+          const movingDown = to.cy > from.cy;
+          
+          startY = movingDown ? (from.y + from.h) : from.y;
+          endY = movingDown ? to.y : (to.y + to.h);
+          
+          const sideMargin = 20;
+          
+          const safeMinX = Math.max(from.x + sideMargin, to.x + sideMargin);
+          const safeMaxX = Math.min(from.x + from.w - sideMargin, to.x + to.w - sideMargin);
+          
+          let desiredX = from.x + from.w * pct;
+          if (desiredX < safeMinX) desiredX = safeMinX;
+          if (desiredX > safeMaxX) desiredX = safeMaxX;
+          
+          startX = endX = desiredX;
         }
-        
-        const pathD = `M ${startX} ${startY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`;
-        
+
+        const midX = (startX + endX) / 2;
+        const midY = (startY + endY) / 2;
+
         newLines.push({
           id: conn.id,
-          pathD,
-          animated: !!conn.animated,
-          isDeadEnd: conn.isDeadEnd,
-          midX: (startX + endX) / 2,
-          midY: (startY + endY) / 2,
+          startX,
+          startY,
+          endX,
+          endY,
+          midX,
+          midY,
           label: conn.label,
           badge: conn.badge,
-          startX,
-          startY
+          isReturn: !!conn.isReturn
         });
       }
       
@@ -221,25 +211,12 @@ export default function SystemArchitecture() {
 
   return (
     <div className="w-full mt-8 mb-16 space-y-6">
-      <style>{`
-        @keyframes arch-pulse {
-          0% { stroke-dashoffset: 100; }
-          100% { stroke-dashoffset: 0; }
-        }
-        .arch-pulse-anim {
-          animation: arch-pulse 6s linear infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .arch-pulse-anim { display: none !important; }
-        }
-      `}</style>
       
       <div className="text-center mb-6 max-w-lg mx-auto bg-blue-50/50 border border-blue-100 rounded-lg p-3 text-sm text-blue-800">
-        <span className="font-semibold">Legend:</span> Follow the numbered path (1, 2, 3) to see how a single scam check flows through the system, from device to investigator.
+        <span className="font-semibold">Legend:</span> Follow the paths to see how threat checks flow from Client devices to Serverless AI endpoints, database telemetry logs, and investigator tools.
       </div>
       
       <div ref={containerRef} className="relative w-full">
-        {/* Dynamic SVG Connection Overlay */}
         <svg 
           className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${svgReady ? 'opacity-100' : 'opacity-0'}`} 
           style={{ width: '100%', height: '100%', zIndex: 0, overflow: 'visible' }}
@@ -249,82 +226,68 @@ export default function SystemArchitecture() {
               <polygon points="0 0, 8 3, 0 6" fill="#94a3b8" />
             </marker>
             <marker id="arrowhead-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-              <polygon points="0 0, 8 3, 0 6" fill="#3b82f6" />
-            </marker>
-            <marker id="dot" markerWidth="6" markerHeight="6" refX="3" refY="3">
-              <circle cx="3" cy="3" r="3" fill="#ef4444" />
+              <polygon points="0 0, 8 3, 0 6" fill="#6366f1" />
             </marker>
           </defs>
 
           {lines.map((line) => (
             <g key={line.id}>
-              <path 
-                d={line.pathD} 
-                fill="none" 
-                stroke="#94a3b8" 
+              <line
+                x1={line.startX}
+                y1={line.startY}
+                x2={line.endX}
+                y2={line.endY}
+                stroke={line.isReturn ? "#6366f1" : "#94a3b8"} 
                 strokeWidth="2" 
-                markerEnd={line.isDeadEnd ? "url(#dot)" : "url(#arrowhead)"} 
+                strokeDasharray={line.isReturn ? "4 4" : undefined}
+                markerEnd={line.isReturn ? "url(#arrowhead-blue)" : "url(#arrowhead)"} 
               />
-              {line.animated && (
-                <path 
-                  d={line.pathD} 
-                  fill="none" 
-                  stroke="#3b82f6" 
-                  strokeWidth="3" 
-                  strokeLinecap="round"
-                  className="arch-pulse-anim drop-shadow-md" 
-                  strokeDasharray="6 94" 
-                />
-              )}
             </g>
           ))}
 
-          {/* Render Labels on top of paths */}
           {lines.map((line) => {
-            if (!line.label && !line.badge) return null;
+            if (!line.label) return null;
             
-            // Offset the label slightly above the midpoint
-            const labelY = line.midY - 12;
+            const isHoriz = line.startY === line.endY;
+            const labelX = line.midX;
+            const labelY = isHoriz ? line.midY - 8 : line.midY;
             
             return (
               <g key={`label-${line.id}`}>
-                {line.label && (
-                  <text 
-                    x={line.midX} 
-                    y={labelY} 
-                    textAnchor="middle" 
-                    fill="#64748b" 
-                    fontSize="9.5" 
-                    fontWeight="600"
-                    className="drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)] bg-white"
-                  >
-                    {line.label}
-                  </text>
-                )}
-                {line.badge && (
-                  <g transform={`translate(${line.startX - 10}, ${line.startY - 20})`}>
-                    <circle cx="10" cy="10" r="8" fill="#1e3a8a" />
-                    <text x="10" y="13.5" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">
-                      {line.badge}
-                    </text>
-                  </g>
-                )}
+                <rect
+                  x={labelX - 65}
+                  y={labelY - 7}
+                  width="130"
+                  height="14"
+                  rx="4"
+                  fill="#FFFFFF"
+                  stroke="#E2E8F0"
+                  strokeWidth="1"
+                  className="shadow-xs dark:fill-slate-900 dark:stroke-slate-800"
+                />
+                <text 
+                  x={labelX} 
+                  y={labelY + 3} 
+                  textAnchor="middle" 
+                  fill={line.isReturn ? "#6366f1" : "#475569"} 
+                  className="dark:fill-slate-300 text-[7px] font-sans font-black tracking-wider uppercase"
+                >
+                  {line.label}
+                </text>
               </g>
             );
           })}
         </svg>
         
-        {/* 4-Layer Grid */}
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-4 xl:gap-8">
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-24 xl:gap-28">
           
-          <Layer title="Client (Browser)" color="blue">
-            <Node id="l1-privacy" icon={Smartphone} text="On-Device Privacy Filter" />
+          <Layer id="layer-col-1" title="Client (Browser)" color="blue">
             <Node id="l1-rules" icon={ShieldAlert} text="Rule-Based Red Flags" />
             <Node id="l1-auth" icon={Key} text="Firebase Auth (SDK)" />
             <Node id="l1-pdf" icon={FileText} text="PDF Report Generator" />
           </Layer>
 
-          <Layer title="Serverless API" color="amber">
+          <Layer id="layer-col-2" title="Serverless API" color="amber">
             <Node id="l2-classify" icon={Server} text="/api/classify" />
             <Node id="l2-advisory" icon={Route} text="/api/advisory" />
             <Node id="l2-match" icon={Server} text="/api/campaign-match" />
@@ -334,7 +297,7 @@ export default function SystemArchitecture() {
             <Node id="l2-telemetry" icon={BarChart} text="/api/telemetry" />
           </Layer>
 
-          <Layer title="Data Layer" color="green">
+          <Layer id="layer-col-3" title="Data Layer" color="green">
             <Node id="l3-reports" icon={Database} text="Firestore: citizenReports" />
             <Node id="l3-users" icon={Database} text="Firestore: users" />
             <Node id="l3-eval" icon={Database} text="Firestore: evaluationResults" />
@@ -342,7 +305,7 @@ export default function SystemArchitecture() {
             <Node id="l3-rules" icon={Lock} text="Security Rules (owner-scoped)" />
           </Layer>
 
-          <Layer title="Investigator Tools" color="purple">
+          <Layer id="layer-col-4" title="Investigator Tools" color="purple">
             <Node id="l4-queue" icon={LayoutDashboard} text="Campaign Queue" />
             <Node id="l4-verify" icon={CheckCircle} text="Evidence Verification" />
             <Node id="l4-flag" icon={Flag} text="Priority Flagging" />
@@ -353,7 +316,7 @@ export default function SystemArchitecture() {
       </div>
 
       {/* Built With Strip */}
-      <div className="flex flex-wrap items-center justify-center gap-2 pt-8 border-t border-gray-100">
+      <div className="flex flex-wrap items-center justify-center gap-2 pt-8 border-t border-gray-100 dark:border-slate-800">
         <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest mr-2">Built With</span>
         <TechBadge text="React 18" />
         <TechBadge text="TypeScript" />

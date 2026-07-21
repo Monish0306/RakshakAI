@@ -8,6 +8,7 @@ import {
   Info, 
   ShieldAlert, 
   Users, 
+  User,
   Lock,
   PanelLeftClose,
   PanelLeftOpen,
@@ -17,21 +18,21 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { TRANSLATIONS } from '../lib/translations';
-import { getTheme, applyTheme } from '../lib/theme';
 
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: 'home' | 'how' | 'dashboard' | 'impact' | 'about' | 'command' | 'guardian') => void;
   language: string;
   setLanguage: (lang: string) => void;
-  simpleView: boolean;
-  setSimpleView: (val: boolean) => void;
   modelLoaded: boolean;
   user: any;
   isAdmin?: boolean;
   onLogout: () => void;
   onSignInClick: () => void;
   onToggleCollapse?: (collapsed: boolean) => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+  onProfileClick: () => void;
 }
 
 export default function Sidebar({ 
@@ -39,13 +40,14 @@ export default function Sidebar({
   setActiveTab, 
   language, 
   setLanguage, 
-  simpleView, 
-  setSimpleView,
   modelLoaded,
   user,
   onLogout,
   onSignInClick,
-  onToggleCollapse
+  onToggleCollapse,
+  theme,
+  toggleTheme,
+  onProfileClick
 }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
@@ -77,25 +79,26 @@ export default function Sidebar({
   return (
     <aside className={cn(
       "bg-white border-r border-gray-200 fixed top-7 bottom-0 left-0 z-50 shadow-sm flex flex-col transition-[width] duration-300",
+      "dark:bg-slate-900 dark:border-slate-800",
       isCollapsed ? "w-16" : "w-[240px]"
     )}>
       {/* Top: Logo & Collapse Toggle */}
-      <div className="flex items-center justify-between p-4 shrink-0 border-b border-gray-100">
+      <div className="flex items-center justify-between p-4 shrink-0 border-b border-gray-100 dark:border-slate-850">
         <div 
           className="flex items-center space-x-2 cursor-pointer overflow-hidden" 
           onClick={() => setActiveTab('home')}
           title={t["header.logo"]}
         >
-          <Shield className="h-8 w-8 text-[#1E3A8A] shrink-0" />
+          <Shield className="h-8 w-8 text-[#1E3A8A] dark:text-blue-400 shrink-0" />
           {!isCollapsed && (
-            <span className="font-bold text-xl text-[#1E3A8A] tracking-tight whitespace-nowrap overflow-hidden">
+            <span className="font-bold text-xl text-[#1E3A8A] dark:text-blue-400 tracking-tight whitespace-nowrap overflow-hidden">
               {t["header.logo"]}
             </span>
           )}
         </div>
         <button
           onClick={toggleCollapse}
-          className="p-1.5 rounded-lg text-gray-400 hover:text-[#1E3A8A] hover:bg-gray-100 transition-colors"
+          className="p-1.5 rounded-lg text-gray-400 hover:text-[#1E3A8A] hover:bg-gray-100 dark:hover:text-blue-400 dark:hover:bg-slate-800 transition-colors"
           title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
           {isCollapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
@@ -115,8 +118,8 @@ export default function Sidebar({
               className={cn(
                 "w-full flex items-center space-x-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors text-left",
                 activeTab === item.id 
-                  ? "bg-[#1E3A8A]/10 text-[#1E3A8A] border-l-4 border-[#1E3A8A] pl-2" 
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 border-l-4 border-transparent pl-2",
+                  ? "bg-[#1E3A8A]/10 text-[#1E3A8A] border-l-4 border-[#1E3A8A] pl-2 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-500" 
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 border-l-4 border-transparent pl-2 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-white",
                 isCollapsed && "justify-center px-0 pl-0 border-l-0"
               )}
             >
@@ -129,11 +132,11 @@ export default function Sidebar({
       </nav>
 
       {/* Bottom: Controls */}
-      <div className="p-3 border-t border-gray-200 flex flex-col space-y-3 shrink-0">
+      <div className="p-3 border-t border-gray-200 dark:border-slate-800 flex flex-col space-y-3 shrink-0">
         
         {/* Privacy Filter Status */}
         <div className={cn(
-          "flex items-center space-x-2 text-xs font-medium text-gray-500 bg-gray-50 px-2.5 py-1.5 rounded-full border border-gray-200 w-fit",
+          "flex items-center space-x-2 text-xs font-medium text-gray-500 bg-gray-50 px-2.5 py-1.5 rounded-full border border-gray-200 w-fit dark:text-gray-400 dark:bg-slate-800 dark:border-slate-700",
           isCollapsed && "justify-center px-1.5"
         )}
         title={modelLoaded ? t["header.filterActive"] : t["header.filterLoading"]}
@@ -158,13 +161,7 @@ export default function Sidebar({
 
         {/* Dark / Light Theme Toggle */}
         <button
-          onClick={() => {
-            const next = getTheme() === 'light' ? 'dark' : 'light';
-            applyTheme(next);
-            // Force re-render of button
-            const btn = document.getElementById('sidebar-theme-toggle-text');
-            if (btn) btn.innerText = next === 'dark' ? 'Light Mode' : 'Dark Mode';
-          }}
+          onClick={toggleTheme}
           className={cn(
             "flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors w-full cursor-pointer",
             "bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700",
@@ -172,8 +169,8 @@ export default function Sidebar({
           )}
           title="Toggle Theme (Dark / Light)"
         >
-          {getTheme() === 'dark' ? <Sun className="w-4 h-4 text-amber-400 shrink-0" /> : <Moon className="w-4 h-4 text-slate-700 shrink-0" />}
-          {!isCollapsed && <span id="sidebar-theme-toggle-text">{getTheme() === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
+          {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400 shrink-0" /> : <Moon className="w-4 h-4 text-slate-700 shrink-0" />}
+          {!isCollapsed && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
         </button>
 
         {/* Language Selector */}
@@ -181,7 +178,7 @@ export default function Sidebar({
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-md focus:ring-[#1E3A8A] focus:border-[#1E3A8A] block w-full px-2.5 py-1.5"
+            className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-200 text-sm rounded-md focus:ring-[#1E3A8A] focus:border-[#1E3A8A] block w-full px-2.5 py-1.5"
           >
             <option value="en">English</option>
             <option value="hi">हिन्दी (Hindi)</option>
@@ -191,38 +188,33 @@ export default function Sidebar({
           </select>
         )}
 
-        {/* Grandparent Mode Toggle */}
-        {!isCollapsed && (
-          <label className="flex items-center cursor-pointer space-x-2">
-            <div className="relative shrink-0">
-              <input 
-                type="checkbox" 
-                className="sr-only" 
-                checked={simpleView}
-                onChange={(e) => setSimpleView(e.target.checked)}
-              />
-              <div className={cn("block w-10 h-6 rounded-full transition-colors", simpleView ? "bg-[#1E3A8A]" : "bg-gray-300")}></div>
-              <div className={cn("dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform", simpleView ? "transform translate-x-4" : "")}></div>
-            </div>
-            <span className="text-sm font-medium text-gray-700 whitespace-nowrap overflow-hidden">
-              {t["header.simpleView"]}
-            </span>
-          </label>
-        )}
+
 
         {/* Auth status and triggers */}
-        <div className="flex flex-col space-y-2 pt-2 border-t border-gray-200">
+        <div className="flex flex-col space-y-2 pt-2 border-t border-gray-200 dark:border-slate-800">
           {user ? (
             <>
-              {!isCollapsed && (
-                <span className="text-xs font-bold text-gray-700 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200 w-full text-center truncate">
+              {!isCollapsed ? (
+                <button
+                  onClick={onProfileClick}
+                  className="text-xs font-bold text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 px-3 py-1.5 rounded-full border border-gray-200 dark:border-slate-700 w-full text-center truncate cursor-pointer transition-colors"
+                  title="View Profile & Cases"
+                >
                   Hi, {user.username}
-                </span>
+                </button>
+              ) : (
+                <button
+                  onClick={onProfileClick}
+                  className="p-2 rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer flex items-center justify-center transition-colors mx-auto"
+                  title="View Profile & Cases"
+                >
+                  <User className="h-4 w-4" />
+                </button>
               )}
               <button
                 onClick={onLogout}
                 className={cn(
-                  "text-xs font-bold text-red-600 hover:underline bg-transparent border-none cursor-pointer",
+                  "text-xs font-bold text-red-600 hover:underline bg-transparent border-none cursor-pointer mt-1",
                   isCollapsed ? "text-center" : "text-left"
                 )}
                 title="Logout"
@@ -234,7 +226,7 @@ export default function Sidebar({
             <button
               onClick={onSignInClick}
               className={cn(
-                "text-sm font-bold text-[#1E3A8A] hover:underline bg-transparent border-none cursor-pointer w-full",
+                "text-sm font-bold text-[#1E3A8A] dark:text-blue-400 hover:underline bg-transparent border-none cursor-pointer w-full",
                 isCollapsed ? "text-center" : "text-left"
               )}
               title="Sign In"

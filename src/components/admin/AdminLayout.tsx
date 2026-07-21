@@ -17,14 +17,16 @@ import { cn } from '../../lib/utils';
 interface AdminLayoutProps {
   user: any;
   onLogout: () => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
-export default function AdminLayout({ user, onLogout }: AdminLayoutProps) {
+export default function AdminLayout({ user, onLogout, theme, toggleTheme }: AdminLayoutProps) {
   const [activeTab, setActiveTab] = useState<AdminTab>('cases');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-100 flex font-sans pt-7">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex font-sans pt-7 transition-colors duration-300">
       <AnnouncementBar isAdmin={true} />
       {/* Admin Sidebar */}
       <AdminSidebar 
@@ -34,6 +36,8 @@ export default function AdminLayout({ user, onLogout }: AdminLayoutProps) {
         onLogout={onLogout} 
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
 
       {/* Main Workspace */}

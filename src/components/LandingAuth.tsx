@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Shield, Eye, EyeOff, Lock, User, Mail, Calendar, Check, ChevronRight, Moon, Sun } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Shield, Eye, EyeOff, Lock, User, Mail, Calendar, Check, ChevronRight, Moon, Sun, PhoneCall, Cpu, CloudLightning, BrainCircuit } from 'lucide-react';
 import { TRANSLATIONS } from '../lib/translations';
 import { auth, db } from '../lib/firebase';
 import { 
@@ -29,6 +29,35 @@ export default function LandingAuth({ language, onLoginSuccess, redirectMessage,
   const [authLoading, setAuthLoading] = useState(false);
   const [theme, setThemeState] = useState<'light' | 'dark'>(() => initTheme());
   const [adminFailedAttempts, setAdminFailedAttempts] = useState(0);
+  const [isWalkthroughVisible, setIsWalkthroughVisible] = useState(false);
+  const walkthroughRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Safety fallback: if scroll observer doesn't fire within 600ms, force trigger transitions
+    const fallbackTimer = setTimeout(() => {
+      setIsWalkthroughVisible(true);
+    }, 600);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsWalkthroughVisible(true);
+          clearTimeout(fallbackTimer);
+        }
+      },
+      { threshold: 0.01 }
+    );
+    const el = walkthroughRef.current;
+    if (el) {
+      observer.observe(el);
+    }
+    return () => {
+      clearTimeout(fallbackTimer);
+      if (el) {
+        observer.unobserve(el);
+      }
+    };
+  }, []);
 
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light';
@@ -752,6 +781,317 @@ export default function LandingAuth({ language, onLoginSuccess, redirectMessage,
 
       </div>
     </div>
+
+      {/* Visual Walkthrough Section */}
+      <div ref={walkthroughRef} className="bg-[#FAFBFD] dark:bg-slate-950 border-t border-gray-200/50 dark:border-slate-800/80 py-16 px-6 lg:px-16 transition-colors duration-300 select-none">
+        <style>{`
+          @keyframes dash {
+            to {
+              stroke-dashoffset: -20;
+            }
+          }
+          .animated-dash-flow {
+            stroke-dasharray: 5 5;
+            animation: dash 1.5s linear infinite;
+          }
+          @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          .flow-progress-line {
+            background-size: 200% auto;
+            animation: gradient-flow 3s linear infinite;
+          }
+          @keyframes glow-shift {
+            0% { transform: translate(-5%, -5%) scale(1); }
+            50% { transform: translate(5%, 10%) scale(1.08); }
+            100% { transform: translate(-5%, -5%) scale(1); }
+          }
+          .glow-bg-animated {
+            position: absolute;
+            width: 140%;
+            height: 140%;
+            top: -20%;
+            left: -20%;
+            background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(139,92,246,0.1) 40%, rgba(16,185,129,0.05) 80%);
+            filter: blur(35px);
+            animation: glow-shift 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+          }
+          .dark .glow-bg-animated {
+            background: radial-gradient(circle, rgba(59,130,246,0.22) 0%, rgba(139,92,246,0.15) 40%, rgba(16,185,129,0.08) 80%);
+          }
+        `}</style>
+        <div className="max-w-6xl mx-auto space-y-12">
+          
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <span className="text-[10px] font-bold tracking-widest text-[#1E3A8A] dark:text-blue-400 uppercase bg-blue-50 dark:bg-blue-950/40 px-3 py-1 rounded-full border border-blue-200/50 dark:border-blue-900/30">
+              Scam Prevention Lifecycle
+            </span>
+            <h2 className="text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white">
+              How Rakshak AI Protects Citizens
+            </h2>
+            <p className="text-xs text-gray-400 max-w-md mx-auto">
+              A multi-layered defense shield that intercepts threats in real-time.
+            </p>
+          </div>
+          {/* Flow Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative pt-4">
+            {/* Horizontal progress line for large screens */}
+            <div 
+              className="hidden md:block absolute top-[48px] left-[10%] h-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-500 opacity-40 z-0 transition-all duration-[2000ms] ease-out flow-progress-line"
+              style={{ width: isWalkthroughVisible ? '80%' : '0%' }}
+            ></div>
+
+            {/* Step 1 */}
+            <div 
+              className={`bg-white dark:bg-slate-900 rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-xs flex flex-col items-center text-center z-10 hover:translate-y-[-4px] transition-all duration-700 ease-out`}
+              style={{ 
+                opacity: isWalkthroughVisible ? 1 : 0,
+                transform: isWalkthroughVisible ? 'translateY(0)' : 'translateY(16px)',
+                transitionDelay: '100ms'
+              }}
+            >
+              <div className="h-10 w-10 bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold text-sm mb-3 border border-blue-200/20 dark:border-blue-900/20">
+                <PhoneCall className="h-4.5 w-4.5" />
+              </div>
+              <span className="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">01. Live Audio/Text Stream</span>
+              <h3 className="font-extrabold text-xs text-gray-900 dark:text-white mt-1">Audio & Screen OCR Capture</h3>
+              
+              {/* Phone call UI snippet */}
+              <div className="w-full mt-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden shadow-xs max-w-[190px] text-left">
+                <div className="bg-slate-100/50 dark:bg-slate-900/80 px-2 py-1.5 flex justify-between items-center text-[7px] text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                  <span className="font-mono font-bold">CALL AUDIO INCOMING</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                </div>
+                <div className="p-2 space-y-2">
+                  <div className="flex items-center space-x-1.5">
+                    <div className="h-5 w-5 rounded-full bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center text-[8px] text-blue-600 dark:text-blue-400 font-extrabold">SP</div>
+                    <div>
+                      <p className="text-[8px] font-black text-slate-900 dark:text-white leading-none">Suspicious Caller</p>
+                      <p className="text-[6.5px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">+91 95400 XXXXX</p>
+                    </div>
+                  </div>
+                  <div className="bg-white dark:bg-slate-950/60 p-1.5 rounded text-[8px] font-mono text-slate-600 dark:text-slate-300 leading-normal border border-slate-100 dark:border-slate-900/40 font-semibold">
+                    "I am calling from CBI headquarters. Your identity is under digital arrest..."
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div 
+              className={`bg-white dark:bg-slate-900 rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-xs flex flex-col items-center text-center z-10 hover:translate-y-[-4px] transition-all duration-700 ease-out`}
+              style={{ 
+                opacity: isWalkthroughVisible ? 1 : 0,
+                transform: isWalkthroughVisible ? 'translateY(0)' : 'translateY(16px)',
+                transitionDelay: '400ms'
+              }}
+            >
+              <div className="h-10 w-10 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center font-bold text-sm mb-3 border border-indigo-200/20 dark:border-indigo-900/20">
+                <Cpu className="h-4.5 w-4.5" />
+              </div>
+              <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">02. On-Device Edge Scan</span>
+              <h3 className="font-extrabold text-xs text-gray-900 dark:text-white mt-1">Local Keyword Match</h3>
+              
+              {/* Edge processing UI snippet */}
+              <div className="w-full mt-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden shadow-xs max-w-[190px] text-left">
+                <div className="bg-slate-100/50 dark:bg-slate-900/80 px-2 py-1.5 text-[7px] font-black text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider">
+                  SECURE LOCAL SHIELD
+                </div>
+                <div className="p-2 space-y-1">
+                  <div className="flex justify-between items-center bg-white dark:bg-slate-950/60 px-1.5 py-1 rounded border border-slate-100 dark:border-slate-900/40">
+                    <span className="text-[7.5px] font-mono font-bold text-slate-700 dark:text-slate-300">"digital arrest"</span>
+                    <span 
+                      className={`text-[6.5px] uppercase font-black text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-1 py-0.5 rounded border border-red-200/20 dark:border-red-900/20 transition-all duration-500`}
+                      style={{
+                        opacity: isWalkthroughVisible ? 1 : 0,
+                        transform: isWalkthroughVisible ? 'scale(1)' : 'scale(0.8)',
+                        transitionDelay: '1000ms'
+                      }}
+                    >
+                      Flagged
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center bg-white dark:bg-slate-950/60 px-1.5 py-1 rounded border border-slate-100 dark:border-slate-900/40">
+                    <span className="text-[7.5px] font-mono font-bold text-slate-700 dark:text-slate-300">"CBI Headquarters"</span>
+                    <span 
+                      className={`text-[6.5px] uppercase font-black text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-1 py-0.5 rounded border border-red-200/20 dark:border-red-900/20 transition-all duration-500`}
+                      style={{
+                        opacity: isWalkthroughVisible ? 1 : 0,
+                        transform: isWalkthroughVisible ? 'scale(1)' : 'scale(0.8)',
+                        transitionDelay: '1200ms'
+                      }}
+                    >
+                      Flagged
+                    </span>
+                  </div>
+                  <p className="text-[6.5px] text-slate-400 dark:text-slate-500 text-center pt-1 font-mono">On-Device Scan: Escalate to AI</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div 
+              className={`bg-white dark:bg-slate-900 rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-xs flex flex-col items-center text-center z-10 hover:translate-y-[-4px] transition-all duration-700 ease-out`}
+              style={{ 
+                opacity: isWalkthroughVisible ? 1 : 0,
+                transform: isWalkthroughVisible ? 'translateY(0)' : 'translateY(16px)',
+                transitionDelay: '700ms'
+              }}
+            >
+              <div className="h-10 w-10 bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 rounded-full flex items-center justify-center font-bold text-sm mb-3 border border-purple-200/20 dark:border-purple-900/20">
+                <CloudLightning className="h-4.5 w-4.5" />
+              </div>
+              <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">03. Dual LLM Safety Net</span>
+              <h3 className="font-extrabold text-xs text-gray-900 dark:text-white mt-1">Contextual Verification</h3>
+              
+              {/* Verdict Card UI snippet */}
+              <div className="w-full mt-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden shadow-xs max-w-[190px] text-left">
+                <div className="bg-red-50 dark:bg-red-950/20 px-2 py-1.5 flex justify-between items-center text-[7px] text-red-600 dark:text-red-400 font-black border-b border-red-100 dark:border-red-950/30">
+                  <span>AI SHIELD VERDICT</span>
+                  <span>95% SURE</span>
+                </div>
+                <div className="p-2 space-y-1 text-[7.5px]">
+                  <div 
+                    className={`flex items-center gap-1 font-black text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded border border-red-100 dark:border-red-900/30 w-fit transition-all duration-500`}
+                    style={{
+                      opacity: isWalkthroughVisible ? 1 : 0,
+                      transform: isWalkthroughVisible ? 'scale(1)' : 'scale(0.8)',
+                      transitionDelay: '1500ms'
+                    }}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                    <span>HIGH_RISK SCAM</span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 leading-normal font-semibold">
+                    Category: Digital Arrest<br />
+                    Pretext: CBI impersonation
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 4 */}
+            <div 
+              className={`bg-white dark:bg-slate-900 rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-xs flex flex-col items-center text-center z-10 hover:translate-y-[-4px] transition-all duration-700 ease-out`}
+              style={{ 
+                opacity: isWalkthroughVisible ? 1 : 0,
+                transform: isWalkthroughVisible ? 'translateY(0)' : 'translateY(16px)',
+                transitionDelay: '1000ms'
+              }}
+            >
+              <div className="h-10 w-10 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center font-bold text-sm mb-3 border border-emerald-200/20 dark:border-emerald-900/20">
+                <Shield className="h-4.5 w-4.5" />
+              </div>
+              <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">04. Real-time Block & Sync</span>
+              <h3 className="font-extrabold text-xs text-gray-900 dark:text-white mt-1">HQ Dashboard Update</h3>
+              
+              {/* Investigator Dashboard UI snippet */}
+              <div className="w-full mt-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden shadow-xs max-w-[190px] text-left">
+                <div className="bg-slate-100/50 dark:bg-slate-900/80 px-2 py-1.5 flex justify-between items-center text-[7px] text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                  <span className="font-mono font-bold">HQ LIVE INCIDENT</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                </div>
+                <div className="p-2 space-y-1 text-[7px] text-slate-500 dark:text-slate-400">
+                  <div className="bg-white dark:bg-slate-950/60 p-1.5 rounded border border-slate-100 dark:border-slate-900/40 flex justify-between items-center">
+                    <div>
+                      <p className="font-black text-slate-950 dark:text-white text-[7.5px]">Case #RKSH-928A</p>
+                      <p className="text-[6.5px] font-mono mt-0.5">Status: Alert Triggered</p>
+                    </div>
+                    <span 
+                      className={`bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 px-1 py-0.5 rounded text-[6.5px] font-black border border-red-200/30 dark:border-red-900/30 transition-all duration-500`}
+                      style={{
+                        opacity: isWalkthroughVisible ? 1 : 0,
+                        transform: isWalkthroughVisible ? 'scale(1)' : 'scale(0.8)',
+                        transitionDelay: '1800ms'
+                      }}
+                    >
+                      ALERT
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Pipeline Diagram */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-gray-100 dark:border-slate-800/80 shadow-xs max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
+            <div className="w-full md:w-1/2 space-y-3">
+              <h3 className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
+                <BrainCircuit className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                Adaptive Detection Pipeline
+              </h3>
+              <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                Inputs flow from raw screens/audios to on-device semantic checkers. If uncertainty remains, cloud security algorithms evaluate context before syncing the threat metrics with the HQ Command center.
+              </p>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <span className="text-[9px] font-bold bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 border border-blue-200/20 dark:border-blue-900/20 px-2.5 py-0.5 rounded-md">Local Edge</span>
+                <span className="text-[9px] font-bold bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-400 border border-purple-200/20 dark:border-purple-900/20 px-2.5 py-0.5 rounded-md">Cloud LLM</span>
+                <span className="text-[9px] font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/20 dark:border-emerald-900/20 px-2.5 py-0.5 rounded-md">HQ Sync</span>
+              </div>
+            </div>
+
+            {/* SVG Pipeline */}
+            <div className="w-full md:w-1/2 flex items-center justify-center p-6 bg-slate-50 dark:bg-slate-950/40 rounded-xl border border-gray-100 dark:border-slate-800/40 relative overflow-hidden min-h-[250px] shadow-inner select-none">
+              {/* Soft animated gradient glow behind the diagram */}
+              <div className="glow-bg-animated"></div>
+
+              <svg viewBox="0 0 450 230" className="w-full h-auto max-w-[500px] relative z-10 overflow-visible">
+                {/* Node 1: Citizen Input */}
+                <rect x="15" y="72.5" width="115" height="85" rx="10" fill="#3B82F6" opacity="0.08" stroke="#3B82F6" strokeWidth="2" className="dark:opacity-20" />
+                <text x="72.5" y="112" fontSize="13" fontWeight="900" fill="#3B82F6" textAnchor="middle">Citizen Input</text>
+                <text x="72.5" y="130" fontSize="11" fontWeight="bold" fill="#94A3B8" textAnchor="middle">Audio / Image</text>
+
+                {/* Connection: 1 -> 2 */}
+                <path d="M 130 115 L 150 115" stroke="#3B82F6" strokeWidth="2" fill="none" className="animated-dash-flow" />
+                <polygon points="150,115 144,112 144,118" fill="#3B82F6" />
+
+                {/* Node 2: Edge Check */}
+                <rect x="150" y="52.5" width="145" height="125" rx="12" fill="#8B5CF6" opacity="0.08" stroke="#8B5CF6" strokeWidth="2" className="dark:opacity-20" />
+                <text x="222.5" y="98" fontSize="13" fontWeight="900" fill="#8B5CF6" textAnchor="middle">Edge Check</text>
+                <text x="222.5" y="118" fontSize="11" fontWeight="bold" fill="#8B5CF6" textAnchor="middle">Local Embeddings</text>
+                <text x="222.5" y="136" fontSize="10" fontWeight="semibold" fill="#94A3B8" textAnchor="middle">(Zero-Latency Block)</text>
+
+                {/* Connection: 2 -> 3 (Cloud LLM) */}
+                <path d="M 295 90 L 315 60" stroke="#6366F1" strokeWidth="2" fill="none" className="animated-dash-flow" />
+                <polygon points="315,60 308,62 313,67" fill="#6366F1" />
+
+                {/* Node 3: Cloud LLM */}
+                <rect x="315" y="20" width="120" height="80" rx="10" fill="#6366F1" opacity="0.08" stroke="#6366F1" strokeWidth="2" className="dark:opacity-20" />
+                <text x="375" y="58" fontSize="13" fontWeight="900" fill="#6366F1" textAnchor="middle">Cloud LLM</text>
+                <text x="375" y="76" fontSize="11" fontWeight="bold" fill="#94A3B8" textAnchor="middle">Deep Audit</text>
+
+                {/* Connection: 2 -> 4 (HQ Registry) */}
+                <path d="M 295 140 L 315 170" stroke="#10B981" strokeWidth="2" fill="none" className="animated-dash-flow" />
+                <polygon points="315,170 313,163 308,168" fill="#10B981" />
+
+                {/* Node 4: HQ Registry */}
+                <rect x="315" y="130" width="120" height="80" rx="10" fill="#10B981" opacity="0.08" stroke="#10B981" strokeWidth="2" className="dark:opacity-20" />
+                <text x="375" y="168" fontSize="13" fontWeight="900" fill="#10B981" textAnchor="middle">HQ Registry</text>
+                <text x="375" y="186" fontSize="11" fontWeight="bold" fill="#94A3B8" textAnchor="middle">Action Plan</text>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-white dark:bg-slate-950 border-t border-gray-100 dark:border-slate-900/60 py-8 px-6 text-center text-[10px] text-gray-400 dark:text-gray-500 w-full">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <span>© 2026 Rakshak AI. Real-time Citizen Safety Net.</span>
+          <div className="flex gap-4 font-semibold">
+            <a href="#privacy" className="hover:underline">Privacy Policy</a>
+            <a href="#terms" className="hover:underline">Terms of Service</a>
+            <a href="#helpline" className="hover:underline">Helpline support</a>
+          </div>
+        </div>
+      </footer>
+
     </div>
   );
 }

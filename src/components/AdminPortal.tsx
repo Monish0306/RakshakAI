@@ -2,7 +2,7 @@ import AdminLayout from './admin/AdminLayout';
 import { signOut } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 
-export default function AdminPortal({ user }: { user: any }) {
+export default function AdminPortal({ user, theme, toggleTheme }: { user: any; theme: 'light' | 'dark'; toggleTheme: () => void }) {
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -12,5 +12,5 @@ export default function AdminPortal({ user }: { user: any }) {
     }
   };
 
-  return <AdminLayout user={user} onLogout={handleLogout} />;
+  return <AdminLayout user={user} onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />;
 }

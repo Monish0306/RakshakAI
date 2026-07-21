@@ -13,20 +13,26 @@ import LandingAuth from './components/LandingAuth.tsx';
 import GuardianCenter from './components/GuardianCenter.tsx';
 import AdminPortal from './components/AdminPortal.tsx';
 import AnnouncementBar from './components/AnnouncementBar.tsx';
+import UserProfileModal from './components/UserProfileModal.tsx';
 import { useClassifier } from './hooks/useClassifier.ts';
 import { cn } from './lib/utils';
-import { initTheme } from './lib/theme';
+import { initTheme, applyTheme } from './lib/theme';
 
 export default function App() {
-  useEffect(() => {
-    initTheme();
-  }, []);
+  const [theme, setThemeState] = useState<'light' | 'dark'>(() => initTheme());
+  
+  const toggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    setThemeState(next);
+    applyTheme(next);
+  };
+
   const [isAdminRoute, setIsAdminRoute] = useState(() => window.location.pathname === '/admin');
   const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'impact' | 'about' | 'command' | 'guardian' | 'admin'>('home');
   const [isAdmin, setIsAdmin] = useState(false);
   const [language, setLanguage] = useState('en');
-  const [simpleView, setSimpleView] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
   const [userAuth, setUserAuth] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -105,12 +111,17 @@ export default function App() {
     );
   }
 
+  const handleLogout = () => {
+    setUserAuth(null);
+    setShowLanding(true);
+  };
+
   if (activeTab === 'admin' && isAdmin) {
-    return <AdminPortal user={firebaseUser} />;
+    return <AdminPortal user={firebaseUser} theme={theme} toggleTheme={toggleTheme} />;
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-blue-200 flex pt-7">
+    <div className="min-h-screen bg-[#FAFAFA] dark:bg-slate-950 text-gray-900 dark:text-gray-100 font-sans selection:bg-blue-200 flex pt-7 transition-colors duration-300">
       <AnnouncementBar />
       <Sidebar
         activeTab={activeTab}
@@ -124,25 +135,23 @@ export default function App() {
         }}
         language={language}
         setLanguage={setLanguage}
-        simpleView={simpleView}
-        setSimpleView={setSimpleView}
         modelLoaded={modelLoaded}
         user={combinedUser}
         isAdmin={isAdmin}
-        onLogout={() => {
-          setUserAuth(null);
-          setShowLanding(true);
-        }}
+        onLogout={handleLogout}
         onSignInClick={() => {
           setRedirectMsg(null);
           setShowLanding(true);
         }}
         onToggleCollapse={(collapsed) => setIsSidebarCollapsed(collapsed)}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        onProfileClick={() => setIsProfileOpen(true)}
       />
 
       <div className={cn("flex-1 transition-[margin] duration-300", isSidebarCollapsed ? "ml-16" : "ml-[240px]")}>
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'home' && <CitizenShield classifier={classifier} language={language} simpleView={simpleView} user={combinedUser} />}
+        {activeTab === 'home' && <CitizenShield classifier={classifier} language={language} user={combinedUser} />}
         {activeTab === 'how' && <HowItWorks language={language} />}
         {activeTab === 'dashboard' && <Dashboard language={language} />}
         {activeTab === 'impact' && <BusinessImpact language={language} />}
@@ -151,6 +160,13 @@ export default function App() {
         {activeTab === 'guardian' && <GuardianCenter user={combinedUser} language={language} />}
       </main>
       </div>
+
+      <UserProfileModal 
+        isOpen={isProfileOpen} 
+        onClose={() => setIsProfileOpen(false)} 
+        user={combinedUser} 
+        onLogout={handleLogout} 
+      />
     </div>
   );
 }

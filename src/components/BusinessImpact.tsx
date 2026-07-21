@@ -14,7 +14,9 @@ import {
   BarChart3,
   FileCheck,
   Globe2,
-  BrainCircuit
+  BrainCircuit,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import { 
   PieChart, 
@@ -91,7 +93,7 @@ export default function BusinessImpact({}: BusinessImpactProps) {
             <span>Market Crisis & Official Data (2025 MHA / I4C)</span>
           </div>
           <h1 className="mx-auto max-w-4xl text-3xl font-black tracking-tight sm:text-5xl leading-tight">
-            A ₹22,495 Crore Cyber Fraud Crisis — And the <span className="text-red-400 underline decoration-red-500 decoration-wavy decoration-2">94% Recovery Gap</span>.
+            A ₹22,495 Crore Cyber Fraud Crisis — And the <span className="text-red-400 font-extrabold">94% Recovery Gap</span>.
           </h1>
           <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-slate-300 font-medium">
             India's rapid digital payment surge has created an unprecedented crime surface. Cybercrime helpline 1930 receives over 1 call every second, while victims recover less than 6 paise for every ₹100 stolen.
@@ -651,19 +653,19 @@ export default function BusinessImpact({}: BusinessImpactProps) {
 
         {/* 2x2 Matrix Container */}
         <div className="rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-sm">
-          <div className="grid grid-cols-2 gap-4 relative min-h-[380px] p-4 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800">
-            {/* Axis Labels */}
-            <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[11px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-gray-200 dark:border-slate-800 shadow-xs z-10">
-              High Explainable AI $\uparrow$
+          <div className="grid grid-cols-2 gap-4 relative min-h-[380px] py-10 px-4 md:px-16 lg:px-20 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            {/* Axis Labels (Top and Bottom: standard centered, Left and Right: hidden on mobile, rotated absolute on tablet/desktop) */}
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-gray-200 dark:border-slate-800 shadow-xs z-10 flex items-center gap-1 select-none">
+              <ArrowUp className="w-3 h-3 text-gray-400" /> HIGH EXPLAINABLE AI
             </div>
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[11px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-gray-200 dark:border-slate-800 shadow-xs z-10">
-              $\downarrow$ Black-Box Risk Score
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-gray-200 dark:border-slate-800 shadow-xs z-10 flex items-center gap-1 select-none">
+              <ArrowDown className="w-3 h-3 text-gray-400" /> BLACK-BOX RISK SCORE
             </div>
-            <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-gray-200 dark:border-slate-800 shadow-xs z-10 -rotate-90">
-              $\leftarrow$ Reactive
+            <div className="hidden md:flex items-center space-x-1 absolute left-8 lg:left-10 top-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-90 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-gray-200 dark:border-slate-800 shadow-xs z-10 select-none">
+              <span>←</span><span>REACTIVE</span>
             </div>
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-gray-200 dark:border-slate-800 shadow-xs z-10 rotate-90">
-              Real-Time Pre-Transaction $\rightarrow$
+            <div className="hidden md:flex items-center space-x-1 absolute right-8 lg:right-10 top-1/2 translate-x-1/2 -translate-y-1/2 rotate-90 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-gray-200 dark:border-slate-800 shadow-xs z-10 select-none">
+              <span>REAL-TIME PRE-TRANSACTION</span><span>→</span>
             </div>
 
             {/* Quadrant 1 (Top-Left): Explainable but Reactive */}
@@ -673,7 +675,7 @@ export default function BusinessImpact({}: BusinessImpactProps) {
             </div>
 
             {/* Quadrant 2 (Top-Right): THE LEADER - RAKSHAK AI */}
-            <div className="p-5 rounded-xl border-2 border-[#1E3A8A] dark:border-blue-500 bg-blue-50/80 dark:bg-blue-950/70 flex flex-col justify-between shadow-md relative overflow-hidden">
+            <div className="p-5 rounded-xl border-2 border-[#1E3A8A] dark:border-blue-500 bg-blue-50/80 dark:bg-blue-950/70 flex flex-col justify-between shadow-md relative overflow-hidden pr-5 lg:pr-6">
               <div className="absolute top-2 right-2 bg-[#1E3A8A] text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">
                 Category Leader
               </div>
@@ -683,11 +685,11 @@ export default function BusinessImpact({}: BusinessImpactProps) {
                   <h4 className="font-black text-[#1E3A8A] dark:text-white text-base">Rakshak AI</h4>
                 </div>
                 <p className="text-xs font-bold text-blue-900 dark:text-blue-200 mt-1">Real-Time Pre-Transaction + Explainable AI</p>
-                <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-2 leading-relaxed">
+                <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-2 leading-relaxed max-w-[92%]">
                   Intervenes directly during ongoing coercive calls, explaining pretext tactics to the victim while dispatching real-time evidence to law enforcement.
                 </p>
               </div>
-              <div className="mt-3 text-[10px] font-mono font-bold text-blue-800 dark:text-blue-300 bg-white/80 dark:bg-slate-900/80 p-2 rounded-lg border border-blue-200 dark:border-blue-900">
+              <div className="mt-3 text-[9.5px] font-mono font-bold text-blue-800 dark:text-blue-300 bg-white/80 dark:bg-slate-900/80 p-2 rounded-lg border border-blue-200 dark:border-blue-900 leading-normal w-full box-border break-words">
                 Moat: Edge Hybrid Speed + Campaign Genome Linking
               </div>
             </div>
@@ -707,6 +709,12 @@ export default function BusinessImpact({}: BusinessImpactProps) {
                 Flags known caller numbers but cannot analyze dynamic conversational content or digital arrest pretexts.
               </p>
             </div>
+          </div>
+
+          {/* Mobile-only horizontal axis labels to prevent grid squeeze */}
+          <div className="flex md:hidden justify-between items-center text-[10px] font-mono font-bold text-gray-500 uppercase tracking-wider mt-3 px-2">
+            <span>← REACTIVE</span>
+            <span>REAL-TIME PRE-TRANSACTION →</span>
           </div>
         </div>
       </section>

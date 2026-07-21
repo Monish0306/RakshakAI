@@ -13,7 +13,6 @@ import { TRANSLATIONS } from '../lib/translations';
 interface CitizenShieldProps {
   classifier: any;
   language: string;
-  simpleView: boolean;
   user?: any;
 }
 
@@ -48,7 +47,7 @@ interface SpeechRecognitionLike {
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
 
-export default function CitizenShield({ classifier, language, simpleView, user }: CitizenShieldProps) {
+export default function CitizenShield({ classifier, language, user }: CitizenShieldProps) {
   const [transcript, setTranscript] = useState('');
   const [coolingTimer, setCoolingTimer] = useState(0);
   const { loading, result, advisory, error, runClassification } = classifier;
@@ -263,6 +262,42 @@ export default function CitizenShield({ classifier, language, simpleView, user }
     }
   };
 
+  const lastSavedSessionIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (result && user?.uid && !loading) {
+      const resultKey = `${result.verdict}-${result.confidence}-${result.ranOnDevice}-${result.verificationStatus}`;
+      if (lastSavedSessionIdRef.current === resultKey) return;
+      lastSavedSessionIdRef.current = resultKey;
+
+      const saveReport = async () => {
+        try {
+          const { collection, addDoc } = await import('firebase/firestore');
+          const { db } = await import('../lib/firebase');
+          await addDoc(collection(db, "citizenReports"), {
+            sessionId: `RKSH-${Date.now()}`,
+            transcript: transcript,
+            verdict: result.verdict,
+            confidence: result.confidence,
+            matches: result.matches || [],
+            redFlagsDetected: result.redFlagsDetected || [],
+            timestamp: new Date().toISOString(),
+            ranOnDevice: !!result.ranOnDevice,
+            userId: user.uid,
+            userEmail: user.email || "",
+            caseStatus: 'pending',
+            assignedOfficer: '',
+            recoveryPercent: null
+          });
+        } catch (e) {
+          console.error("Failed to save report to Firestore", e);
+        }
+      };
+      
+      saveReport();
+    }
+  }, [result, loading, user, transcript]);
+
   useEffect(() => {
     if (result && result.verdict === 'HIGH_RISK') {
       setCoolingTimer(15);
@@ -305,10 +340,7 @@ export default function CitizenShield({ classifier, language, simpleView, user }
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="p-1">
           <textarea
-            className={cn(
-              "w-full min-h-[160px] p-5 focus:outline-none resize-none placeholder-gray-400 bg-transparent text-gray-800",
-              simpleView ? "text-2xl" : "text-lg"
-            )}
+            className="w-full min-h-[160px] p-5 focus:outline-none resize-none placeholder-gray-400 bg-transparent text-gray-800 text-lg"
             placeholder={t["shield.textareaPlaceholder"]}
             value={transcript}
             onChange={(e) => setTranscript(e.target.value)}
@@ -359,11 +391,10 @@ export default function CitizenShield({ classifier, language, simpleView, user }
             onClick={handleCheck}
             disabled={loading || isSimulating || isRecording || isProcessingImage || !transcript.trim()}
             className={cn(
-              "w-full sm:w-auto px-8 py-3 rounded-lg font-bold text-white transition-all shadow-sm flex items-center justify-center",
+              "w-full sm:w-auto px-8 py-3 rounded-lg font-bold text-white transition-all shadow-sm flex items-center justify-center text-base",
               (loading || isSimulating || isRecording || isProcessingImage || !transcript.trim())
                 ? "bg-gray-400 cursor-not-allowed" 
-                : "bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 hover:shadow-md",
-              simpleView ? "text-xl py-4" : "text-base"
+                : "bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 hover:shadow-md"
             )}
           >
             {loading ? (
@@ -422,9 +453,9 @@ export default function CitizenShield({ classifier, language, simpleView, user }
       {/* Results Section */}
       {result && (
         <div className="space-y-6">
-          <VerdictCard result={result} simpleView={simpleView} language={language} />
+          <VerdictCard result={result} language={language} />
           
-          {!simpleView && <ReasoningPanel result={result} simpleView={simpleView} language={language} />}
+          <ReasoningPanel result={result} language={language} />
 
           {/* Cooling Off Timer */}
           {result.verdict === 'HIGH_RISK' && coolingTimer > 0 && (
@@ -468,16 +499,14 @@ export default function CitizenShield({ classifier, language, simpleView, user }
                   <Info className={cn("w-6 h-6 shrink-0 mt-0.5", result.verdict === 'SAFE' ? "text-green-600" : "text-blue-600")} />
                   <div>
                     <h3 className={cn(
-                      "font-semibold mb-2",
-                      result.verdict === 'SAFE' ? "text-green-900" : "text-blue-900",
-                      simpleView ? "text-2xl" : "text-lg"
+                      "font-semibold mb-2 text-lg",
+                      result.verdict === 'SAFE' ? "text-green-900" : "text-blue-900"
                     )}>
                       {t["shield.officialAdvisory"]}
                     </h3>
                     <p className={cn(
-                      "font-medium leading-relaxed",
-                      result.verdict === 'SAFE' ? "text-green-800" : "text-blue-800",
-                      simpleView ? "text-xl" : "text-base"
+                      "font-medium leading-relaxed text-base",
+                      result.verdict === 'SAFE' ? "text-green-800" : "text-blue-800"
                     )}>
                       {advisory || result.explanation}
                     </p>

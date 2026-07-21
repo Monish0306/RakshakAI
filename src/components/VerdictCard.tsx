@@ -5,11 +5,10 @@ import { TRANSLATIONS } from '../lib/translations';
 
 interface VerdictCardProps {
   result: any;
-  simpleView: boolean;
   language: string;
 }
 
-export default function VerdictCard({ result, simpleView, language }: VerdictCardProps) {
+export default function VerdictCard({ result, language }: VerdictCardProps) {
   if (!result) return null;
 
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
@@ -58,34 +57,6 @@ export default function VerdictCard({ result, simpleView, language }: VerdictCar
   const theme = getTheme(result.verdict);
   const Icon = theme.icon;
   const isRanOnDevice = !!result.ranOnDevice;
-
-  if (simpleView) {
-    return (
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className={cn("w-full rounded-2xl p-8 border-2 flex flex-col items-center text-center shadow-sm", theme.bg, theme.border)}
-      >
-        <Icon className={cn("w-32 h-32 mb-6", theme.iconColor)} />
-        <h2 className={cn("text-5xl font-extrabold tracking-tight mb-4", theme.text)}>
-          {theme.label}
-        </h2>
-        {result.category && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-gray-300 text-sm font-semibold text-gray-800 mb-4">
-            <Tag className="w-4 h-4 text-slate-700" />
-            <span>{result.category}</span>
-          </div>
-        )}
-        {isRanOnDevice && (
-          <div className="flex items-center space-x-2 text-gray-700 mt-2 text-lg font-medium">
-            <Lock className="w-5 h-5" />
-            <span>{t["verdict.checkedPrivately"]}</span>
-          </div>
-        )}
-      </motion.div>
-    );
-  }
 
   return (
     <motion.div 

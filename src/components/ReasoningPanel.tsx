@@ -1,12 +1,10 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, Quote, Check } from 'lucide-react';
+import { Quote, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { TRANSLATIONS } from '../lib/translations';
 
 interface ReasoningPanelProps {
   result: any;
-  simpleView: boolean;
   language: string;
 }
 
@@ -29,7 +27,7 @@ const getCategoryLabel = (catNum: number, lang: string) => {
       4: "भुगतान/ओटीपी की मांग",
       5: "फर्जी पोर्टल/दस्तावेज़ संदर्भ",
       6: "वीडियो-बंधक बनाना",
-      7: "पहचान सत्यापन का बहाना",
+      7: "पहचान सत्यापन का बहाనా",
       8: "पुरस्कार/प्रलोभन का लालच"
     },
     ta: {
@@ -38,7 +36,7 @@ const getCategoryLabel = (catNum: number, lang: string) => {
       3: "தனிமைப்படுத்துவதற்கான அறிவுறுத்தல்கள்",
       4: "பணம்/OTP கோருதல்",
       5: "போலி போர்டல்/ஆவணக் குறிப்பு",
-      6: "வீடியோ-பிணை கைதி கட்டமைப்பு",
+      6: "வீಡಿಯோ-பிணை கைதி கட்டமைப்பு",
       7: "அடையாள சரிபார்ப்பு சாக்கு",
       8: "விருது/ஊக்கத்தொகை தூண்டில்"
     },
@@ -77,35 +75,18 @@ const getSeverityStyles = (severity: string) => {
   }
 };
 
-export default function ReasoningPanel({ result, simpleView, language }: ReasoningPanelProps) {
-  const [isExpanded, setIsExpanded] = useState(!simpleView);
-  
+export default function ReasoningPanel({ result, language }: ReasoningPanelProps) {
   if (!result) return null;
 
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
   const matches = result.matches || [];
 
-  if (simpleView && !isExpanded) {
-    return (
-      <div className="mt-4 text-center">
-        <button 
-          onClick={() => setIsExpanded(true)}
-          className="text-[#1E3A8A] font-medium text-lg flex items-center justify-center w-full py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-        >
-          {t["reasoning.detailedAnalysis"]} <ChevronDown className="ml-2 w-5 h-5" />
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="mt-6 border border-gray-200 rounded-xl bg-white shadow-sm overflow-hidden">
       <div 
-        className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer"
-        onClick={() => simpleView && setIsExpanded(false)}
+        className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center"
       >
         <h3 className="font-semibold text-gray-900 text-lg">{t["reasoning.detailedAnalysis"]}</h3>
-        {simpleView && <ChevronUp className="w-5 h-5 text-gray-500" />}
       </div>
       
       <div className="p-6">
