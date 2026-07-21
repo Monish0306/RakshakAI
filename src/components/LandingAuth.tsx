@@ -12,6 +12,7 @@ import {
   writeBatch 
 } from 'firebase/firestore';
 import HeroShieldGraphic from './HeroShieldGraphic';
+import { applyTheme, initTheme } from '../lib/theme';
 
 interface LandingAuthProps {
   language: string;
@@ -26,8 +27,14 @@ export default function LandingAuth({ language, onLoginSuccess, redirectMessage,
   const [rememberMe, setRememberMe] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setThemeState] = useState<'light' | 'dark'>(() => initTheme());
   const [adminFailedAttempts, setAdminFailedAttempts] = useState(0);
+
+  const toggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    setThemeState(next);
+    applyTheme(next);
+  };
 
   // Login Form states
   const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -373,8 +380,8 @@ export default function LandingAuth({ language, onLoginSuccess, redirectMessage,
         
         {/* Theme Toggle Button */}
         <button
-          onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
-          className="absolute top-6 right-6 p-2 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors flex items-center space-x-2 shadow-sm z-50"
+          onClick={toggleTheme}
+          className="absolute top-6 right-6 p-2 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors flex items-center space-x-2 shadow-sm z-50 cursor-pointer"
         >
           {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
           <span className="text-xs font-semibold hidden sm:inline">{theme === 'light' ? 'Dark' : 'Light'}</span>

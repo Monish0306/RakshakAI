@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, Quote } from 'lucide-react';
+import { ChevronDown, ChevronUp, Quote, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { TRANSLATIONS } from '../lib/translations';
 
@@ -112,7 +112,7 @@ export default function ReasoningPanel({ result, simpleView, language }: Reasoni
         {matches.length === 0 ? (
           <div className="text-center py-8">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-4">
-              <span className="text-green-600 text-xl">✓</span>
+              <Check className="w-6 h-6 text-green-600" />
             </div>
             <p className="text-gray-600 text-lg">{t["reasoning.noScamPatterns"]}</p>
           </div>

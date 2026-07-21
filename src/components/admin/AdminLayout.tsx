@@ -11,6 +11,8 @@ import HeatmapSection from './HeatmapSection';
 import EvidenceManagementSection from './EvidenceManagementSection';
 import AnalyticsSection from './AnalyticsSection';
 import SystemAdminSection from './SystemAdminSection';
+import AnnouncementBar from '../AnnouncementBar';
+import { cn } from '../../lib/utils';
 
 interface AdminLayoutProps {
   user: any;
@@ -19,19 +21,26 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ user, onLogout }: AdminLayoutProps) {
   const [activeTab, setActiveTab] = useState<AdminTab>('cases');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-100 flex font-sans">
+    <div className="min-h-screen bg-slate-100 flex font-sans pt-7">
+      <AnnouncementBar isAdmin={true} />
       {/* Admin Sidebar */}
       <AdminSidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         user={user} 
         onLogout={onLogout} 
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
 
       {/* Main Workspace */}
-      <div className="flex-1 ml-64 p-8 min-h-screen overflow-y-auto">
+      <div className={cn(
+        "flex-1 p-8 min-h-screen overflow-y-auto transition-[margin] duration-300",
+        isSidebarCollapsed ? "ml-16" : "ml-64"
+      )}>
         <div className="max-w-7xl mx-auto space-y-6">
           {activeTab === 'cases' && <CaseManagementSection user={user} />}
           {activeTab === 'officers' && <OfficerManagementSection user={user} />}

@@ -152,16 +152,22 @@ export async function generateReportPDF(session: ReportSession): Promise<jsPDF> 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   doc.text("Matched Scam Patterns", 20, y);
+  y += 6;
 
-  // 4. SEVERITY DONUT SUMMARY
-  if (session.matches.length >= 2) {
+  // 4. SEVERITY DONUT & SUMMARY BLOCK
+  if (session.matches.length >= 1) {
     const counts: Record<string, number> = { Low: 0, Medium: 0, High: 0, Critical: 0 };
-    session.matches.forEach(m => counts[m.severity]++);
+    session.matches.forEach(m => counts[m.severity] = (counts[m.severity] || 0) + 1);
     const total = session.matches.length;
 
-    const pieX = 175;
-    const pieY = y + 5;
-    const radius = 12;
+    // Draw a clean background card for the summary chart
+    doc.setFillColor(248, 250, 252); // Slate 50
+    doc.setDrawColor(226, 232, 240); // Slate 200
+    doc.roundedRect(20, y, 170, 28, 2, 2, "FD");
+
+    const pieX = 40;
+    const pieY = y + 14;
+    const radius = 10;
 
     let currentAngle = -Math.PI / 2; // Start at top
     const colors: Record<string, number[]> = {
@@ -182,19 +188,45 @@ export async function generateReportPDF(session: ReportSession): Promise<jsPDF> 
     });
 
     // Make it a donut
-    doc.setFillColor(255, 255, 255);
+    doc.setFillColor(248, 250, 252);
     doc.circle(pieX, pieY, radius * 0.5, "F");
-    
+
     // Donut label
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(100, 116, 139);
+    doc.text("SEVERITY", pieX - (doc.getTextWidth("SEVERITY") / 2), pieY + 1.5);
+
+    // Legend items on the right side of the donut card
+    let legendX = 65;
+    let legendY = y + 10;
     doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    const labelText = "Severity";
-    const textWidth = doc.getTextWidth(labelText);
-    doc.text(labelText, pieX - (textWidth / 2), pieY + radius + 5);
-    doc.setTextColor(50, 50, 50);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(51, 65, 85);
+    doc.text(`Total Indicators Detected: ${total}`, legendX, legendY);
+    legendY += 5;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    severities.forEach((sev) => {
+      if (counts[sev] > 0) {
+        doc.setFillColor(colors[sev][0], colors[sev][1], colors[sev][2]);
+        doc.rect(legendX, legendY - 2.5, 3, 3, "F");
+        doc.text(`${sev}: ${counts[sev]}`, legendX + 5, legendY);
+        legendX += 30;
+        if (legendX > 160) {
+          legendX = 65;
+          legendY += 5;
+        }
+      }
+    });
+
+    y += 34; // Move y past the chart card container
+  } else {
+    y += 4;
   }
 
-  y += 14;
+  doc.setTextColor(50, 50, 50);
 
   session.matches.forEach((m) => {
     // 3. RISK SCORE BAR CHART
@@ -203,9 +235,11 @@ export async function generateReportPDF(session: ReportSession): Promise<jsPDF> 
     const title = `${CATEGORY_NAMES[m.category] || "Category " + m.category}`;
     doc.text(title, 20, y);
 
-    // Background bar
+    // Background bar (placed safely at x: 120 to 170, score text at 175)
+    const barX = 120;
+    const barWidthMax = 50;
     doc.setFillColor(235, 235, 235);
-    doc.rect(130, y - 3, 60, 4, "F");
+    doc.rect(barX, y - 3, barWidthMax, 4, "F");
 
     let barColor = [156, 163, 175]; // Low
     if (m.severity === "Medium") barColor = [245, 158, 11];
@@ -214,13 +248,13 @@ export async function generateReportPDF(session: ReportSession): Promise<jsPDF> 
 
     // Filled bar
     doc.setFillColor(barColor[0], barColor[1], barColor[2]);
-    const barWidth = (m.riskScore / 100) * 60;
-    doc.rect(130, y - 3, Math.max(1, barWidth), 4, "F"); // ensure at least 1px width
+    const barWidth = (m.riskScore / 100) * barWidthMax;
+    doc.rect(barX, y - 3, Math.max(1, barWidth), 4, "F");
 
     // Score text
     doc.setFontSize(8);
     doc.setTextColor(barColor[0], barColor[1], barColor[2]);
-    doc.text(`${m.riskScore}/100`, 115, y);
+    doc.text(`${m.riskScore}/100`, 173, y);
 
     doc.setTextColor(50, 50, 50);
     y += 6;
@@ -240,7 +274,7 @@ export async function generateReportPDF(session: ReportSession): Promise<jsPDF> 
     doc.setTextColor(50, 50, 50);
     
     // Page break protection
-    if (y > 270) {
+    if (y > 265) {
       doc.addPage();
       y = 20;
     }

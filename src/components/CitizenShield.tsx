@@ -225,7 +225,7 @@ export default function CitizenShield({ classifier, language, simpleView, user }
           if (imgData.degraded) {
             setImageNotice({
               type: 'info',
-              text: '⚠️ Image visual check timed out. Text was extracted via OCR and sent to classification.'
+              text: 'Image visual check timed out. Text was extracted via OCR and sent to classification.'
             });
           }
           setIsProcessingImage(false);
@@ -249,7 +249,7 @@ export default function CitizenShield({ classifier, language, simpleView, user }
           setTranscript(text.trim());
           setImageNotice({
             type: 'info',
-            text: '⚠️ Image visual check unavailable. Text extracted via local OCR fallback.'
+            text: 'Image visual check unavailable. Text extracted via local OCR fallback.'
           });
         } else {
           setOcrError(t["shield.ocrFailure"]);

@@ -12,9 +12,15 @@ import CommandCenter from './components/CommandCenter.tsx';
 import LandingAuth from './components/LandingAuth.tsx';
 import GuardianCenter from './components/GuardianCenter.tsx';
 import AdminPortal from './components/AdminPortal.tsx';
+import AnnouncementBar from './components/AnnouncementBar.tsx';
 import { useClassifier } from './hooks/useClassifier.ts';
+import { cn } from './lib/utils';
+import { initTheme } from './lib/theme';
 
 export default function App() {
+  useEffect(() => {
+    initTheme();
+  }, []);
   const [isAdminRoute, setIsAdminRoute] = useState(() => window.location.pathname === '/admin');
   const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'impact' | 'about' | 'command' | 'guardian' | 'admin'>('home');
   const [isAdmin, setIsAdmin] = useState(false);
@@ -26,6 +32,7 @@ export default function App() {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [firebaseUser, setFirebaseUser] = useState<any>(null);
   const [redirectMsg, setRedirectMsg] = useState<string | null>(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -103,7 +110,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-blue-200 flex">
+    <div className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-blue-200 flex pt-7">
+      <AnnouncementBar />
       <Sidebar
         activeTab={activeTab}
         setActiveTab={(tab) => {
@@ -129,9 +137,10 @@ export default function App() {
           setRedirectMsg(null);
           setShowLanding(true);
         }}
+        onToggleCollapse={(collapsed) => setIsSidebarCollapsed(collapsed)}
       />
 
-      <div className="flex-1 ml-[240px] transition-[margin] duration-300">
+      <div className={cn("flex-1 transition-[margin] duration-300", isSidebarCollapsed ? "ml-16" : "ml-[240px]")}>
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'home' && <CitizenShield classifier={classifier} language={language} simpleView={simpleView} user={combinedUser} />}
         {activeTab === 'how' && <HowItWorks language={language} />}

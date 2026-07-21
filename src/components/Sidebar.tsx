@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { 
   Shield, 
   ShieldCheck, 
@@ -7,11 +8,16 @@ import {
   Info, 
   ShieldAlert, 
   Users, 
-  Lock
+  Lock,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Moon,
+  Sun
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { TRANSLATIONS } from '../lib/translations';
+import { getTheme, applyTheme } from '../lib/theme';
 
 interface SidebarProps {
   activeTab: string;
@@ -25,6 +31,7 @@ interface SidebarProps {
   isAdmin?: boolean;
   onLogout: () => void;
   onSignInClick: () => void;
+  onToggleCollapse?: (collapsed: boolean) => void;
 }
 
 export default function Sidebar({ 
@@ -37,9 +44,17 @@ export default function Sidebar({
   modelLoaded,
   user,
   onLogout,
-  onSignInClick
+  onSignInClick,
+  onToggleCollapse
 }: SidebarProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
+
+  const toggleCollapse = () => {
+    const nextState = !isCollapsed;
+    setIsCollapsed(nextState);
+    if (onToggleCollapse) onToggleCollapse(nextState);
+  };
 
   interface NavItem {
     id: string;
@@ -60,13 +75,31 @@ export default function Sidebar({
   ];
 
   return (
-    <aside className="bg-white border-r border-gray-200 fixed inset-y-0 left-0 z-50 shadow-sm w-[240px] flex flex-col transition-[width] duration-300">
-      {/* Top: Logo */}
-      <div className="flex items-center space-x-2 cursor-pointer p-4 shrink-0" onClick={() => setActiveTab('home')}>
-        <Shield className="h-8 w-8 text-[#1E3A8A] shrink-0" />
-        <span className="font-bold text-xl text-[#1E3A8A] tracking-tight whitespace-nowrap overflow-hidden">
-          {t["header.logo"]}
-        </span>
+    <aside className={cn(
+      "bg-white border-r border-gray-200 fixed top-7 bottom-0 left-0 z-50 shadow-sm flex flex-col transition-[width] duration-300",
+      isCollapsed ? "w-16" : "w-[240px]"
+    )}>
+      {/* Top: Logo & Collapse Toggle */}
+      <div className="flex items-center justify-between p-4 shrink-0 border-b border-gray-100">
+        <div 
+          className="flex items-center space-x-2 cursor-pointer overflow-hidden" 
+          onClick={() => setActiveTab('home')}
+          title={t["header.logo"]}
+        >
+          <Shield className="h-8 w-8 text-[#1E3A8A] shrink-0" />
+          {!isCollapsed && (
+            <span className="font-bold text-xl text-[#1E3A8A] tracking-tight whitespace-nowrap overflow-hidden">
+              {t["header.logo"]}
+            </span>
+          )}
+        </div>
+        <button
+          onClick={toggleCollapse}
+          className="p-1.5 rounded-lg text-gray-400 hover:text-[#1E3A8A] hover:bg-gray-100 transition-colors"
+          title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        >
+          {isCollapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
+        </button>
       </div>
 
       {/* Center: Tabs */}
@@ -77,28 +110,34 @@ export default function Sidebar({
           return (
             <button
               key={item.id}
-              title={item.tooltip}
+              title={isCollapsed ? `${item.label} — ${item.tooltip}` : item.tooltip}
               onClick={() => setActiveTab(item.id as any)}
               className={cn(
                 "w-full flex items-center space-x-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors text-left",
                 activeTab === item.id 
                   ? "bg-[#1E3A8A]/10 text-[#1E3A8A] border-l-4 border-[#1E3A8A] pl-2" 
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 border-l-4 border-transparent pl-2"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 border-l-4 border-transparent pl-2",
+                isCollapsed && "justify-center px-0 pl-0 border-l-0"
               )}
             >
               <Icon className="h-5 w-5 shrink-0" />
-              <span className="flex-1 whitespace-nowrap overflow-hidden">{item.label}</span>
-              {isLocked && <Lock className="h-4 w-4 shrink-0 text-gray-400" />}
+              {!isCollapsed && <span className="flex-1 whitespace-nowrap overflow-hidden">{item.label}</span>}
+              {!isCollapsed && isLocked && <Lock className="h-4 w-4 shrink-0 text-gray-400" />}
             </button>
           );
         })}
       </nav>
 
       {/* Bottom: Controls */}
-      <div className="p-4 border-t border-gray-200 flex flex-col space-y-4 shrink-0">
+      <div className="p-3 border-t border-gray-200 flex flex-col space-y-3 shrink-0">
         
         {/* Privacy Filter Status */}
-        <div className="flex items-center space-x-2 text-xs font-medium text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200 w-fit">
+        <div className={cn(
+          "flex items-center space-x-2 text-xs font-medium text-gray-500 bg-gray-50 px-2.5 py-1.5 rounded-full border border-gray-200 w-fit",
+          isCollapsed && "justify-center px-1.5"
+        )}
+        title={modelLoaded ? t["header.filterActive"] : t["header.filterLoading"]}
+        >
           <span className="relative flex h-2.5 w-2.5 shrink-0">
             {modelLoaded ? (
               <span className="absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75 animate-pulse"></span>
@@ -110,61 +149,97 @@ export default function Sidebar({
               modelLoaded ? "bg-green-600" : "bg-gray-500"
             )}></span>
           </span>
-          <span className="whitespace-nowrap overflow-hidden">
-            {modelLoaded ? t["header.filterActive"] : t["header.filterLoading"]}
-          </span>
+          {!isCollapsed && (
+            <span className="whitespace-nowrap overflow-hidden">
+              {modelLoaded ? t["header.filterActive"] : t["header.filterLoading"]}
+            </span>
+          )}
         </div>
 
-        {/* Language Selector */}
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-md focus:ring-[#1E3A8A] focus:border-[#1E3A8A] block w-full px-2.5 py-1.5"
+        {/* Dark / Light Theme Toggle */}
+        <button
+          onClick={() => {
+            const next = getTheme() === 'light' ? 'dark' : 'light';
+            applyTheme(next);
+            // Force re-render of button
+            const btn = document.getElementById('sidebar-theme-toggle-text');
+            if (btn) btn.innerText = next === 'dark' ? 'Light Mode' : 'Dark Mode';
+          }}
+          className={cn(
+            "flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors w-full cursor-pointer",
+            "bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700",
+            isCollapsed && "justify-center px-0"
+          )}
+          title="Toggle Theme (Dark / Light)"
         >
-          <option value="en">English</option>
-          <option value="hi">हिन्दी (Hindi)</option>
-          <option value="ta">தமிழ் (Tamil)</option>
-          <option value="kn">ಕನ್ನಡ (Kannada)</option>
-          <option value="te">తెలుగు (Telugu)</option>
-        </select>
+          {getTheme() === 'dark' ? <Sun className="w-4 h-4 text-amber-400 shrink-0" /> : <Moon className="w-4 h-4 text-slate-700 shrink-0" />}
+          {!isCollapsed && <span id="sidebar-theme-toggle-text">{getTheme() === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
+        </button>
+
+        {/* Language Selector */}
+        {!isCollapsed && (
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-md focus:ring-[#1E3A8A] focus:border-[#1E3A8A] block w-full px-2.5 py-1.5"
+          >
+            <option value="en">English</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+          </select>
+        )}
 
         {/* Grandparent Mode Toggle */}
-        <label className="flex items-center cursor-pointer space-x-2">
-          <div className="relative shrink-0">
-            <input 
-              type="checkbox" 
-              className="sr-only" 
-              checked={simpleView}
-              onChange={(e) => setSimpleView(e.target.checked)}
-            />
-            <div className={cn("block w-10 h-6 rounded-full transition-colors", simpleView ? "bg-[#1E3A8A]" : "bg-gray-300")}></div>
-            <div className={cn("dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform", simpleView ? "transform translate-x-4" : "")}></div>
-          </div>
-          <span className="text-sm font-medium text-gray-700 whitespace-nowrap overflow-hidden">
-            {t["header.simpleView"]}
-          </span>
-        </label>
+        {!isCollapsed && (
+          <label className="flex items-center cursor-pointer space-x-2">
+            <div className="relative shrink-0">
+              <input 
+                type="checkbox" 
+                className="sr-only" 
+                checked={simpleView}
+                onChange={(e) => setSimpleView(e.target.checked)}
+              />
+              <div className={cn("block w-10 h-6 rounded-full transition-colors", simpleView ? "bg-[#1E3A8A]" : "bg-gray-300")}></div>
+              <div className={cn("dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform", simpleView ? "transform translate-x-4" : "")}></div>
+            </div>
+            <span className="text-sm font-medium text-gray-700 whitespace-nowrap overflow-hidden">
+              {t["header.simpleView"]}
+            </span>
+          </label>
+        )}
 
         {/* Auth status and triggers */}
         <div className="flex flex-col space-y-2 pt-2 border-t border-gray-200">
           {user ? (
             <>
-              <span className="text-xs font-bold text-gray-700 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200 w-full text-center truncate">
-                Hi, {user.username}
-              </span>
+              {!isCollapsed && (
+                <span className="text-xs font-bold text-gray-700 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200 w-full text-center truncate">
+                  Hi, {user.username}
+                </span>
+              )}
               <button
                 onClick={onLogout}
-                className="text-xs font-bold text-red-600 hover:underline bg-transparent border-none cursor-pointer text-left"
+                className={cn(
+                  "text-xs font-bold text-red-600 hover:underline bg-transparent border-none cursor-pointer",
+                  isCollapsed ? "text-center" : "text-left"
+                )}
+                title="Logout"
               >
-                Logout
+                {isCollapsed ? "Exit" : "Logout"}
               </button>
             </>
           ) : (
             <button
               onClick={onSignInClick}
-              className="text-sm font-bold text-[#1E3A8A] hover:underline bg-transparent border-none cursor-pointer w-full text-left"
+              className={cn(
+                "text-sm font-bold text-[#1E3A8A] hover:underline bg-transparent border-none cursor-pointer w-full",
+                isCollapsed ? "text-center" : "text-left"
+              )}
+              title="Sign In"
             >
-              Sign In
+              {isCollapsed ? "In" : "Sign In"}
             </button>
           )}
         </div>
@@ -173,3 +248,4 @@ export default function Sidebar({
     </aside>
   );
 }
+
