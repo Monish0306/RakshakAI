@@ -11,15 +11,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: "Use GET" });
   }
 
-  const { db, auth } = getFirebase();
-
   try {
+    const { db, auth } = getFirebase();
     await verifyAdminAuth(req, auth);
-  } catch (err) {
-    return res.status(403).json({ success: false, error: err.message });
-  }
-
-  try {
     const snapshot = await db.collection("citizenReports").get();
     
     const officers = {};
@@ -85,6 +79,9 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, stats: results });
   } catch (err) {
     console.error("Admin officer stats error:", err);
-    return res.status(500).json({ success: false, error: "Failed to fetch officer stats" });
+    return res.status(err.statusCode || 500).json({
+      success: false,
+      error: err.statusCode ? err.message : "Failed to fetch officer stats"
+    });
   }
 }

@@ -17,10 +17,11 @@ interface LandingAuthProps {
   language: string;
   onLoginSuccess: (user: any) => void;
   redirectMessage?: string | null;
+  adminOnly?: boolean;
 }
 
-export default function LandingAuth({ language, onLoginSuccess, redirectMessage }: LandingAuthProps) {
-  const [activeTab, setActiveTab] = useState<'login' | 'signup' | 'admin'>('login');
+export default function LandingAuth({ language, onLoginSuccess, redirectMessage, adminOnly = false }: LandingAuthProps) {
+  const [activeTab, setActiveTab] = useState<'login' | 'signup' | 'admin'>(adminOnly ? 'admin' : 'login');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -381,7 +382,7 @@ export default function LandingAuth({ language, onLoginSuccess, redirectMessage 
 
         <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-md p-6 lg:p-8 space-y-6">
           {/* Custom Tabs */}
-          <div className="flex border-b border-gray-100 dark:border-slate-800">
+          {!adminOnly && <div className="flex border-b border-gray-100 dark:border-slate-800">
             <button
               onClick={() => {
                 setActiveTab('login');
@@ -408,7 +409,7 @@ export default function LandingAuth({ language, onLoginSuccess, redirectMessage 
             >
               {t["landing.signupTab"]}
             </button>
-          </div>
+          </div>}
 
           {/* Auth Error Banner */}
           {authError && (
@@ -475,7 +476,7 @@ export default function LandingAuth({ language, onLoginSuccess, redirectMessage 
                 <ChevronRight className="w-4 h-4" />
               </button>
               
-              <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 flex justify-center">
+              {!adminOnly && <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 flex justify-center">
                 <button
                   type="button"
                   onClick={() => {
@@ -488,7 +489,7 @@ export default function LandingAuth({ language, onLoginSuccess, redirectMessage 
                 >
                   Return to Citizen Login
                 </button>
-              </div>
+              </div>}
             </form>
           ) : activeTab === 'login' ? (
             /* Login Form */
@@ -742,26 +743,6 @@ export default function LandingAuth({ language, onLoginSuccess, redirectMessage 
           </div>
         </div>
 
-        {/* Removed Enter App Unauthenticated CTA */}
-
-        {/* Cybercrime Officer Login Button (Emphasized Special Portal Entry) */}
-        {activeTab !== 'admin' && (
-          <div className="mt-6 w-full flex justify-center z-10">
-            <button
-              onClick={() => {
-                setActiveTab('admin');
-                setAuthError(null);
-                setLoginIdentifier('');
-                setLoginPassword('');
-              }}
-              className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-amber-400 border border-amber-500/40 rounded-xl text-xs font-bold tracking-wide transition-all shadow-md hover:shadow-lg flex items-center space-x-2 group cursor-pointer"
-            >
-              <Shield className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
-              <span>Cybercrime Officer Login</span>
-              <ChevronRight className="w-3.5 h-3.5 text-amber-400/80 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-          </div>
-        )}
       </div>
     </div>
     </div>

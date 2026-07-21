@@ -6,27 +6,24 @@ import path from "path";
 
 export function getFirebase() {
   if (!getApps().length) {
-    try {
-      if (process.env.FIREBASE_ADMIN_PROJECT_ID && process.env.FIREBASE_ADMIN_CLIENT_EMAIL && process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
-        initializeApp({
-          credential: cert({
-            projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-            clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-            privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n'),
-          })
-        });
+    if (process.env.FIREBASE_ADMIN_PROJECT_ID && process.env.FIREBASE_ADMIN_CLIENT_EMAIL && process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
+      initializeApp({
+        credential: cert({
+          projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        })
+      });
+    } else {
+      const serviceAccountPath = path.join(process.cwd(), "serviceAccountKey.json");
+      if (fs.existsSync(serviceAccountPath)) {
+        const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf-8"));
+        initializeApp({ credential: cert(serviceAccount) });
       } else {
-        const serviceAccountPath = path.join(process.cwd(), "serviceAccountKey.json");
-        if (fs.existsSync(serviceAccountPath)) {
-          const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf-8"));
-          initializeApp({ credential: cert(serviceAccount) });
-        } else {
-          initializeApp();
-        }
+        const error = new Error("Firebase Admin is not configured");
+        error.statusCode = 500;
+        throw error;
       }
-    } catch (err) {
-      console.warn("Failed to initialize Firebase Admin, falling back to default:", err);
-      initializeApp();
     }
   }
   return { db: getFirestore(), auth: getAuth() };
@@ -35,14 +32,31 @@ export function getFirebase() {
 export async function verifyAdminAuth(req, auth) {
   const authHeader = req.headers.authorization || req.headers.Authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new Error('Unauthorized: No token provided');
+    const error = new Error('Unauthorized');
+    error.statusCode = 401;
+    throw error;
   }
   const token = authHeader.split('Bearer ')[1];
   const decodedToken = await auth.verifyIdToken(token);
   if (decodedToken.role !== 'admin') {
-    throw new Error('Forbidden: Admin access required');
+    const error = new Error('Forbidden');
+    error.statusCode = 403;
+    throw error;
   }
   return decodedToken;
+}
+
+export function toSafeAdminCase(doc) {
+  const data = doc.data();
+  const fields = [
+    'sessionId', 'timestamp', 'verdict', 'threatLevel', 'confidence',
+    'campaignId', 'caseStatus', 'assignedOfficer', 'recoveryPercent', 'closedAt'
+  ];
+
+  return fields.reduce((caseData, field) => {
+    if (data[field] !== undefined) caseData[field] = data[field];
+    return caseData;
+  }, { id: doc.id });
 }
 
 export function setCorsHeaders(res) {

@@ -11,21 +11,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: "Use POST" });
   }
 
-  const { db, auth } = getFirebase();
-
   try {
+    const { db, auth } = getFirebase();
     await verifyAdminAuth(req, auth);
-  } catch (err) {
-    return res.status(403).json({ success: false, error: err.message });
-  }
-
-  const { caseId, caseStatus, assignedOfficer, recoveryPercent, closedAt } = req.body || {};
-  
-  if (!caseId) {
-    return res.status(400).json({ success: false, error: "caseId is required" });
-  }
-
-  try {
+    const { caseId, caseStatus, assignedOfficer, recoveryPercent, closedAt } = req.body || {};
+    if (!caseId) return res.status(400).json({ success: false, error: "caseId is required" });
     const updateData = {};
     if (caseStatus !== undefined) updateData.caseStatus = caseStatus;
     if (assignedOfficer !== undefined) updateData.assignedOfficer = assignedOfficer;
@@ -37,6 +27,9 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true });
   } catch (err) {
     console.error("Admin case update error:", err);
-    return res.status(500).json({ success: false, error: "Failed to update case" });
+    return res.status(err.statusCode || 500).json({
+      success: false,
+      error: err.statusCode ? err.message : "Failed to update case"
+    });
   }
 }

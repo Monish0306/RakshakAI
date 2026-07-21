@@ -1,11 +1,18 @@
-# React + TypeScript + Vite
+# Rakshak AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Rakshak AI uses on-device intelligence and advanced threat detection to protect you from digital arrest scams, fraud calls, and online threats in real-time.
 
-Currently, two official plugins are available:
+## Local Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Important:** Because this project uses Vercel Serverless Functions (located in the `/api` directory) for its backend, you must use the Vercel CLI for local development. Standard Vite (`npm run dev`) will not correctly execute the API endpoints locally.
+
+To run the app locally:
+```bash
+# Start the local development server including API routes
+vercel dev
+```
+
+*(Note: Do not use `npm run dev` as it will fail to parse API route modules correctly.)*
 
 ## React Compiler
 

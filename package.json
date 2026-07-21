@@ -20,7 +20,7 @@
     "clsx": "^2.1.1",
     "csv-parse": "^7.0.1",
     "firebase": "^12.15.0",
-    "firebase-admin": "^14.1.0",
+    "firebase-admin": "13.5.0",
     "framer-motion": "^12.42.2",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.23.0",

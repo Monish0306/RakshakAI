@@ -15,6 +15,7 @@ import AdminPortal from './components/AdminPortal.tsx';
 import { useClassifier } from './hooks/useClassifier.ts';
 
 export default function App() {
+  const [isAdminRoute, setIsAdminRoute] = useState(() => window.location.pathname === '/admin');
   const [activeTab, setActiveTab] = useState<'home' | 'how' | 'dashboard' | 'impact' | 'about' | 'command' | 'guardian' | 'admin'>('home');
   const [isAdmin, setIsAdmin] = useState(false);
   const [language, setLanguage] = useState('en');
@@ -25,6 +26,16 @@ export default function App() {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [firebaseUser, setFirebaseUser] = useState<any>(null);
   const [redirectMsg, setRedirectMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const adminRoute = window.location.pathname === '/admin';
+      setIsAdminRoute(adminRoute);
+      if (adminRoute) setShowLanding(true);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const combinedUser = userAuth ? { ...userAuth, ...userProfile } : null;
 
@@ -72,17 +83,23 @@ export default function App() {
     return (
       <LandingAuth
         language={language}
+        adminOnly={isAdminRoute}
         onLoginSuccess={(loggedInUser) => {
           setUserAuth(loggedInUser);
           setShowLanding(false);
           setRedirectMsg(null);
           if (loggedInUser.isAdmin) {
+            setIsAdmin(true);
             setActiveTab('admin');
           }
         }}
         redirectMessage={redirectMsg}
       />
     );
+  }
+
+  if (activeTab === 'admin' && isAdmin) {
+    return <AdminPortal user={firebaseUser} />;
   }
 
   return (
@@ -123,7 +140,6 @@ export default function App() {
         {activeTab === 'about' && <About language={language} />}
         {activeTab === 'command' && <CommandCenter language={language} />}
         {activeTab === 'guardian' && <GuardianCenter user={combinedUser} language={language} />}
-        {activeTab === 'admin' && isAdmin && <AdminPortal user={firebaseUser} />}
       </main>
       </div>
     </div>

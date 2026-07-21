@@ -32,3 +32,4 @@ data/raw
 
 serviceAccountKey.json
 set-admin-claim.mjs
+.vercel
