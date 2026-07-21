@@ -1,7 +1,8 @@
 const API_BASE = ""; // same domain now, no base URL needed
 
 export interface ClassificationMatch {
-  category: number;
+  indicatorType?: number;
+  category?: number; // legacy alias
   evidence: string;
   reason: string;
   severity: "Low" | "Medium" | "High" | "Critical";
@@ -13,11 +14,17 @@ export interface ClassificationResponse {
   data: {
     verdict: "SAFE" | "UNCERTAIN" | "HIGH_RISK";
     confidence: number;
+    category?: string;
+    reasoning?: string;
     matches: ClassificationMatch[];
     explanation: string;
     redFlagsDetected: string[];
     timeToVerdictMs: number;
     ranOnDevice?: boolean;
+    verificationStatus?: "quick_check" | "ai_verified" | "degraded";
+    degraded?: boolean;
+    degradedReason?: string;
+    cached?: boolean;
     matchCount?: number;
     campaignId?: string | null;
   };
@@ -216,3 +223,40 @@ export async function recordTelemetry(outcome: "on-device" | "cloud"): Promise<v
     console.warn("Failed to record telemetry", err);
   }
 }
+
+export interface ImageAnalysisResponse {
+  success: boolean;
+  data: {
+    isRelevant: boolean;
+    detectedType: string;
+    description: string;
+    extractedText: string;
+    degraded?: boolean;
+    degradedReason?: string;
+    timeToAnalyzeMs?: number;
+  };
+  error: string | null;
+}
+
+export async function analyzeImage(imageBase64: string, mimeType: string): Promise<ImageAnalysisResponse> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 12000); // 12s client timeout
+
+  try {
+    const res = await fetch(`${API_BASE}/api/analyze-image`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageBase64, mimeType }),
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+}
+

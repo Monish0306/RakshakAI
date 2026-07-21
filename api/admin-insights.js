@@ -143,9 +143,12 @@ export default async function handler(req, res) {
           }
         }
 
+        const cat = r.category || 'Uncategorized (Legacy Data)';
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+
         if (Array.isArray(r.redFlagsDetected)) {
           r.redFlagsDetected.forEach(flag => {
-            categoryCounts[flag] = (categoryCounts[flag] || 0) + 1;
+            categoryCounts[`Flag: ${flag}`] = (categoryCounts[`Flag: ${flag}`] || 0) + 1;
           });
         }
       });

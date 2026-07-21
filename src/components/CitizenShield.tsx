@@ -5,6 +5,7 @@ import VerdictCard from './VerdictCard';
 import ReasoningPanel from './ReasoningPanel';
 // @ts-ignore
 import { generateReportPDF, generateSessionId } from '../lib/reportGenerator';
+import { analyzeImage } from '../lib/api';
 import { cn } from '../lib/utils';
 import { motion } from 'framer-motion';
 import { TRANSLATIONS } from '../lib/translations';
@@ -56,6 +57,7 @@ export default function CitizenShield({ classifier, language, simpleView, user }
   const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [speechError, setSpeechError] = useState<string | null>(null);
   const [ocrError, setOcrError] = useState<string | null>(null);
+  const [imageNotice, setImageNotice] = useState<{ type: 'warning' | 'info'; text: string } | null>(null);
   const [interimSpeech, setInterimSpeech] = useState('');
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const imageInputRef = useRef<HTMLInputElement | null>(null);
@@ -144,8 +146,6 @@ export default function CitizenShield({ classifier, language, simpleView, user }
     recognition.onresult = (event) => {
       const interimResults: string[] = [];
 
-      // Result indices are stable for one recognition session. Rebuild from those
-      // slots so an interim fragment becoming final replaces itself instead of appending.
       for (let index = 0; index < event.results.length; index += 1) {
         const result = event.results[index];
         if (result.isFinal) {
@@ -184,6 +184,15 @@ export default function CitizenShield({ classifier, language, simpleView, user }
 
   useEffect(() => () => recognitionRef.current?.abort(), []);
 
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleImageFile = async (file?: File) => {
     if (!file || !file.type.startsWith('image/')) {
       setOcrError(t["shield.ocrFailure"]);
@@ -191,16 +200,63 @@ export default function CitizenShield({ classifier, language, simpleView, user }
     }
 
     setOcrError(null);
+    setImageNotice(null);
     setIsProcessingImage(true);
+
     try {
+      const base64Str = await fileToBase64(file);
+      const analysis = await analyzeImage(base64Str, file.type);
+
+      if (analysis.success && analysis.data) {
+        const imgData = analysis.data;
+
+        if (!imgData.isRelevant) {
+          setImageNotice({
+            type: 'warning',
+            text: imgData.description || `Irrelevant image detected (${imgData.detectedType}). Please upload a screenshot of a chat, call screen, or bank notification.`
+          });
+          setIsProcessingImage(false);
+          if (imageInputRef.current) imageInputRef.current.value = '';
+          return;
+        }
+
+        if (imgData.extractedText && imgData.extractedText.trim().length > 0) {
+          setTranscript(imgData.extractedText.trim());
+          if (imgData.degraded) {
+            setImageNotice({
+              type: 'info',
+              text: '⚠️ Image visual check timed out. Text was extracted via OCR and sent to classification.'
+            });
+          }
+          setIsProcessingImage(false);
+          if (imageInputRef.current) imageInputRef.current.value = '';
+          return;
+        }
+      }
+
+      // OCR Fallback if text wasn't extracted directly by Vision API
       const { data: { text } } = await recognize(file, 'eng');
       if (!text.trim()) {
         setOcrError(t["shield.ocrFailure"]);
         return;
       }
       setTranscript(text.trim());
-    } catch {
-      setOcrError(t["shield.ocrFailure"]);
+    } catch (e) {
+      // Graceful fallback to local Tesseract OCR on API error
+      try {
+        const { data: { text } } = await recognize(file, 'eng');
+        if (text.trim()) {
+          setTranscript(text.trim());
+          setImageNotice({
+            type: 'info',
+            text: '⚠️ Image visual check unavailable. Text extracted via local OCR fallback.'
+          });
+        } else {
+          setOcrError(t["shield.ocrFailure"]);
+        }
+      } catch {
+        setOcrError(t["shield.ocrFailure"]);
+      }
     } finally {
       setIsProcessingImage(false);
       if (imageInputRef.current) imageInputRef.current.value = '';
@@ -343,6 +399,15 @@ export default function CitizenShield({ classifier, language, simpleView, user }
         {ocrError && (
           <div className="mx-4 mb-4 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800" role="alert">
             {ocrError}
+          </div>
+        )}
+        {imageNotice && (
+          <div className={cn(
+            "mx-4 mb-4 rounded-lg border px-4 py-3 text-sm font-medium flex items-start gap-2",
+            imageNotice.type === 'warning' ? "bg-amber-50 border-amber-300 text-amber-900" : "bg-blue-50 border-blue-200 text-blue-900"
+          )} role="alert">
+            <Info className="w-5 h-5 shrink-0 mt-0.5" />
+            <span>{imageNotice.text}</span>
           </div>
         )}
       </div>

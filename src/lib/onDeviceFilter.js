@@ -15,7 +15,24 @@ const REFERENCE_SENTENCES = [
   "Do not tell anyone about this call, it is confidential",
   "Provide your Aadhaar or bank details to verify your identity",
   "Congratulations, you have won a prize, claim it now",
+  "Your relative or child was in an urgent accident and needs money for emergency hospital treatment",
+  "Your son or daughter has been arrested or hospitalized, send money immediately",
+  "Urgent emergency medical funds required right now, do not contact family",
+  "Your mobile number will be disconnected due to illegal SIM activities",
 ];
+
+const RED_FLAG_TERMS = [
+  "digital arrest", "cbi", "ed officer", "customs department", "video call verification",
+  "do not disconnect", "warrant", "money laundering case", "arrest warrant", "otp share",
+  "congratulations you have won", "claim your prize", "urgent action required", "kyc update",
+  "account suspended", "telecom department", "hospital admission", "accident", "emergency surgery",
+  "अरेस्ट", "सीबीआई", "एक्सीडेंट", "अस्पताल"
+];
+
+function detectRedFlags(transcript) {
+  const lower = transcript.toLowerCase();
+  return RED_FLAG_TERMS.filter((term) => lower.includes(term));
+}
 
 // Loads the model once, caches it in the browser after first load
 async function getEmbedder() {
@@ -47,12 +64,38 @@ export async function checkOnDevice(transcript) {
 
   const similarities = refs.map((ref) => cos_sim(transcriptEmbedding, ref));
   const maxSimilarity = Math.max(...similarities);
+  const redFlags = detectRedFlags(transcript);
 
-  const THRESHOLD = 0.45;
+  let bucket = "AMBIGUOUS";
+  let escalate = true;
+  let needsAsyncCheck = true;
+
+  if (redFlags.length >= 2 || maxSimilarity >= 0.50) {
+    bucket = "INSTANT_HIGH_RISK";
+    escalate = false; // Fast local resolution
+    needsAsyncCheck = true; // Safety net LLM verification in background
+  } else if (redFlags.length === 0 && maxSimilarity < 0.15) {
+    bucket = "DEEP_SAFE";
+    escalate = false; // Resolved on-device
+    needsAsyncCheck = false; // Highly confident safe, skip LLM
+  } else if (redFlags.length === 0 && maxSimilarity >= 0.15 && maxSimilarity < 0.25) {
+    bucket = "SHALLOW_SAFE";
+    escalate = false; // Fast local resolution
+    needsAsyncCheck = true; // Shallow safe safety net LLM check in background
+  } else {
+    bucket = "AMBIGUOUS";
+    escalate = true; // Escalate immediately to LLM
+    needsAsyncCheck = false;
+  }
+
   return {
-    escalate: maxSimilarity >= THRESHOLD,
+    bucket,
+    escalate,
+    needsAsyncCheck,
     maxSimilarity,
+    redFlagsDetected: redFlags,
     ranOnDevice: true,
     transcriptEmbedding: Array.from(transcriptEmbedding),
   };
 }
+
