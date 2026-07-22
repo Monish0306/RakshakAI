@@ -140,5 +140,12 @@ export function useClassifier() {
     }
   }
 
-  return { loading, result, advisory, error, runClassification };
+  function reset() {
+    setLoading(false);
+    setResult(null);
+    setAdvisory(null);
+    setError(null);
+  }
+
+  return { loading, result, advisory, error, runClassification, reset };
 }

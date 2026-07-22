@@ -260,3 +260,31 @@ export async function analyzeImage(imageBase64: string, mimeType: string): Promi
   }
 }
 
+export interface TranscribeAudioResponse {
+  success: boolean;
+  transcript: string;
+  timeToTranscribeMs?: number;
+  error?: string | null;
+}
+
+export async function transcribeAudio(audioBase64: string, mimeType: string, language: string): Promise<TranscribeAudioResponse> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 20000); // 20s client timeout for audio
+
+  try {
+    const res = await fetch(`${API_BASE}/api/transcribe`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ audio: audioBase64, mimeType, language }),
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+}
