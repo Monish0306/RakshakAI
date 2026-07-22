@@ -55,7 +55,7 @@ export default function UserProfileModal({ isOpen, onClose, user, onLogout }: Us
             orderBy("timestamp", "desc")
           );
           const snap = await getDocs(q);
-          const list = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          const list = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((r: any) => !r.isTestData);
           setReports(list);
         } catch (e) {
           console.error("Error fetching user reports:", e);

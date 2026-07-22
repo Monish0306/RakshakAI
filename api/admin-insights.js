@@ -1,4 +1,5 @@
 import { getFirebase, verifyAdminAuth, setCorsHeaders } from './_admin-utils.js';
+import crypto from 'crypto';
 
 function sanitizeTranscript(text) {
   if (!text || typeof text !== 'string') return "";
@@ -33,6 +34,7 @@ export default async function handler(req, res) {
 
       snapshot.forEach(doc => {
         const data = doc.data();
+        if (data.isTestData) return; // Exclude test data from aggregates
         const region = data.region || data.city || data.state || 'Maharashtra (Mumbai Region)';
         
         if (!regionMap[region]) {
@@ -73,7 +75,7 @@ export default async function handler(req, res) {
         .limit(100)
         .get();
 
-      const evidenceItems = snapshot.docs.map(doc => {
+      const evidenceItems = snapshot.docs.filter(doc => !doc.data().isTestData).map(doc => {
         const data = doc.data();
         const rawText = data.transcriptSnippet || data.transcript || "";
         const redactedSnippet = sanitizeTranscript(rawText);
@@ -102,7 +104,7 @@ export default async function handler(req, res) {
     // 3. REPORTS & ANALYTICS: Time series (last 30 days), resolution velocity, financial recovery
     if (type === 'analytics') {
       const snapshot = await db.collection("citizenReports").get();
-      const reports = snapshot.docs.map(doc => doc.data());
+      const reports = snapshot.docs.map(doc => doc.data()).filter(r => !r.isTestData);
 
       // Daily trend calculation for last 30 days
       const daysMap = {};
@@ -188,6 +190,502 @@ export default async function handler(req, res) {
         success: true,
         type: 'system-users',
         data: safeUsers
+      });
+    }
+
+    // 5. FRAUD NETWORK GRAPH INTELLIGENCE
+    if (type === 'network-graph') {
+      const days = parseInt(req.query.days) || 30;
+      const minLinks = parseInt(req.query.minLinks) || 2;
+      
+      const now = new Date();
+      const timeLimit = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+
+      // Seeding Firestore officers collection if empty
+      const officersSnapshot = await db.collection("officers").get();
+      const officersMap = {};
+      const defaultOfficers = [
+        { name: "Inspector R. Sharma", avatar: "RS", division: "Cyber Crime Unit" },
+        { name: "Inspector P. Patel", avatar: "PP", division: "Financial Fraud Division" },
+        { name: "Inspector A. Kumar", avatar: "AK", division: "Digital Forensics Unit" },
+        { name: "Inspector V. Singh", avatar: "VS", division: "Campaign Intelligence Division" }
+      ];
+
+      if (officersSnapshot.empty) {
+        for (const o of defaultOfficers) {
+          await db.collection("officers").add(o);
+          officersMap[o.name] = o;
+        }
+      } else {
+        officersSnapshot.forEach(doc => {
+          const data = doc.data();
+          if (data.name) {
+            officersMap[data.name] = {
+              name: data.name,
+              avatar: data.avatar || data.name.substring(0, 2).toUpperCase(),
+              division: data.division || "Cyber Crime Unit"
+            };
+          }
+        });
+        // Backfill defaults
+        for (const o of defaultOfficers) {
+          if (!officersMap[o.name]) {
+            officersMap[o.name] = o;
+          }
+        }
+      }
+
+      const snapshot = await db.collection("citizenReports").get();
+      const allReports = [];
+      
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        // NOTE: Network graph intentionally includes isTestData documents.
+        // Graph stats are self-contained (not shared with Dashboard/Analytics),
+        // and test data provides the identifier nodes needed for visual verification.
+        // All OTHER aggregate endpoints filter out isTestData.
+        allReports.push({
+          id: doc.id,
+          ...data
+        });
+      });
+
+      // Filter reports by date
+      const filteredReports = allReports.filter(r => {
+        if (!r.timestamp) return false;
+        const rDate = new Date(r.timestamp);
+        return rDate >= timeLimit;
+      });
+
+      // Grouping campaigns (reusing campaign-list.js logic)
+      const campaignsMap = {};
+      allReports.forEach(r => {
+        if (r.campaignId) {
+          if (!campaignsMap[r.campaignId]) {
+            campaignsMap[r.campaignId] = [];
+          }
+          campaignsMap[r.campaignId].push(r.sessionId);
+        }
+      });
+
+      // Second pass: Find original seeding reports and associate them
+      allReports.forEach(r => {
+        if (!r.campaignId && r.sessionId) {
+          const potentialCampaignId = `CAMPAIGN-${r.sessionId.replace('RKSH-', '')}`;
+          if (campaignsMap[potentialCampaignId]) {
+            campaignsMap[potentialCampaignId].push(r.sessionId);
+            r.campaignId = potentialCampaignId; // link in-memory for network graph
+          }
+        }
+      });
+
+      // Masking helpers
+      const maskPhone = (phone) => {
+        const clean = phone.replace(/[^0-9]/g, '');
+        if (clean.length >= 10) {
+          return `${clean.slice(-10, -6)}****${clean.slice(-2)}`;
+        }
+        return 'Phone: ****';
+      };
+
+      const maskUPI = (upi) => {
+        const parts = upi.split('@');
+        if (parts.length === 2) {
+          const username = parts[0];
+          const domain = parts[1];
+          const maskedUser = username.length > 3 ? username.substring(0, 3) + '***' : '***';
+          return `${maskedUser}@${domain}`;
+        }
+        return '******@upi';
+      };
+
+      const maskBankAccount = (acc) => {
+        const clean = acc.replace(/[^0-9]/g, '');
+        if (clean.length >= 4) {
+          return `XXXX ****${clean.slice(-4)}`;
+        }
+        return 'Bank: ****';
+      };
+
+      const maskDevice = (dev) => {
+        const clean = dev.toUpperCase();
+        if (clean.length >= 7) {
+          return `${clean.slice(0, 4)}****${clean.slice(-3)}`;
+        }
+        return 'Device: ****';
+      };
+
+      // Secure hashing helper
+      const hashIdentifier = (val) => {
+        return crypto.createHash('sha256').update(val).digest('hex').substring(0, 16);
+      };
+
+      // AI Summary Generator
+      const generateAISummary = (linkedReports) => {
+        const categories = new Set();
+        const redFlags = new Set();
+        const reasons = [];
+
+        linkedReports.forEach(r => {
+          if (r.category) categories.add(r.category);
+          if (r.redFlagsDetected) {
+            r.redFlagsDetected.forEach(flag => redFlags.add(flag));
+          }
+          if (r.matches) {
+            r.matches.forEach(m => {
+              if (m.reason) reasons.push(m.reason);
+            });
+          }
+        });
+
+        const catList = Array.from(categories);
+        const catStr = catList.length > 0 ? catList.join(" and ") : "authority impersonation";
+        const flagsList = Array.from(redFlags).slice(0, 3);
+        const flagsStr = flagsList.length > 0 ? flagsList.join(", ") : "digital arrest and money transfers";
+        const sampleReason = reasons.length > 0 ? reasons[0] : "coercing the victim into compliance";
+
+        return `This campaign utilizes a coordinated scam pattern categorized primarily under ${catStr}. Investigators detected indicators such as ${flagsStr}. The tactical operation relies on ${sampleReason.toLowerCase().replace(/\.$/, "")} to pressure victims.`;
+      };
+
+      // Helper to compute nodes & edges
+      const buildGraph = (reportsList, threshold) => {
+        const nodesMap = new Map();
+        const edges = [];
+
+        const addNode = (id, nodeData) => {
+          if (!nodesMap.has(id)) {
+            nodesMap.set(id, nodeData);
+          }
+        };
+
+        // Determine Campaign stats (first seen, last seen, average risk, AI summary, assigned officer)
+        const campaignDetails = {};
+        Object.entries(campaignsMap).forEach(([campId, sessionIds]) => {
+          const linkedRep = reportsList.filter(rep => sessionIds.includes(rep.sessionId));
+          if (linkedRep.length > 0) {
+            const sortedRep = [...linkedRep].sort((a, b) => {
+              const tA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+              const tB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+              return tA - tB;
+            });
+            const sumScore = linkedRep.reduce((acc, curr) => acc + (curr.confidence || 50), 0);
+            const avgScore = Math.round(sumScore / linkedRep.length);
+            
+            // Find assigned officer from reports
+            let officerName = null;
+            for (const r of sortedRep) {
+              if (r.assignedOfficer) {
+                officerName = r.assignedOfficer;
+                break;
+              }
+            }
+
+            const officer = officerName 
+              ? (officersMap[officerName] || { name: officerName, avatar: officerName.substring(0, 2).toUpperCase(), division: 'Cyber Crime Unit' })
+              : { name: "Unassigned", avatar: "UA", division: "Cyber Crime Unit" };
+
+            campaignDetails[campId] = {
+              id: campId,
+              riskScore: avgScore,
+              firstSeen: sortedRep[0].timestamp,
+              lastSeen: sortedRep[sortedRep.length - 1].timestamp,
+              aiSummary: generateAISummary(linkedRep),
+              officer
+            };
+          }
+        });
+
+        // First pass: create Report nodes & Campaign nodes
+        reportsList.forEach(r => {
+          const last4 = r.sessionId ? r.sessionId.slice(-4) : 'xxxx';
+          const label = `Case: RKSH-...${last4}`;
+          
+          // Get officer details for Report
+          const reportOfficer = r.assignedOfficer
+            ? (officersMap[r.assignedOfficer] || { name: r.assignedOfficer, avatar: r.assignedOfficer.substring(0, 2).toUpperCase(), division: 'Cyber Crime Unit' })
+            : { name: "Unassigned", avatar: "UA", division: "Cyber Crime Unit" };
+
+          addNode(r.sessionId, {
+            id: r.sessionId,
+            type: 'Report',
+            label: label,
+            val: 12,
+            connections: 0,
+            timestamp: r.timestamp,
+            verdict: r.verdict || r.threatLevel || 'UNKNOWN',
+            riskScore: r.confidence || 50,
+            officer: reportOfficer
+          });
+
+          if (r.campaignId) {
+            const campLast4 = r.campaignId.slice(-4);
+            const details = campaignDetails[r.campaignId] || {
+              riskScore: r.confidence || 50,
+              firstSeen: r.timestamp,
+              lastSeen: r.timestamp,
+              aiSummary: "Automated scam vector campaign cluster.",
+              officer: reportOfficer
+            };
+
+            addNode(r.campaignId, {
+              id: r.campaignId,
+              type: 'Campaign',
+              label: `Campaign: CAMPAIGN-...${campLast4}`,
+              val: 24,
+              connections: 0,
+              riskScore: details.riskScore,
+              firstSeen: details.firstSeen,
+              lastSeen: details.lastSeen,
+              aiSummary: details.aiSummary,
+              officer: details.officer
+            });
+
+            // Connect Campaign to Report directly
+            edges.push({
+              id: `edge-${r.campaignId}-${r.sessionId}`,
+              source: r.campaignId,
+              target: r.sessionId,
+              type: 'CampaignToReport',
+              style: 'dashed'
+            });
+          }
+        });
+
+        // Second pass: extract identifiers, create nodes & edges
+        reportsList.forEach(r => {
+          const transcript = r.transcript || r.transcriptSnippet || "";
+          if (!transcript) return;
+
+          // Phone numbers (Indian 10-digit formats, clean country prefix)
+          const phoneRegex = /\b(?:\+?91[- ]?)?[6-9]\d{2}[- ]?\d{3}[- ]?\d{4}\b/g;
+          const phoneMatches = transcript.match(phoneRegex) || [];
+          const uniquePhones = Array.from(new Set(phoneMatches.map(p => p.replace(/[^0-9]/g, '').slice(-10))));
+          uniquePhones.forEach(phone => {
+            const hashedId = hashIdentifier(phone);
+            const masked = maskPhone(phone);
+            addNode(hashedId, {
+              id: hashedId,
+              type: 'PhoneNumber',
+              label: masked,
+              val: 10,
+              connections: 0,
+              riskScore: r.confidence || 50
+            });
+            // Identifier ➔ Report (solid, Direct)
+            edges.push({
+              id: `edge-${hashedId}-${r.sessionId}`,
+              source: hashedId,
+              target: r.sessionId,
+              type: 'PhoneToReport',
+              style: 'solid'
+            });
+
+            if (r.campaignId) {
+              // Campaign ➔ Identifier (dashed, Indirect)
+              edges.push({
+                id: `edge-${r.campaignId}-${hashedId}`,
+                source: r.campaignId,
+                target: hashedId,
+                type: 'CampaignToPhone',
+                style: 'dashed'
+              });
+            }
+          });
+
+          // UPI Handles (matching all domains, excluding email providers)
+          const upiRegex = /[a-zA-Z0-9._%+-]+@(?!gmail|yahoo|hotmail|outlook|icloud|aol|mail|proton)[a-zA-Z0-9.-]+\b/gi;
+          const upiMatches = transcript.match(upiRegex) || [];
+          const uniqueUpis = Array.from(new Set(upiMatches));
+          uniqueUpis.forEach(upi => {
+            const hashedId = hashIdentifier(upi.toLowerCase());
+            const masked = maskUPI(upi);
+            addNode(hashedId, {
+              id: hashedId,
+              type: 'UPIHandle',
+              label: masked,
+              val: 10,
+              connections: 0,
+              riskScore: r.confidence || 50
+            });
+            edges.push({
+              id: `edge-${hashedId}-${r.sessionId}`,
+              source: hashedId,
+              target: r.sessionId,
+              type: 'UPIToReport',
+              style: 'solid'
+            });
+
+            if (r.campaignId) {
+              edges.push({
+                id: `edge-${r.campaignId}-${hashedId}`,
+                source: r.campaignId,
+                target: hashedId,
+                type: 'CampaignToUPI',
+                style: 'dashed'
+              });
+            }
+          });
+
+          // Bank Accounts (9 to 18 digits, excluding phone numbers overlaps)
+          const bankRegex = /\b\d{9,18}\b/g;
+          const bankMatches = transcript.match(bankRegex) || [];
+          const uniqueBanks = Array.from(new Set(bankMatches)).filter(b => {
+            if (b.length === 10 && /^[6-9]/.test(b)) return false;
+            return true;
+          });
+          uniqueBanks.forEach(bank => {
+            const hashedId = hashIdentifier(bank);
+            const masked = maskBankAccount(bank);
+            addNode(hashedId, {
+              id: hashedId,
+              type: 'BankAccountFragment',
+              label: masked,
+              val: 10,
+              connections: 0,
+              riskScore: r.confidence || 50
+            });
+            edges.push({
+              id: `edge-${hashedId}-${r.sessionId}`,
+              source: hashedId,
+              target: r.sessionId,
+              type: 'BankToReport',
+              style: 'solid'
+            });
+
+            if (r.campaignId) {
+              edges.push({
+                id: `edge-${r.campaignId}-${hashedId}`,
+                source: r.campaignId,
+                target: hashedId,
+                type: 'CampaignToBank',
+                style: 'dashed'
+              });
+            }
+          });
+
+          // Device IDs (supporting dashes in regex matcher)
+          const deviceList = [];
+          if (r.deviceId) deviceList.push(r.deviceId);
+          if (r.device) deviceList.push(r.device);
+          const devRegex = /(?:Device\s*(?:ID)?|IMEI)[:\s]+([A-Z0-9-]{8,24})/gi;
+          let devMatch;
+          while ((devMatch = devRegex.exec(transcript)) !== null) {
+            if (devMatch[1]) deviceList.push(devMatch[1].trim());
+          }
+
+          const uniqueDevices = Array.from(new Set(deviceList));
+          uniqueDevices.forEach(device => {
+            const hashedId = hashIdentifier(device);
+            const masked = maskDevice(device);
+            addNode(hashedId, {
+              id: hashedId,
+              type: 'DeviceID',
+              label: masked,
+              val: 10,
+              connections: 0,
+              riskScore: r.confidence || 50
+            });
+            edges.push({
+              id: `edge-${hashedId}-${r.sessionId}`,
+              source: hashedId,
+              target: r.sessionId,
+              type: 'DeviceToReport',
+              style: 'solid'
+            });
+
+            if (r.campaignId) {
+              edges.push({
+                id: `edge-${r.campaignId}-${hashedId}`,
+                source: r.campaignId,
+                target: hashedId,
+                type: 'CampaignToDevice',
+                style: 'dashed'
+              });
+            }
+          });
+        });
+
+        // Update connections counts
+        edges.forEach(e => {
+          const sNode = nodesMap.get(e.source);
+          const tNode = nodesMap.get(e.target);
+          if (sNode) sNode.connections = (sNode.connections || 0) + 1;
+          if (tNode) tNode.connections = (tNode.connections || 0) + 1;
+        });
+
+        let nodes = Array.from(nodesMap.values());
+
+        // Filter by minLinks connection density (to avoid cluttered unlinked nodes)
+        if (threshold > 1) {
+          nodes = nodes.filter(n => n.type === 'Campaign' || n.connections >= threshold);
+          const nodeIds = new Set(nodes.map(n => n.id));
+          const filteredEdges = edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target));
+          return { nodes, edges: filteredEdges };
+        }
+
+        return { nodes, edges };
+      };
+
+      // 1. Build primary graph data
+      const primaryGraph = buildGraph(filteredReports, minLinks);
+
+      // 2. Perform 7-Day Velocity Statistics Comparison (Recent 7 days vs Prior 7 days)
+      const nowMs = now.getTime();
+      const sevenDaysAgo = new Date(nowMs - 7 * 24 * 60 * 60 * 1000);
+      const fourteenDaysAgo = new Date(nowMs - 14 * 24 * 60 * 60 * 1000);
+
+      const recentReports = allReports.filter(r => r.timestamp && new Date(r.timestamp) >= sevenDaysAgo);
+      const priorReports = allReports.filter(r => r.timestamp && new Date(r.timestamp) >= fourteenDaysAgo && new Date(r.timestamp) < sevenDaysAgo);
+
+      // Run buildGraph on both periods with minLinks = 1 to get full count details
+      const recentGraph = buildGraph(recentReports, 1);
+      const priorGraph = buildGraph(priorReports, 1);
+
+      const calculatePctChange = (recentVal, priorVal) => {
+        if (priorVal === 0) return null; // do not fabricate or return 100% if no baseline exists
+        return Math.round(((recentVal - priorVal) / priorVal) * 100 * 10) / 10;
+      };
+
+      const stats = {
+        totalNodes: {
+          value: primaryGraph.nodes.length,
+          change: calculatePctChange(recentGraph.nodes.length, priorGraph.nodes.length)
+        },
+        totalConnections: {
+          value: primaryGraph.edges.length,
+          change: calculatePctChange(recentGraph.edges.length, priorGraph.edges.length)
+        },
+        activeCampaigns: {
+          value: primaryGraph.nodes.filter(n => n.type === 'Campaign').length,
+          change: calculatePctChange(
+            recentGraph.nodes.filter(n => n.type === 'Campaign').length,
+            priorGraph.nodes.filter(n => n.type === 'Campaign').length
+          )
+        },
+        victimReports: {
+          value: primaryGraph.nodes.filter(n => n.type === 'Report').length,
+          change: calculatePctChange(
+            recentGraph.nodes.filter(n => n.type === 'Report').length,
+            priorGraph.nodes.filter(n => n.type === 'Report').length
+          )
+        },
+        highRiskClusters: {
+          value: primaryGraph.nodes.filter(n => n.type === 'Campaign' && n.riskScore >= 80).length,
+          change: calculatePctChange(
+            recentGraph.nodes.filter(n => n.type === 'Campaign' && n.riskScore >= 80).length,
+            priorGraph.nodes.filter(n => n.type === 'Campaign' && n.riskScore >= 80).length
+          )
+        }
+      };
+
+      return res.status(200).json({
+        success: true,
+        type: 'network-graph',
+        data: {
+          nodes: primaryGraph.nodes,
+          edges: primaryGraph.edges,
+          stats
+        }
       });
     }
 

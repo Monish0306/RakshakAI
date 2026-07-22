@@ -95,6 +95,7 @@ export default async function handler(req, res) {
 
     snapshot.forEach(doc => {
       const data = doc.data();
+      if (data.isTestData) return; // Exclude test data from aggregates
       if (data.transcriptEmbedding && Array.isArray(data.transcriptEmbedding)) {
         const similarity = cos_sim(transcriptEmbedding, data.transcriptEmbedding);
         if (similarity >= 0.60) {

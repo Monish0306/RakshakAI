@@ -38,7 +38,7 @@ export default function LiveMonitoringSection() {
         const liveList = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }));
+        })).filter((c: any) => !c.isTestData);
 
         if (liveList.length > 0) {
           const newest = liveList[0];

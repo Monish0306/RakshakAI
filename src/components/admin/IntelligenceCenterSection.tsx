@@ -33,7 +33,7 @@ export default function IntelligenceCenterSection() {
         const liveData = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }));
+        })).filter((c: any) => !c.isTestData);
         setReports(liveData);
         setLoading(false);
       },

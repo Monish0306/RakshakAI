@@ -71,6 +71,7 @@ export default async function handler(req, res) {
 
     snapshot.forEach(doc => {
       const data = doc.data();
+      if (data.isTestData) return; // Exclude test data from aggregates
       if (data.campaignId) {
         campaignIds.add(data.campaignId);
       }

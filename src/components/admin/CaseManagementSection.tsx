@@ -81,7 +81,7 @@ export default function CaseManagementSection({ user }: CaseManagementSectionPro
             closedAt: data.closedAt || null,
             transcript: data.transcriptSnippet || data.transcript || ''
           };
-        });
+        }).filter((c: any) => !c.isTestData);
         setCases(liveCases);
         setLoading(false);
       },

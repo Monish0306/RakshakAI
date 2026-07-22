@@ -41,7 +41,7 @@ export default function OverviewSection({ user: _user }: OverviewSectionProps) {
         const liveCases = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data()
-        }));
+        })).filter((c: any) => !c.isTestData);
         setCases(liveCases);
         setLoading(false);
       },

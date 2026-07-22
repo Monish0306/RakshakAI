@@ -49,7 +49,7 @@ export default function AdminLayout({ user, onLogout, theme, toggleTheme }: Admi
           {activeTab === 'cases' && <CaseManagementSection user={user} />}
           {activeTab === 'officers' && <OfficerManagementSection user={user} />}
           {activeTab === 'overview' && <OverviewSection user={user} />}
-          {activeTab === 'network' && <NetworkAnalysisSection />}
+          {activeTab === 'network' && <NetworkAnalysisSection user={user} />}
           {activeTab === 'ai-intel' && <IntelligenceCenterSection />}
           {activeTab === 'live-monitoring' && <LiveMonitoringSection />}
           {activeTab === 'heatmap' && <HeatmapSection user={user} />}

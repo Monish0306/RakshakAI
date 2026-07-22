@@ -74,7 +74,9 @@ export default async function handler(req, res) {
     
     const allReports = [];
     snapshot.forEach(doc => {
-      allReports.push(doc.data());
+      const data = doc.data();
+      if (data.isTestData) return; // Exclude test data from aggregates
+      allReports.push(data);
     });
 
     // Grouping logic

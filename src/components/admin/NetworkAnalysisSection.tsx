@@ -11,6 +11,7 @@ import {
   Tag
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import NetworkGraphSection from './NetworkGraphSection';
 
 interface CampaignCluster {
   campaignId: string;
@@ -26,7 +27,12 @@ interface CampaignCluster {
   officerNotes?: string;
 }
 
-export default function NetworkAnalysisSection() {
+interface NetworkAnalysisSectionProps {
+  user?: any;
+}
+
+export default function NetworkAnalysisSection({ user }: NetworkAnalysisSectionProps) {
+  const [viewMode, setViewMode] = useState<'list' | 'graph'>('graph');
   const [campaigns, setCampaigns] = useState<CampaignCluster[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -100,13 +106,39 @@ export default function NetworkAnalysisSection() {
             Tracking scam operator clusters, vector signatures, and cybercrime reporting status (Exclusively scam operator data - no victim identities exposed).
           </p>
         </div>
-        <button
-          onClick={fetchCampaigns}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 shadow-sm"
-        >
-          <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
-          Refresh Network Clusters
-        </button>
+        
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 bg-white border border-gray-300 rounded-lg p-1 text-xs">
+            <button
+              onClick={() => setViewMode('graph')}
+              className={cn(
+                "px-3 py-1.5 rounded font-semibold transition-colors cursor-pointer",
+                viewMode === 'graph' ? "bg-red-600 text-white" : "text-gray-600 hover:bg-gray-100"
+              )}
+            >
+              Interactive Graph
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={cn(
+                "px-3 py-1.5 rounded font-semibold transition-colors cursor-pointer",
+                viewMode === 'list' ? "bg-red-600 text-white" : "text-gray-600 hover:bg-gray-100"
+              )}
+            >
+              Cluster List
+            </button>
+          </div>
+
+          {viewMode === 'list' && (
+            <button
+              onClick={fetchCampaigns}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 shadow-sm"
+            >
+              <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
+              Refresh Network Clusters
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Legal & Privacy Compliance Banner */}
@@ -117,121 +149,128 @@ export default function NetworkAnalysisSection() {
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-        <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search campaign ID, dominant scam category, or status..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white"
-          />
-        </div>
-      </div>
-
-      {/* Content Grid */}
-      {loading ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-500">
-          <RefreshCw className="h-6 w-6 animate-spin mx-auto text-red-600 mb-2" />
-          <p className="text-sm font-medium">Analyzing criminal network campaign clusters...</p>
-        </div>
-      ) : error ? (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center text-red-700">
-          <AlertTriangle className="h-6 w-6 mx-auto mb-2 text-red-600" />
-          <p className="text-sm font-semibold">{error}</p>
-        </div>
+      {/* Dynamic Views */}
+      {viewMode === 'graph' ? (
+        <NetworkGraphSection user={user} />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredCampaigns.map((c) => {
-            const isPriority = c.priority;
-            
-            return (
-              <div key={c.campaignId} className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4 hover:border-gray-300 transition-colors">
-                <div className="flex items-start justify-between border-b border-gray-100 pb-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm font-bold text-gray-900">{c.campaignId}</span>
-                      {isPriority && (
-                        <span className="px-2 py-0.5 text-[10px] font-bold bg-red-100 text-red-800 rounded uppercase">
-                          High Priority Cluster
-                        </span>
-                      )}
+        <>
+          {/* Search Bar */}
+          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search campaign ID, dominant scam category, or status..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white"
+              />
+            </div>
+          </div>
+
+          {/* Content Grid */}
+          {loading ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-500">
+              <RefreshCw className="h-6 w-6 animate-spin mx-auto text-red-600 mb-2" />
+              <p className="text-sm font-medium">Analyzing criminal network campaign clusters...</p>
+            </div>
+          ) : error ? (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center text-red-700">
+              <AlertTriangle className="h-6 w-6 mx-auto mb-2 text-red-600" />
+              <p className="text-sm font-semibold">{error}</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {filteredCampaigns.map((c) => {
+                const isPriority = c.priority;
+                
+                return (
+                  <div key={c.campaignId} className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4 hover:border-gray-300 transition-colors">
+                    <div className="flex items-start justify-between border-b border-gray-100 pb-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-sm font-bold text-gray-900">{c.campaignId}</span>
+                          {isPriority && (
+                            <span className="px-2 py-0.5 text-[10px] font-bold bg-red-100 text-red-800 rounded uppercase">
+                              High Priority Cluster
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                          <Tag className="h-3 w-3 text-red-500" /> {c.dominantCategory}
+                        </p>
+                      </div>
+                      
+                      <div className="text-right">
+                        <span className="text-lg font-bold text-gray-900">{c.reportCount}</span>
+                        <p className="text-[10px] text-gray-500 uppercase">Linked Reports</p>
+                      </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                      <Tag className="h-3 w-3 text-red-500" /> {c.dominantCategory}
-                    </p>
-                  </div>
-                  
-                  <div className="text-right">
-                    <span className="text-lg font-bold text-gray-900">{c.reportCount}</span>
-                    <p className="text-[10px] text-gray-500 uppercase">Linked Reports</p>
-                  </div>
-                </div>
 
-                {/* Scammer Identifiers */}
-                <div className="space-y-1.5">
-                  <span className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
-                    <Phone className="h-3.5 w-3.5 text-blue-600" /> Operator Identifiers / Handles:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {c.linkedIdentifiers?.map((id, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-slate-100 border border-slate-200 text-slate-700 rounded text-xs font-mono">
-                        {id}
+                    {/* Scammer Identifiers */}
+                    <div className="space-y-1.5">
+                      <span className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                        <Phone className="h-3.5 w-3.5 text-blue-600" /> Operator Identifiers / Handles:
                       </span>
-                    ))}
+                      <div className="flex flex-wrap gap-1.5">
+                        {c.linkedIdentifiers?.map((id, idx) => (
+                          <span key={idx} className="px-2 py-1 bg-slate-100 border border-slate-200 text-slate-700 rounded text-xs font-mono">
+                            {id}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Investigation Status Dropdown */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-semibold text-gray-700">Official Investigation Status</label>
+                      <select
+                        value={c.investigationStatus}
+                        onChange={(e) => handleStatusChange(c.campaignId, e.target.value)}
+                        className="w-full border border-gray-300 rounded-lg p-2 text-xs font-medium text-gray-900 bg-white focus:ring-2 focus:ring-red-500"
+                      >
+                        <option value="Under Investigation">Under Investigation</option>
+                        <option value="Reported to Cybercrime Cell">Reported to Cybercrime Cell</option>
+                        <option value="Case Closed">Case Closed</option>
+                      </select>
+                    </div>
+
+                    {/* Officer Notes */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-semibold text-gray-700 flex items-center gap-1">
+                        <FileText className="h-3.5 w-3.5 text-gray-500" /> Officer Investigation Notes:
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={c.officerNotes}
+                        onChange={(e) => handleNotesChange(c.campaignId, e.target.value)}
+                        placeholder="Log officer notes for this campaign cluster..."
+                        className="w-full p-2 text-xs border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-red-500"
+                      />
+                    </div>
+
+                    {/* Footer Metadata */}
+                    <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3 text-gray-400" />
+                        <span>First Seen: {c.firstSeen ? new Date(c.firstSeen).toLocaleDateString() : 'N/A'}</span>
+                      </div>
+                      <div>
+                        <span>Last Active: {c.lastSeen ? new Date(c.lastSeen).toLocaleDateString() : 'N/A'}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                );
+              })}
 
-                {/* Investigation Status Dropdown */}
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-semibold text-gray-700">Official Investigation Status</label>
-                  <select
-                    value={c.investigationStatus}
-                    onChange={(e) => handleStatusChange(c.campaignId, e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-2 text-xs font-medium text-gray-900 bg-white focus:ring-2 focus:ring-red-500"
-                  >
-                    <option value="Under Investigation">Under Investigation</option>
-                    <option value="Reported to Cybercrime Cell">Reported to Cybercrime Cell</option>
-                    <option value="Case Closed">Case Closed</option>
-                  </select>
+              {filteredCampaigns.length === 0 && (
+                <div className="col-span-full bg-white p-12 rounded-xl border border-gray-200 text-center text-gray-500">
+                  No matching scam campaign clusters found.
                 </div>
-
-                {/* Officer Notes */}
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-semibold text-gray-700 flex items-center gap-1">
-                    <FileText className="h-3.5 w-3.5 text-gray-500" /> Officer Investigation Notes:
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={c.officerNotes}
-                    onChange={(e) => handleNotesChange(c.campaignId, e.target.value)}
-                    placeholder="Log officer notes for this campaign cluster..."
-                    className="w-full p-2 text-xs border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-red-500"
-                  />
-                </div>
-
-                {/* Footer Metadata */}
-                <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3 text-gray-400" />
-                    <span>First Seen: {c.firstSeen ? new Date(c.firstSeen).toLocaleDateString() : 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span>Last Active: {c.lastSeen ? new Date(c.lastSeen).toLocaleDateString() : 'N/A'}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {filteredCampaigns.length === 0 && (
-            <div className="col-span-full bg-white p-12 rounded-xl border border-gray-200 text-center text-gray-500">
-              No matching scam campaign clusters found.
+              )}
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       .limit(100)
       .get();
       
-    const cases = snapshot.docs.map(toSafeAdminCase);
+    const cases = snapshot.docs.filter(doc => !doc.data().isTestData).map(toSafeAdminCase);
 
     return res.status(200).json({ success: true, cases });
   } catch (err) {

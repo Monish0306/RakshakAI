@@ -20,6 +20,7 @@ export default async function handler(req, res) {
     
     snapshot.forEach(doc => {
       const data = doc.data();
+      if (data.isTestData) return; // Exclude test data from aggregates
       const officer = data.assignedOfficer;
       if (!officer) return; 
       
