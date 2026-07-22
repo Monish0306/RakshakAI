@@ -484,10 +484,16 @@ number would.
   cause every admin data endpoint to fail locally with a non-JSON response
   error.
 - Vercel's serverless function count is actively managed to stay within the
-  Hobby plan's 12-function limit; several admin data endpoints are
-  consolidated behind a single dispatcher function (`admin-insights.js`,
-  selected via a `type` query parameter) rather than deployed as separate
-  functions.
+  Hobby plan's 12-function limit (11 files: 10 route functions + 1 shared
+  helper). Several related endpoints are consolidated behind dispatcher
+  functions rather than deployed as separate files:
+  - `admin-insights.js` — selected via a `type` query parameter
+    (`dashboard-overview`, `threat-distribution`, `ai-intelligence`,
+    `network-graph`, `officer-stats`)
+  - `admin-cases.js` — a single endpoint routed by HTTP method (`GET` returns
+    the case list, `POST`/`PATCH` updates a case)
+  - `campaign.js` — selected via an `action` query parameter (`list` or
+    `match`)
 
 ---
 
