@@ -128,7 +128,7 @@ export default function CaseManagementSection({ user }: CaseManagementSectionPro
         body.closedAt = new Date().toISOString();
       }
 
-      const res = await fetch('/api/admin-update-case', {
+      const res = await fetch('/api/admin-cases', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -689,6 +689,72 @@ export default async function handler(req, res) {
       });
     }
 
+    // 5. OFFICER STATS: Computes case stats resolved per officer (Consolidated)
+    if (type === 'officer-stats') {
+      const snapshot = await db.collection("citizenReports").get();
+      const officers = {};
+      
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.isTestData) return; // Exclude test data from aggregates
+        const officer = data.assignedOfficer;
+        if (!officer) return; 
+        
+        if (!officers[officer]) {
+          officers[officer] = { 
+            name: officer, 
+            total: 0, 
+            active: 0, 
+            pending: 0, 
+            closed: 0,
+            sumTimeToClose: 0,
+            sumRecoveryPercent: 0,
+            closedCountWithRecovery: 0
+          };
+        }
+        
+        const stat = officers[officer];
+        stat.total += 1;
+        
+        const status = data.caseStatus || 'pending';
+        if (status === 'active') stat.active += 1;
+        else if (status === 'pending') stat.pending += 1;
+        else if (status === 'closed') {
+          stat.closed += 1;
+          
+          if (data.timestamp && data.closedAt) {
+            const start = new Date(data.timestamp).getTime();
+            const end = new Date(data.closedAt).getTime();
+            if (!isNaN(start) && !isNaN(end) && end > start) {
+              stat.sumTimeToClose += (end - start);
+            }
+          }
+          
+          if (typeof data.recoveryPercent === 'number') {
+            stat.sumRecoveryPercent += data.recoveryPercent;
+            stat.closedCountWithRecovery += 1;
+          }
+        }
+      });
+
+      const results = Object.values(officers).map(stat => {
+        const avgTimeToCloseMs = stat.closed > 0 ? stat.sumTimeToClose / stat.closed : 0;
+        const avgRecoveryPercent = stat.closedCountWithRecovery > 0 ? stat.sumRecoveryPercent / stat.closedCountWithRecovery : 0;
+        
+        return {
+          name: stat.name,
+          total: stat.total,
+          active: stat.active,
+          pending: stat.pending,
+          closed: stat.closed,
+          avgTimeToCloseMs,
+          avgRecoveryPercent
+        };
+      });
+
+      return res.status(200).json({ success: true, stats: results });
+    }
+
     return res.status(400).json({ success: false, error: 'Invalid type parameter' });
   } catch (err) {
     console.error("Admin insights error:", err);

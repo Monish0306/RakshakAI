@@ -290,8 +290,8 @@ export default function SystemArchitecture() {
           <Layer id="layer-col-2" title="Serverless API" color="amber">
             <Node id="l2-classify" icon={Server} text="/api/classify" />
             <Node id="l2-advisory" icon={Route} text="/api/advisory" />
-            <Node id="l2-match" icon={Server} text="/api/campaign-match" />
-            <Node id="l2-list" icon={Route} text="/api/campaign-list" />
+            <Node id="l2-match" icon={Server} text="/api/campaign?action=match" />
+            <Node id="l2-list" icon={Route} text="/api/campaign?action=list" />
             <Node id="l2-lookup" icon={Server} text="/api/username-lookup" />
             <Node id="l2-pulse" icon={Activity} text="/api/pulse-stats" />
             <Node id="l2-telemetry" icon={BarChart} text="/api/telemetry" />

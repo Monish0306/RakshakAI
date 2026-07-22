@@ -40,7 +40,7 @@ export default function OfficerManagementSection({ user }: OfficerManagementSect
       const token = await user?.getIdToken();
       if (!token) return;
 
-      const res = await fetch('/api/admin-officer-stats', {
+      const res = await fetch('/api/admin-insights?type=officer-stats', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await readApiJson(res);

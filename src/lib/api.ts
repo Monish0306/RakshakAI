@@ -103,7 +103,7 @@ export async function matchCampaign(transcriptEmbedding: number[], sessionData: 
   const id = setTimeout(() => controller.abort(), 15000); // 15s timeout
   
   try {
-    const res = await fetch(`${API_BASE}/api/campaign-match`, {
+    const res = await fetch(`${API_BASE}/api/campaign?action=match`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ transcriptEmbedding, sessionData, sessionId }),
@@ -155,7 +155,7 @@ export async function fetchCampaigns(): Promise<CampaignListResponse> {
   const id = setTimeout(() => controller.abort(), 15000); // 15s timeout
   
   try {
-    const res = await fetch(`${API_BASE}/api/campaign-list`, {
+    const res = await fetch(`${API_BASE}/api/campaign?action=list`, {
       method: "GET",
       signal: controller.signal
     });

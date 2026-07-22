@@ -140,7 +140,14 @@ manipulation is happening, not after the money has already moved.
 
 ### Live Check — Core Detection Flow
 - Paste a suspicious call transcript, or describe what happened in free text
-- **Live Simulated Call** — guided demo/practice mode
+- **Upload Audio Recording** — accepts mp3, wav, m4a, aac, ogg, and webm/flac
+  files of a suspicious call. The audio is transcribed, presented back to the
+  user as an **editable transcript-review step** (so mis-transcriptions can be
+  corrected before analysis), and then routed through the exact same
+  classification pipeline used for typed transcripts — no parallel/duplicate
+  analysis path. This replaced an earlier "Live Simulated Call" demo mode,
+  since a real audio-upload flow provides genuine utility rather than a
+  scripted demo.
 - **Record Voice** — voice input for hands-free reporting
 - **Upload Screenshot** — drag-and-drop or file picker
   - **Image relevance detection (Gemini vision):** before any classification
@@ -203,7 +210,14 @@ manipulation is happening, not after the money has already moved.
   - Financial model section explicitly labeled "Projected/Modeled" for
     CAC/LTV-style metrics — never presented as live traction data
 - **About / Architecture** — system design diagram
-- **Command Center** — investigator control panel (auth-gated)
+- **Command Center** — investigator control panel (auth-gated), including an
+  **Evidence Verification Tool**: a user can upload a previously generated
+  Rakshak AI PDF report (or enter its case ID/hash directly), and the system
+  looks up the record in Firestore to confirm whether the document is
+  authentic and unmodified — returning a clear Verified / Not Found / Invalid
+  result. This validates the SHA-256 integrity hash embedded in every
+  generated report, giving both citizens and officers a way to confirm a
+  report hasn't been tampered with after the fact.
 - **Family Guardian** — manage trusted contacts for emergency alerts
 
 ### UI / UX
@@ -490,6 +504,12 @@ number would.
 - **Officer/case data is currently demo-scale** — a real deployment would
   need integration with an actual state cybercrime cell's case management
   system rather than a standalone Firestore collection.
+- **Other placeholder stubs may still exist** — during development, at least
+  one section (the Command Center's Evidence Verification Tool) was found to
+  be an unbuilt placeholder ("Form UI implementation in progress...") despite
+  appearing in navigation. A full audit of all tabs/sub-features (e.g. any
+  Campaign Queue-style views) is recommended before a live demo, to confirm
+  nothing else in the navigation is a stub rather than a working feature.
 
 ---
 
